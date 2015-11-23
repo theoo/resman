@@ -1,8 +1,8 @@
 %h1 Listing comments
 .listing
-  = form_for(@search) do |f|
+  = search_form_for(@q) do |f|
     .infos
-      = @comments_count
+      = @comments.count
       logs found.
     %table#activities
       %tr
@@ -10,8 +10,8 @@
         %th= order_by_link(:title)
         %th= order_by_link(:read)
         %th= order_by_link(:user_id)
-        %th= order_by_link(:entity_id)
-      - if @comments_count > 0
+        %th{colspan: 2}= order_by_link(:entity_id)
+      - if @comments.count > 0
         - @comments.each do |comment|
           %tr
             %td= h comment.created_at_formatted
@@ -29,5 +29,4 @@
             No comments found.
             %br/
             %br/
-  - if @search.page_count > 1
-    = page_links
+  = will_paginate @comments

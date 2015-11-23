@@ -1,6 +1,8 @@
 class Continent < ActiveRecord::Base
-  has_many  :countries, dependent: :destroy
-  has_many  :residents, through: :countries
+  has_many  :countries,
+    dependent: :destroy
+  has_many  :residents,
+    through: :countries
 
   validates_presence_of     :name
   validates_uniqueness_of   :name

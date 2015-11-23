@@ -1,5 +1,7 @@
 class School < ActiveRecord::Base
-  has_many        :residents, dependent: :nullify
+
+  has_many        :residents,
+    dependent: :nullify
   belongs_to      :institute
 
   validates_presence_of     :institute_id

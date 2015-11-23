@@ -1,4 +1,5 @@
 class Religion < ActiveRecord::Base
+
   has_many  :residents, dependent: :nullify
 
   validates_presence_of     :name

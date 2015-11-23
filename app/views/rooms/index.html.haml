@@ -3,16 +3,16 @@
   - if Building.count > 0
     Building: #{link_to 'All', search_url(:rooms, :building_id => nil)}
     - Building.all.each do |building|
-      = link_to_unless(building.id == @search.conditions.building_id, building.name, search_url(:rooms, :building_id => building.id))  { |name| name }
-    = form_for(@search) do |f|
-      - f.fields_for(@search.conditions) do |room|
+      = link_to_unless(building.id == @q.conditions.building_id, building.name, search_url(:rooms, :building_id => building.id))  { |name| name }
+    = search_form_for(@q) do |f|
+      - f.fields_for(@q.conditions) do |room|
         = room.hidden_field :building_id
         Room: #{room.text_field :name_contains}
       = f.submit 'Search'
     %br/
-  - if @rooms_count > 0
+  - if @rooms.count > 0
     .infos
-      = @rooms_count
+      = @rooms.count
       rooms found.
     %table
       %tr
@@ -31,8 +31,7 @@
           %td= h room.size
           %td= h room.phone
           %td= link_to "options (#{room.options.size})", room_room_options_path(room)
-    - if @search.page_count > 1
-      = page_links
+      = will_paginate @users
   - else
     No rooms were found.
   .actions

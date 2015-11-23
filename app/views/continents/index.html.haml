@@ -1,6 +1,6 @@
 %h1 Listing Continents
 .listing
-  - if @continents_count > 0
+  - if @continents.count > 0
     %table
       %tr
         %th= order_by_link :id
@@ -10,7 +10,8 @@
         %tr{:onclick => "window.location='#{edit_continent_path(continent)}'"}
           %td= continent.id
           %td= continent.name
-          %td= link_to "Countries (#{continent.countries.size})", search_url(:countries, :continent_id => continent.id)
+          - # %td= link_to "Countries (#{continent.countries.size})", search_url(:countries, :continent_id => continent.id)
+          %td= link_to "Countries (#{continent.countries.size})", countries_path(q: {continent_id: continent.id})
   - else
     No continents were found.
   .actions

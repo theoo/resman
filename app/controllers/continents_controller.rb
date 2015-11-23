@@ -1,23 +1,23 @@
 class ContinentsController < ApplicationController
   def index
-    @search = Continent.new_search(params[:search])
-    @continents, @continents_count = @search.all, @search.count
-    
+    @q = Continent.search(params[:q])
+    @continents = @q.result.page(params[:page])
+
   end
 
   def show
     @continent = Continent.find(params[:id])
-    
+
   end
 
   def new
     @continent = Continent.new
-    
+
   end
 
   def edit
     @continent = Continent.find(params[:id])
-    
+
   end
 
   def create

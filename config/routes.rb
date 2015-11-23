@@ -13,14 +13,41 @@ Rails.application.routes.draw do
   # Resources
   resources :activities
   resources :buildings
-  resources :comments, collection: { ajax_comment_read: :post }
+  resources :comments do
+    collection do
+      post :ajax_comment_read
+    end
+  end
   resources :continents
   resources :countries
-  resources :groups, member: { manage_rights: :get, update_rights: :post }
-  resources :invoices, has_many: [:items, :incomes, :comments, :activities], collection: { confirm: :get, generate: :post, send_pdf: :get, export_all: :get, ajax_invoice_closed: :post }
-  resources :incomes, collection: { confirm: :post, generate: :post, export_all: :get }
+  resources :groups do
+    member do
+      get :manage_rights
+      post :update_rights
+    end
+  end
+  resources :invoices do
+    resources :items
+    resources :incomes
+    resources :comments
+    resources :activities
+
+    collection do
+      get :confirm, :send_pdf, :export_all
+      post :generate, :ajax_invoice_closed
+    end
+  end
+  resources :incomes do
+    collection do
+      post :confirm, :generate
+      get :export_all
+    end
+  end
   resources :institutes
-  resources :rates, has_many: [:rooms, :rules]
+  resources :rates do
+    resources :rooms
+    resources :rules
+  end
   resources :religions
   resources :reservations do
     collection do
@@ -29,7 +56,10 @@ Rails.application.routes.draw do
     resources :reservation_options, as: :options
   end
   resources :residents, collection: { export_all: :get }, member: { export: :get }
-  resources :rooms, has_many: [:reservations, :comments, :activities] do
+  resources :rooms do
+    resources :reservations
+    resources :comments
+    resources :activities
     resources :room_options, as: :options
   end
   resources :room_options

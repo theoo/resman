@@ -1,23 +1,22 @@
 class SchoolsController < ApplicationController
   def index
-    @search = School.new_search(params[:search])
-    @schools, @schools_count = @search.all, @search.count
-    
+    @q = School.search(params[:q])
+    @schools = @q.result.page(params[:page])
   end
 
   def show
     @school = School.find(params[:id])
-    render  
+    render
   end
 
   def new
     @school = School.new
-    
+
   end
 
   def edit
     @school = School.find(params[:id])
-    
+
   end
 
   def create

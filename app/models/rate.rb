@@ -1,6 +1,7 @@
 class Rate < ActiveRecord::Base
   has_many    :rooms
-  has_many    :rules, order: 'start_type, start_value', dependent: :destroy
+  has_many    :rules, -> {order('start_type, start_value') },
+    dependent: :destroy
 
   validates_presence_of     :name
   validates_uniqueness_of   :name

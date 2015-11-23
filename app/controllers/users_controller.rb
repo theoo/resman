@@ -1,9 +1,8 @@
 class UsersController < ApplicationController
-  
+
   def index
-    @search = User.new_search(params[:search])
-    @users, @users_count= @search.all, @search.count
-    
+    @q = User.search(params[:q])
+    @users = @q.result.page(params[:page])
   end
 
   def show
@@ -12,12 +11,12 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new(group_id: params[:group_id])
-    
+
   end
 
   def edit
     @user = User.find(params[:id])
-    
+
   end
 
   def create

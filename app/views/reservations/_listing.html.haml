@@ -1,6 +1,6 @@
-- @search = search
+- @q = search
 - on_change_submit = { :onchange => 'this.form.submit();' }
-= reservations_count
+= reservations.count
 reservations found
 %br/
 = form_for(search, :url => invoices_path) do |f|
@@ -20,7 +20,7 @@ reservations found
         %th
           = select(reservation, :status, [['All', nil]] + Reservation::Status, {}, on_change_submit )
           %input{:style => "display:none", :type => "submit"}/
-    - if reservations_count > 0
+    - if reservations.count > 0
       - reservations.each do |reservation|
         %tr{:onclick => "window.location='#{reservation_path(reservation)}'"}
           %td= h reservation.resident.full_name
@@ -35,5 +35,5 @@ reservations found
           No reservations found.
           %br/
           %br/
-- if search.page_count > 1
-  = page_links
+
+= will_paginate reservations

@@ -1,13 +1,13 @@
 %h1 Listing Groups
 .listing
-  - if @groups_count > 0
+  - if @groups.count > 0
     %table
       %tr
         %th= order_by_link :name
       - @groups.each do |group|
         %tr{:onclick => "window.location='#{group_path(group)}'"}
           %td= h "#{group.name} (#{group.rights.size} rights and #{group.users.size} users)"
-    = page_links if @search.page_count > 1
+    = will_paginate @groups
   - else
     No groups found.
   .actions

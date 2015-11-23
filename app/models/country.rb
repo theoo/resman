@@ -1,6 +1,7 @@
 class Country < ActiveRecord::Base
   belongs_to      :continent
-  has_many        :residents, dependent: :nullify
+  has_many        :residents,
+    dependent: :nullify
 
   validates_presence_of     :continent_id
   validates_presence_of     :name

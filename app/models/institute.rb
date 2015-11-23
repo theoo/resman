@@ -1,6 +1,9 @@
 class Institute < ActiveRecord::Base
-  has_many    :schools, dependent: :destroy
-  has_many    :residents, through: :schools
+
+  has_many    :schools,
+    dependent: :destroy
+  has_many    :residents,
+    through: :schools
 
   validates_presence_of     :name
   validates_uniqueness_of   :name

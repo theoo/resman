@@ -1,6 +1,6 @@
 %h1 Listing institutes
 .listing
-  - if @institutes_count > 0
+  - if @institutes.count > 0
     %table
       %tr
         %th= order_by_link :name

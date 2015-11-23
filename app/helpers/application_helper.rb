@@ -74,17 +74,8 @@ module ApplicationHelper
   end
 
   def order_by_link(to, args = {})
-
-    text = args[:text] ? args[:text] : to.to_s
-    text = text.capitalize
-
-    params[:order] ||= {}
-    dir = params[:order][:dir] ? (! eval(params[:order][:dir])).to_s : "false"
-    # params[:order] ||= {:dir => "false"}
-
-    new_params = params.merge(order: {dir: dir, attr: to})
-
-    link_to( text, new_params )
+    text = args[:text] ? args[:text] : to.to_s.humanize
+    sort_link(@q, to, text, default_order: :desc)
   end
 
 

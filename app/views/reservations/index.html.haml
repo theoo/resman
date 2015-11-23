@@ -1,7 +1,7 @@
 %h1 Listing Reservations
 .listing
   .infos
-    = @reservations_count
+    = @reservations.count
     reservations found
   %br/
   = form_for(:search) do |f|
@@ -32,7 +32,7 @@
             = select(reservation, :status, [['All', nil]] + Reservation::Status, {}, |
               {:onchange => "this.form.submit();"} )                                |
             %input{:style => "display:none", :type => "submit"}/
-      - if @reservations_count > 0
+      - if @reservations.count > 0
         - @reservations.each do |reservation|
           %tr{:onclick => "window.location='#{reservation_path(reservation)}'"}
             %td= h reservation.resident.full_name

@@ -1,23 +1,23 @@
 class RatesController < ApplicationController
   def index
-    @search = Rate.new_search(params[:search])
-    @rates, @rates_count = @search.all, @search.count
-    
+    @q = Rate.search(params[:q])
+    @rates = @q.result.page(params[:page])
+
   end
 
   def show
     @rate = Rate.find(params[:id])
-    
+
   end
 
   def new
     @rate = Rate.new
-    
+
   end
 
   def edit
     @rate = Rate.find(params[:id])
-    
+
   end
 
   def create

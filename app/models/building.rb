@@ -1,6 +1,8 @@
 class Building < ActiveRecord::Base
-  has_many  :rooms, dependent: :destroy
-  has_many  :reservations, through: :rooms
+  has_many  :rooms,
+    dependent: :destroy
+  has_many  :reservations,
+    through: :rooms
 
   validates_presence_of     :name
   validates_uniqueness_of   :name

@@ -1,6 +1,6 @@
 %h1 Listing Religions
 .listing
-  - if @religions_count > 0
+  - if @religions.count > 0
     %table
       %tr
         %th= order_by_link :name

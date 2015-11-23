@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.4'
 gem 'mysql'
@@ -29,8 +28,13 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'pdf-writer', require: 'pdf/writer'
 gem 'calendar_date_select'
 gem 'acts-as-taggable-on'
+gem 'acts_as_tree'
 
 gem 'auto_complete'
+gem 'money'
+gem 'monetize'
+gem 'ransack'
+gem 'will_paginate', "~>3.0.7"
 
 # gem 'iconv', "~> 1.0.3"
 # Bg tasks
@@ -40,7 +44,6 @@ gem 'auto_complete'
 # Attachment handler
 # gem 'paperclip'
 
-# gem 'will_paginate'
 
 # Authentication and authorization
 gem 'devise'

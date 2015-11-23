@@ -23,22 +23,22 @@
         %td{:align => "right"}= submit_tag 'Export'
   %h3 Listing incomes
   .infos
-    = @incomes_count
+    = @incomes.count
     incomes found
-  = form_for(@search) do |f|
+  = search_form_for(@q) do |f|
     %table#incomes
       %tr
         %th= order_by_link({:invoice => :id}, :text => 'Invoice')
         %th= order_by_link(:value_in_cents, :text => 'Value')
         %th= order_by_link(:payment)
         %th= order_by_link(:received)
-      - f.fields_for(@search.conditions) do |income|
+      - f.fields_for(@q.conditions) do |income|
         %tr.listing_filter
           %th
           %th
           %th= select(income, :payment, [['All', nil]] + Income::Types.map{|i| [i.humanize, i]}, {}, { :onchange => "this.form.submit();" })
           %th
-      - if @incomes_count > 0
+      - if @incomes.count > 0
         - @incomes.each do |income|
           %tr{:onclick => "window.location='#{invoice_path(income.invoice)}'"}
             %td= h income.invoice
@@ -52,5 +52,5 @@
             No incomes found.
             %br/
             %br/
-  - if @search.page_count > 1
-    = page_links
+
+  = will_paginate @incomes

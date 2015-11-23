@@ -39,4 +39,4 @@
       %tr
         %td{:align => "right", :colspan => "2"}= submit_tag 'Export'
   %h3 Listing Invoices
-  = render :partial => 'listing', :locals => { :invoices => @invoices, :invoices_count => @invoices_count, :search => @search, :url => :invoices }
+  = render :partial => 'listing', :locals => { :invoices => @invoices, :invoices.count => @invoices.count, :q => @q, :url => :invoices }

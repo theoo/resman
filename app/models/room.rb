@@ -5,9 +5,14 @@ class Room < ActiveRecord::Base
   belongs_to  :building
   belongs_to  :rate
 
-  has_many    :reservations, dependent: :destroy
-  has_many    :options, class_name: 'RoomOption', dependent: :destroy
-  has_many    :comments, as: :entity, dependent: :destroy
+  has_many    :reservations,
+    dependent: :destroy
+  has_many    :options,
+    class_name: 'RoomOption',
+    dependent: :destroy
+  has_many    :comments,
+    as: :entity,
+    dependent: :destroy
 
   validates_presence_of     :building_id
   validates_presence_of     :rate_id

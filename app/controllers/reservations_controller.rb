@@ -17,19 +17,19 @@ class ReservationsController < ApplicationController
 
     @to = @from if @to < @from
 
-    @search = Reservation.where("arrival < ? AND departure > ?", @to, @from)
-    # @search.includes([:room, :resident])
+    @q = Reservation.where("arrival < ? AND departure > ?", @to, @from)
+    # @q.includes([:room, :resident])
 
     # ORDERING
     # params[:order][:attr] format can be a string or a hash like "resident => [:first_name, :last_name]"
-    @search = @search.order_by_link_query(params[:order]) if params[:order]
+    @q = @q.order_by_link_query(params[:order]) if params[:order]
 
-    @reservations_count = @search.count
+    @reservations_count = @q.count
 
     # PAGINATION
-    @search = @search.paginate page: params[:page]
+    @q = @q.paginate page: params[:page]
 
-    @reservations = @search
+    @reservations = @q
   end
 
   def planning

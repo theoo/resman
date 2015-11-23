@@ -1,9 +1,9 @@
-- @search = search
+- @q = search
 - name = :search unless name
 - on_change_submit = { :onchange => 'this.form.submit();' }
 = form_for(name, search, :url => url) do |f|
   .infos
-    = invoices_count
+    = invoices.count
     invoices found.
   %table.listing
     %tr
@@ -26,5 +26,4 @@
         %td= h invoice.value
         %td= h invoice.interval_start_formatted
         %td= h invoice.interval_end_formatted
-  - if search.page_count > 1
-    = page_links(:params_scope => name)
+  = will_paginate invoices(:params_scope => name)

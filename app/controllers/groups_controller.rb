@@ -1,21 +1,21 @@
 class GroupsController < ApplicationController
   def index
-    @search = Group.new_search(params[:search])
-    @groups, @groups_count = @search.all, @search.count
-    
+    @q = Group.search(params[:q])
+    @groups = @q.result.page(params[:page])
+
   end
 
   def show
     # TODO only searchlogic for rights atm, do it for users too
     @group = Group.find(params[:id])
-    @search = @group.rights.new_search(params[:search])
-    @rights, @rights_count = @search.all, @search.count
-    
+    @q = @group.rights.search(params[:q])
+    @rights, @rights_count = @q.result.page(params[:page]), @q.count
+
   end
 
   def new
     @group = Group.new
-    
+
   end
 
   def create
@@ -31,7 +31,7 @@ class GroupsController < ApplicationController
 
   def edit
     @group = Group.find(params[:id])
-    
+
   end
 
   def update
@@ -51,12 +51,12 @@ class GroupsController < ApplicationController
     group.transaction { @group.destroy }
     redirect_to(groups_url)
   end
-  
+
   def manage_rights
     @group = Group.find(params[:id])
-    
+
   end
-  
+
   def update_rights
     group = Group.find(params[:id])
     Group.transaction do

@@ -7,28 +7,24 @@ class CommentsController < ApplicationController
   end
 
   def index
-    @search = Comment.new_search(params[:search])
-    unless @search.order_by
-      @search.order_by = :created_at
-      @search.order_as = :desc
-    end
-    @comments, @comments_count = @search.all, @search.count
-    
+    @q = Comment.search(params[:q])
+    @comments = @q.result.page(params[:page])
+
   end
 
   def show
     @comment = Comment.find(params[:id])
-    
+
   end
 
   def new
     @comment = Comment.new
-    
+
   end
 
   def edit
     @comment = Comment.find(params[:id])
-    
+
   end
 
   def create

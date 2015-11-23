@@ -6,7 +6,9 @@ class Income < ActiveRecord::Base
 
   belongs_to    :invoice
 
-  has_many      :comments,  as: :entity, dependent: :destroy
+  has_many :comments,
+    as: :entity,
+    dependent: :destroy
 
   money :value, currency: false
 

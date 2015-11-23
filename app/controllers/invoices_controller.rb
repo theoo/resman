@@ -12,19 +12,19 @@ class InvoicesController < ApplicationController
   end
 
   def index
-    @search = Invoice.new_search(params[:search])
-    @search.include = [{reservation: [:room, :resident]}, :items]
-    @search.order_by = [ :interval_start, :interval_end ]
-    @search.order_as = 'desc'
-    @invoices, @invoices_count = @search.all, @search.count
-    
+    @q = Invoice.search(params[:q])
+    @q.include = [{reservation: [:room, :resident]}, :items]
+    @q.order_by = [ :interval_start, :interval_end ]
+    @q.order_as = 'desc'
+    @invoices = @q.result.page(params[:page])
+
   end
 
   def show
     @invoice = Invoice.find(params[:id])
     # TODO do a REST /invoices/1.pdf with respond_to do |format|
-    
-  end  
+
+  end
 
   def new
     # Get params
@@ -35,22 +35,22 @@ class InvoicesController < ApplicationController
 
     # Create invoice
     @invoice = Invoice.factory(params[:invoice])
-  
+
     # Compute items
     @invoice.compute_items
-    
+
     # Check for errors
     unless @invoice.is_a?(CustomInvoice) || @invoice.valid?
       flash[:error] = @invoice.errors.to_a.join("\n")
       return redirect_to(@invoice.reservation)
     end
 
-    
+
   end
 
   def create
     @invoice = Invoice.factory(params[:invoice])
-    
+
     if @invoice.save
       flash[:notice] = 'Invoice was successfully created.'
       redirect_to(controller: :invoices, action: :show, id: @invoice.id)
@@ -58,7 +58,7 @@ class InvoicesController < ApplicationController
       render action: 'new'
     end
   end
-  
+
   def confirm
     # Get options
     year, month = params[:date][:year].to_i, params[:date][:month].to_i
@@ -70,11 +70,11 @@ class InvoicesController < ApplicationController
       invoices = Invoice.find(:all, conditions: { interval_start_gte: @date_start, interval_end_lte: @date_end, type: 'ReservationInvoice', reservation: { status_ne: 'cancelled' }})
       if invoices.empty?
         flash[:notice] = 'Nothing to download for this period'
-        return redirect_to(invoices_path) 
+        return redirect_to(invoices_path)
       end
       return redirect_to(action: :send_pdf, ids: invoices.map{ |r| r.id })
     end
-    
+
     # Get the list of reservations to process
     reservations = Reservation.find(:all, conditions: { arrival_lte: @date_end, departure_gt: @date_start, status_ne: 'cancelled' })
 
@@ -87,14 +87,14 @@ class InvoicesController < ApplicationController
     @invoices = reservations.map do |reservation|
       reservation.make_reservation_invoice(@date_start, @date_end)
     end
-       
+
     # Redirect if we have nothing to generate
     if @invoices.empty?
       flash[:notice] = 'Nothing to generate for this period'
-      redirect_to(invoices_path) 
+      redirect_to(invoices_path)
     end
   end
-  
+
   def generate
     # FIXME change it so it accepts an html array of invoices
     # Create invoices
@@ -102,22 +102,22 @@ class InvoicesController < ApplicationController
     @invoices = params[:reservations].map do |id|
       Reservation.find(id).make_reservation_invoice(date_start, date_end)
     end
-  
+
     # Save them
     Invoice.transaction do
       @invoices.each do |invoice|
         invoice.save!
       end
     end
-    
+
     flash[:notice] = 'Invoices were successfully created.'
     redirect_to(invoices_path)
   end
-  
+
   def export_all
     date_start  = Date.new(params[:date][:from][:year].to_i, params[:date][:from][:month].to_i, params[:date][:from][:day].to_i)
     date_end    = Date.new(params[:date][:to][:year].to_i, params[:date][:to][:month].to_i, params[:date][:to][:day].to_i).to_time.end_of_day
-    
+
     invoices = Invoice.find(:all, conditions: { created_at_gte: date_start, created_at_lte: date_end, reservation: { status_ne: 'cancelled' }}, order_by: { reservation: { resident: [ :last_name, :first_name] }})
     invoices = invoices.select{ |i| i.open? } if params[:open]
 
@@ -150,7 +150,7 @@ class InvoicesController < ApplicationController
     @rails_pdf_name = "#{@invoices.first.interval_start.to_time.strftime('%Y_%m')}_invoices.pdf"
     render layout: false
   end
-  
+
   # RailsPdf: Scott Wilson suggested adding the following two block so errors will always show in browser
   def rescue_action_in_public(exception)
     headers.delete("Content-Disposition")
@@ -161,5 +161,5 @@ class InvoicesController < ApplicationController
     headers.delete("Content-Disposition")
     super
   end
-  
+
 end

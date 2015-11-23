@@ -1,18 +1,16 @@
 %h1 Listing Countries
 .listing
   - if Continent.count > 0
-    Filter by Continent: #{link_to 'All', search_url(:countries, :continent_id => nil)}
+    Filter by Continent: #{link_to 'All', countries_path(continent_id:  nil)}
     - Continent.all.each do |continent|
-      = link_to_unless(continent.id == @search.conditions.continent_id, continent.name, search_url(:countries, :continent_id => continent.id))  { |name| name }
+      - # = link_to_unless(continent.id == @q.conditions.continent_id, continent.name, countries_path(continent_id: continent.id))  { |name| name }
     %br/
-    = form_for(@search) do |f|
-      - f.fields_for(@search.conditions) do |country|
-        = country.hidden_field :continent_id
-        Search Country: #{country.text_field :name_contains}
+    = search_form_for(@q) do |f|
+      Search Country: #{f.text_field :name}
       = f.submit 'Search'
     %br/
-  - if @countries_count > 0
-    = @countries_count
+  - if @countries.count > 0
+    = @countries.count
     countries found
     %br/
     %br/
@@ -24,8 +22,8 @@
         %tr{:onclick => "window.location='#{edit_country_path(country)}'"}
           %td= h country.name
           %td= country.continent ? country.continent.name : '-'
-    - if @search.page_count > 1
-      = page_links
+
+    = will_paginate @countries
   - else
     No countries were found.
   .actions

@@ -11,7 +11,7 @@
       = link_to 'Delete', @group, :confirm => "Are you sure?", :method => :delete, :class => "fake_button red"
 %h3 Rights
 .listing
-  = render :partial => 'listing_rights', :locals => { :search => @search, :rights_count => @rights_count, :rights => @rights }
+  = render :partial => 'listing_rights', :locals => { :q => @q, :rights.count => @rights.count, :rights => @rights }
   .actions
     = link_to 'Manage rights', manage_rights_group_path(@group), :class => "fake_button"
     %br/

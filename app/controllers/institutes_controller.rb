@@ -1,23 +1,23 @@
 class InstitutesController < ApplicationController
   def index
-    @search = Institute.new_search(params[:search])
-    @institutes, @institutes_count = @search.all, @search.count
-    
+    @q = Institute.search(params[:q])
+    @institutes = @q.result.page(params[:page])
+
   end
 
   def show
     @institute = Institute.find(params[:id])
-    
+
   end
 
   def new
     @institute = Institute.new
-    
+
   end
 
   def edit
     @institute = Institute.find(params[:id])
-    
+
   end
 
   def create

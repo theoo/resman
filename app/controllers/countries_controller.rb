@@ -1,23 +1,22 @@
 class CountriesController < ApplicationController
   def index
-    @search = Country.new_search(params[:search])
-    @countries, @countries_count = @search.all, @search.count
-    
+    @q = Country.search(params[:q])
+    @countries = @q.result.page(params[:page])
   end
 
   def show
     @country = Country.find(params[:id])
-    
+
   end
 
   def new
     @country = Country.new
-    
+
   end
 
   def edit
     @country = Country.find(params[:id])
-    
+
   end
 
   def create

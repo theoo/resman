@@ -5,8 +5,10 @@ class RoomOption < ActiveRecord::Base
   Types = %w{ unique mensual }
 
   belongs_to  :room
-  has_many    :reservation_options, dependent: :destroy
-  has_many    :reservations, through: :reservation_options
+  has_many    :reservation_options,
+    dependent: :destroy
+  has_many    :reservations,
+    through: :reservation_options
 
   money :value, currency: false
 

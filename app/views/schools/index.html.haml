@@ -3,17 +3,17 @@
   - if Institute.count > 0
     Filter by Institute: #{link_to 'All', search_url(:schools, :institute_id => nil)}
     - Institute.all.each do |institute|
-      = link_to_unless(institute.id == @search.conditions.institute_id, institute.name, search_url(:schools, :institute_id => institute.id)) { |name| name }
+      = link_to_unless(institute.id == @q.conditions.institute_id, institute.name, search_url(:schools, :institute_id => institute.id)) { |name| name }
     %br/
-    = form_for(@search) do |f|
-      - f.fields_for(@search.conditions) do |school|
+    = search_form_for(@q) do |f|
+      - f.fields_for(@q.conditions) do |school|
         = school.hidden_field :institute_id
         Search School: #{school.text_field :name_contains}
       = f.submit 'Search'
     %br/
-  - if @schools_count > 0
+  - if @schools.count > 0
     .infos
-      = @schools_count
+      = @schools.count
       schools found
       %br/
     %table
@@ -24,8 +24,8 @@
         %tr{:onclick => "window.location='#{edit_school_path(school)}'"}
           %td= school.name
           %td= school.institute ? school.institute.name : '-'
-    - if @search.page_count > 1
-      = page_links
+
+    = will_paginate @schools
   - else
     No schools found.
   .actions

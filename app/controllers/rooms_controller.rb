@@ -1,19 +1,18 @@
 class RoomsController < ApplicationController
 
   def index
-    @search = Room.new_search(params[:search])
-    @rooms, @rooms_count = @search.all, @search.count
-    
+    @q = Room.search(params[:q])
+    @rooms = @q.result.page(params[:page])
   end
 
   def new
     @room = Room.new
-    
+
   end
 
   def edit
     @room = Room.find(params[:id])
-    
+
   end
 
   def create

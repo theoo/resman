@@ -1,6 +1,6 @@
 %h1 Listing buildings
 .listing
-  - if @buildings_count > 0
+  - if @buildings.count > 0
     %table
       %tr
         %th= order_by_link :id

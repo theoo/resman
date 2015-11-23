@@ -1,25 +1,24 @@
 class ResidentsController < ApplicationController
   def index
-    params[:search] ||= { conditions: { tags: { name: Option.value('residents_listing_selected_tag') }}}
-    @search = Resident.new_search(params[:search])
-    @search.include = [:country, :religion, :school]
-    @residents, @residents_count = @search.all, @search.count
-    
+    params[:q] ||= { conditions: { tags: { name: Option.value('residents_listing_selected_tag') }}}
+    @q = Resident.search(params[:q])
+    @q.include = [:country, :religion, :school]
+    @residents = @q.result.page(params[:page])
   end
 
   def show
     @resident = Resident.find(params[:id])
-    
+
   end
 
   def new
     @resident = Resident.new
-    
+
   end
 
   def edit
     @resident = Resident.find(params[:id])
-    
+
   end
 
   def create
@@ -55,7 +54,7 @@ class ResidentsController < ApplicationController
 
     resident = Resident.find(params[:id])
     invoices = resident.invoices.find(:all, conditions: { created_at_gte: date_start, created_at_lte: date_end })
-    
+
     csv_string = FasterCSV.generate do |csv|
       csv << ["Invoices for #{resident.full_name} (id: #{resident.id}) from #{date_start.to_s(:formatted)} to #{date_end.to_s(:formatted)}"]
       csv << []
@@ -70,12 +69,12 @@ class ResidentsController < ApplicationController
 
     send_data(Iconv.conv('ISO-8859-1', 'UTF-8', csv_string), type: 'text/csv', filename: "resident_#{resident.id}.csv", disposition: 'attachment')
   end
-  
+
   def export_all
     year, month, day = params[:date][:year].to_i, params[:date][:month].to_i, params[:date][:day].to_i
     date = Date.new(year, month, day)
     residents = Resident.find(:all, order_by: [:last_name, :first_name])
-    
+
     csv_string = FasterCSV.generate do |csv|
       csv << ["Residents occupation the #{date.to_s(:formatted)}"]
       csv << []

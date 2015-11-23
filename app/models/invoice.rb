@@ -2,9 +2,15 @@ class Invoice < ActiveRecord::Base
 
   belongs_to    :reservation
 
-  has_many      :items, dependent: :destroy
-  has_many      :incomes, dependent: :destroy
-  has_many      :comments, as: :entity, dependent: :destroy
+  has_many      :items,
+    dependent: :destroy
+
+  has_many      :incomes,
+    dependent: :destroy
+
+  has_many      :comments,
+    as: :entity,
+    dependent: :destroy
 
   acts_as_tree
 
