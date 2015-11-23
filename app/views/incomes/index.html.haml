@@ -1,0 +1,56 @@
+%h1 Listing Incomes
+.listing
+  - if current_user.has_access?('IncomesController', 'confirm')
+    %h3 Bank file import
+    = form_tag(confirm_incomes_path, :multipart => :true) do
+      = file_field_tag :file
+      = submit_tag 'Upload'
+      = submit_tag 'Export'
+  %h3 Export compta
+  = form_tag(export_all_incomes_path, :method => :get) do
+    %table.nolisting
+      %tr
+        %td
+          From
+          \#{select_month(Date.today, :field_name => 'from][month', :use_short_month => true)}
+          \#{select_year(Date.today, :field_name => 'from][year')}
+          To
+          \#{select_month(Date.today, :field_name => 'to][month', :use_short_month => true)}
+          \#{select_year(Date.today, :field_name => 'to][year')}
+      %tr
+        %td
+      %tr
+        %td{:align => "right"}= submit_tag 'Export'
+  %h3 Listing incomes
+  .infos
+    = @incomes_count
+    incomes found
+  = form_for(@search) do |f|
+    %table#incomes
+      %tr
+        %th= order_by_link({:invoice => :id}, :text => 'Invoice')
+        %th= order_by_link(:value_in_cents, :text => 'Value')
+        %th= order_by_link(:payment)
+        %th= order_by_link(:received)
+      - f.fields_for(@search.conditions) do |income|
+        %tr.listing_filter
+          %th
+          %th
+          %th= income.select(:payment, [['All', nil]] + Income::Types.map{|i| [i.humanize, i]}, {}, { :onchange => "this.form.submit();" })
+          %th
+      - if @incomes_count > 0
+        - @incomes.each do |income|
+          %tr{:onclick => "window.location='#{invoice_path(income.invoice)}'"}
+            %td= h income.invoice
+            %td= h income.value
+            %td= h income.payment.humanize
+            %td= h income.received_formatted
+      - else
+        %tr
+          %td{:colspan => "6"}
+            %br>/
+            No incomes found.
+            %br/
+            %br/
+  - if @search.page_count > 1
+    = page_links

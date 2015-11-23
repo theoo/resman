@@ -1,0 +1,29 @@
+%h3 Comments
+.comments.listing
+  - if entity.comments.size > 0
+    %table
+      %tr
+        %th Title
+        %th Text
+        %th Read
+        %th Posted by
+      - for comment in entity.comments
+        %tr
+          %td= h comment.title
+          %td= h comment.text
+          %td
+            = check_box_tag '', 1, comment.read?, :id => "checkbox_comment_#{comment.id}", :onchange => remote_function( |
+              :method => :post,                                                                                          |
+              :url => { :controller => :comments, :action => :ajax_comment_read, :comment_id => comment.id },            |
+              :with => "'read=' + $('checkbox_comment_#{comment.id}').checked.toString()")                               |
+          %td= h comment.user
+  - else
+    %p No comments.
+  - if current_user.has_access?('CommentsController', 'new')
+    %p.link{:onclick => "Effect.toggle($('new_comments'), 'slide');"} New comment
+    #new_comments{:style => "display:none;"}
+      %br/
+      = form_for(Comment.new(:user => current_user, :entity => entity)) do |form_new_comment|
+        = render :partial => 'comments/form', :locals => { :f => form_new_comment }
+        .actions
+          = form_new_comment.submit "Add Comment"

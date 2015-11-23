@@ -1,0 +1,15 @@
+- if rights_count == 0
+  %p No rights found.
+- else
+  = page_links if search.page_count > 1
+  %table
+    %tr
+      %th= order_by_link :controller
+      %th= order_by_link :action
+      %th= order_by_link :allowed
+    - rights.each do |right|
+      %tr
+        %td= h right.controller
+        %td= h right.action
+        %td= h right.allowed
+  = page_links if search.page_count > 1

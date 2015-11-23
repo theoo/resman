@@ -1,0 +1,10 @@
+%h1
+  Editing Rate
+  %em= @rate.name
+= form_for(@rate) do |f|
+  = render :partial => 'layouts/form', :locals => { :f => f }
+  .actions
+    = f.submit 'Update'
+    - if @rate.deletable?
+      = link_to  'Delete', @rate, :confirm => "Are you sure?", :method => :delete, :class => "fake_button red"
+    = link_to  'Cancel', :back, :class => "fake_button"

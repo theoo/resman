@@ -1,0 +1,21 @@
+---
+- group_id: 1
+  controller: OverviewController
+  action: index
+  allowed: true
+- group_id: 1
+  controller: OverviewController
+  action: summary
+  allowed: true
+- group_id: 1
+  controller: ReservationsController
+  action: index
+  allowed: true
+- group_id: 1
+  controller: ResidentsController
+  action: index
+  allowed: true
+- group_id: 1
+  controller: InvoicesController
+  action: index
+  allowed: true

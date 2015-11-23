@@ -1,0 +1,80 @@
+%h1
+  Invoice #{@invoice.id} #{"(Frais de rappel pour ##{link_to @invoice.parent.id, invoice_path(@invoice.parent)})" if @invoice.parent}
+.edit
+  %p
+    %label Type
+    %span= h @invoice.type
+  %p
+    %label Closed
+    %span
+      - if current_user.has_access?('IncomesController', 'create')
+        = check_box_tag '', 1, @invoice.closed?, :id => "checkbox_invoice_#{@invoice.id}", :onchange => remote_function( |
+          :method => :post,                                                                                              |
+          :url => { :controller => :invoices, :action => :ajax_invoice_closed, :invoice_id => @invoice.id },             |
+          :with => "'closed=' + $('checkbox_invoice_#{@invoice.id}').checked.toString()")                                |
+      - else
+        = @invoice.closed ? 'true' : 'false'
+  %p
+    %label Created at
+    %span= h @invoice.created_at_formatted
+  %p
+    %label Reservation
+    %span= link_to_if current_user.has_access?('ReservationsController', 'show'), "#{@invoice.resident.full_name} #{@invoice.reservation.interval_string}", reservation_path(@invoice.reservation)
+  %p
+    %label Interval:
+    %span= h @invoice.interval_string
+  %p
+    %label Items
+  %ul#options
+    - if @invoice.parent
+      - @invoice.parent.items.each do |item|
+        %li
+          = h item.name
+          (#{h item.value}) *
+    - @invoice.items.each do |item|
+      %li
+        = h item.name
+        (#{h item.value})
+  %p
+    %label Invoice Value
+    %span
+      = h @invoice.value
+      = "(#{@invoice.parent.value} *)" if @invoice.parent
+  .actions_left
+    - unless @invoice.is_a?(DepositInvoice)
+      = link_to "Download with BVR" + image_tag('pdf.gif'), {:action => :send_pdf, :params => { :ids => [@invoice.id] }}, :class => "fake_button"
+    = link_to "Download with Bank Info " + image_tag('pdf.gif'), {:action => :send_pdf, :params => { :bvr => 'false', :ids => [@invoice.id] } }, :class => "fake_button"
+    - if !@invoice.is_a?(DepositInvoice) && @invoice.parent.nil? && @invoice.children.empty? && @invoice.open?
+      = form_tag(new_invoice_path, :method => :get, :style => 'display: inline;') do
+        = hidden_field_tag 'invoice[reservation_id]', @invoice.reservation.id
+        = hidden_field_tag 'invoice[parent_id]', @invoice.id
+        = hidden_field_tag 'invoice[type]', 'CustomInvoice'
+        = hidden_field_tag 'invoice[interval_start]', @invoice.reservation.arrival
+        = hidden_field_tag 'invoice[interval_end]', @invoice.reservation.departure
+        = hidden_field_tag 'invoice[items_attributes][][name]', 'Frais de rappel'
+        = hidden_field_tag 'invoice[items_attributes][][value]', '10'
+        = submit_tag 'Generate reminder bill'
+    - elsif @invoice.children.size > 0
+      = link_to 'See reminder bill', invoice_path(@invoice.children.first), :class => 'fake_button'
+%h3 Listing Incomes
+.listing
+  - if @invoice.incomes.size > 0
+    %table
+      %tr
+        %th Value
+        %th Payment type
+        %th Received
+      - @invoice.incomes.each do |income|
+        %tr
+          %td= h income.value
+          %td= h income.payment.humanize
+          %td= h income.received_formatted
+  - else
+    %p No incomes yet
+    %br/
+  - if current_user.has_access?('IncomesController', 'new')
+    .action
+      = link_to 'New income', new_invoice_income_path(@invoice), :class => "fake_button"
+      %br/
+      %br/
+= render :partial => 'comments/message', :locals => { :entity => @invoice }

@@ -1,0 +1,9 @@
+%h1
+  New Rule for Rate
+  %em= @rate.name
+= form_for(@rule, :url => rate_rules_path(@rate)) do |f|
+  = f.hidden_field :rate_id
+  = render :partial => 'form', :locals => { :f => f }
+  .actions
+    = f.submit 'Create'
+    = link_to  'Cancel', :back, :class => "fake_button"

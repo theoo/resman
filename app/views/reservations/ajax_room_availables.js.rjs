@@ -1,0 +1,16 @@
+# http://api.rubyonrails.org/classes/ActionView/Helpers/PrototypeHelper/JavaScriptGenerator/GeneratorMethods.html
+
+page.replace_html 'reservation_room_id', '' #reset rooms
+
+if @available_rooms.empty?
+  page.insert_html(:bottom, 'reservation_room_id', content_tag(:option, 'None available', :value => 0))
+else
+  options = @available_rooms.map do |r|
+    res = Reservation.new(:arrival => @arrival, :departure => @departure, :room => r)
+    page.insert_html(:bottom, 'reservation_room_id', "<option value=#{r.id}>#{r.name} - #{res.room_price(res.arrival, res.departure)} (#{res.rate_rule.value_string})</option>")
+  end
+end
+
+page.replace_html('room_total', "(#{@available_rooms.size} rooms free)")
+page.visual_effect(:highlight, 'room_total', :duration => 2)
+page << "$('reservation_room_id').onchange();"

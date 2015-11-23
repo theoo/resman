@@ -1,0 +1,42 @@
+%h1 Invoices
+.listing
+  %h3 Jump to invoice
+  = form_tag('#', :method => :get, :onsubmit => "window.location = '#{invoices_path}/' + document.getElementById('invoice_id').value; return false;") do
+    = text_field_tag :invoice_id
+    = submit_tag 'Go'
+  - if current_user.has_access?('InvoicesController', 'confirm')
+    %h3 Generate Monthly Invoices
+    = form_tag(confirm_invoices_path, :method => :get) do
+      = select_month(Date.today)
+      = select_year(Date.today)
+      = submit_tag 'Generate', :name => 'generate'
+      = submit_tag 'Download', :name => 'download'
+  %h3 Export compta
+  = form_tag(export_all_invoices_path, :method => :get) do
+    %table.nolisting
+      %tr
+        %td{:colspan => "2"}
+          From
+          \#{select_day(Date.today, :field_name => 'from][day')}
+          \#{select_month(Date.today, :field_name => 'from][month', :use_short_month => true)}
+          \#{select_year(Date.today, :field_name => 'from][year')}
+          To
+          \#{select_day(Date.today, :field_name => 'to][day')}
+          \#{select_month(Date.today, :field_name => 'to][month', :use_short_month => true)}
+          \#{select_year(Date.today, :field_name => 'to][year')}
+      %tr
+        %td{:colspan => "2"}
+      %tr
+        %td
+        %td
+          = check_box_tag('open', false)
+          Only opened invoices
+      %tr
+        %td
+        %td
+          = check_box_tag('git', false)
+          For GIT
+      %tr
+        %td{:align => "right", :colspan => "2"}= submit_tag 'Export'
+  %h3 Listing Invoices
+  = render :partial => 'listing', :locals => { :invoices => @invoices, :invoices_count => @invoices_count, :search => @search, :url => :invoices }

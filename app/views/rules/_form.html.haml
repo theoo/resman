@@ -1,0 +1,35 @@
+.edit
+  = f.error_messages
+  %p
+    %label Intervall From
+    %span
+      = f.text_field :start_value, :class => :small_input
+      per #{f.select(:start_type, Rule::Types,{},{ :class => "day"})}
+      (tip: inclusive)
+  %p
+    %label To
+    %span
+      = f.text_field :end_value, :class => :small_input
+      per #{f.select(:end_type, Rule::Types,{},{ :class => "day"})}
+      (tip: exclusive)
+  %p
+    = f.label :value
+    %span
+      = f.text_field :value, :class => :small_input
+      per #{f.select(:value_type, Rule::Types, {},{ :class => "day"})}
+  %p
+    %label Deposit In
+    %span
+      = f.text_field :deposit_in, :class => :small_input
+  %p
+    %label Deposit Out
+    %span
+      = f.text_field :deposit_out, :class => :small_input
+  %p
+    %label Tax In
+    %span
+      = f.text_field :tax_in, :class => :small_input
+  %p
+    %label Tax Out
+    %span
+      = f.text_field :tax_out, :class => :small_input

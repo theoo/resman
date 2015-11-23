@@ -1,0 +1,8 @@
+.edit
+  = f.error_messages
+  %p
+    = f.label :name, {}, :class => :required
+    %span= f.text_field :name
+  %p
+    = f.label :institute, {}, :class => :required
+    %span= f.select(:institute_id, Institute.options_for_select)

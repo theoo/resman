@@ -1,0 +1,10 @@
+%h1 Listing Options
+.listing
+  %table
+    %tr
+      %th Key
+      %th Value
+    - for option in @options
+      %tr{:onclick => "window.location='#{edit_option_path(option)}'"}
+        %td= h option.key
+        %td= h option.value

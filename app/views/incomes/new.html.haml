@@ -1,0 +1,20 @@
+\\n
+%h1 New Income
+= form_for(@income) do |f|
+  .edit
+    = f.error_messages
+    = f.hidden_field :invoice_id
+    %p
+      = f.label :value, {}, :class => :required
+      %span= f.text_field :value
+    %p
+      = f.label :payment, {}, :class => :required
+      %span= f.select :payment, Income::Types.map{ |t| [ t.humanize, t] }
+    %p
+      = f.label :received, {}, :class => :required
+      %span
+        = text_field_tag 'income[received_formatted]', @income.received_formatted, :id => 'income_received_formatted'
+        = calendar('income_received_formatted')
+  .actions
+    = f.submit "Create"
+    = link_to 'Cancel', :back, :class => "fake_button"

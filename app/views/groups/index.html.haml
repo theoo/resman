@@ -1,0 +1,15 @@
+%h1 Listing Groups
+.listing
+  - if @groups_count > 0
+    %table
+      %tr
+        %th= order_by_link :name
+      - @groups.each do |group|
+        %tr{:onclick => "window.location='#{group_path(group)}'"}
+          %td= h "#{group.name} (#{group.rights.size} rights and #{group.users.size} users)"
+    = page_links if @search.page_count > 1
+  - else
+    No groups found.
+  .actions
+    = link_to 'New Group', new_group_path, :class => "fake_button"
+  %div

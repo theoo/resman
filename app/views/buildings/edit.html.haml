@@ -1,0 +1,11 @@
+%h1
+  Editing building
+  %em= @building.name
+= form_for(@building) do |f|
+  = render :partial => 'layouts/form', :locals => { :f => f }
+  %br/
+  .actions
+    = f.submit "Update"
+    - if @building.deletable?
+      = link_to 'Delete', @building, :confirm => "Are you sure? This will also delete #{@building.rooms.size} rooms.", :method => :delete, :class => "fake_button red"
+    = link_to 'Cancel', :back, :class => "fake_button"

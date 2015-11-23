@@ -1,0 +1,9 @@
+%h1
+  Editing Religion
+  %em= @religion.name
+= form_for(@religion) do |f|
+  = render :partial => 'layouts/form', :locals => { :f => f }
+  .actions
+    = f.submit 'Update'
+    = link_to  'Delete', @religion, :confirm => "Are you sure? This will affect #{@religion.residents.size} residents (doing so they have no religion).", :method => :delete, :class => "fake_button red"
+    = link_to  'Cancel', :back, :class => "fake_button"

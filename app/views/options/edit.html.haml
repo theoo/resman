@@ -1,0 +1,15 @@
+%h1
+  Editing Option
+  %em= @option.key
+= form_for(@option) do |f|
+  .edit
+    = f.error_messages
+    %p
+      = f.label :key, {}, :class => :required
+      %span= @option.key
+    %p
+      = f.label :value, {}, :class => :required
+      %span= f.text_field :value
+  .actions
+    = f.submit 'Update'
+    = link_to  'Cancel', :back, :class => "fake_button"

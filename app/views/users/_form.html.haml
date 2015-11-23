@@ -1,0 +1,26 @@
+.edit
+  = f.error_messages
+  %p
+    = f.label :group, {}, :class => :required
+    %span= has_access?('UsersController', 'edit') ? f.select(:group_id, Group.options_for_select) : @user.group.name
+  %p
+    = f.label :login, {}, :class => :required
+    %span= f.text_field :login
+  %p
+    = f.label :password, {}, :class => :required
+    %span= f.text_field :password
+  %p
+    = f.label :last_name, {}, :class => :required
+    %span= f.text_field :last_name
+  %p
+    = f.label :first_name, {}, :class => :required
+    %span= f.text_field :first_name
+  %p
+    = f.label :email, {}, :class => :required
+    %span= f.text_field :email
+  %p
+    = f.label :phone, {}, :class => :required
+    %span= f.text_field :phone
+  %p
+    = f.label :mobile, {}, :class => :required
+    %span= f.text_field :mobile

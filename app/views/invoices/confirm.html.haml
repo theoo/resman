@@ -1,0 +1,21 @@
+%h1 Confirm Invoice Generation
+.listing
+  = form_tag(generate_invoices_path, :method => :post) do
+    = hidden_field_tag :date_start, @date_start.to_s(:formatted)
+    = hidden_field_tag :date_end, @date_end.to_s(:formatted)
+    %table
+      %tr
+        %th Generate?
+        %th Resident
+        %th Room
+        %th Period
+        %th Value
+      - @invoices.each do |invoice|
+        %tr
+          %td= check_box_tag 'reservations[]', invoice.reservation.id, true
+          %td= invoice.reservation.resident
+          %td= invoice.reservation.room
+          %td= invoice.reservation.interval_string
+          %td= invoice.value
+    .actions
+      = submit_tag 'Generate'

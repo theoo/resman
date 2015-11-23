@@ -1,0 +1,27 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html;charset=UTF-8", "http-equiv" => "content-type"}/
+    %title
+      CSTB || #{"#{controller.controller_name.capitalize}: #{controller.action_name}"}
+    -# javascript_include_tag(%w{prototype effects controls dragdrop application builder slider rest_in_place})
+    = javascript_include_tag('application')
+    :javascript
+      rails_authenticity_token = '#{form_authenticity_token}'
+    = stylesheet_link_tag 'application'
+  %body
+    #container
+      #header
+        #logo CSTB reservation manager
+        #session_infos
+          Logged in as #{link_to current_user.login, edit_user_path(current_user)} (#{link_to 'log out', logout_path})
+          %br/
+        #nav
+          = render partial: 'layouts/nav'
+      #contents
+        - flash.each do |key, msg|
+          = content_tag :p, msg, :id => key
+        = yield
+      #footer
+        Resman is under GPL, 
+        = link_to "you can check the source code out", "http://www.github.com/theoo/resman"

@@ -1,0 +1,30 @@
+- @search = search
+- name = :search unless name
+- on_change_submit = { :onchange => 'this.form.submit();' }
+= form_for(name, search, :url => url) do |f|
+  .infos
+    = invoices_count
+    invoices found.
+  %table.listing
+    %tr
+      %th= order_by_link(:type, :params_scope => name)
+      %th= order_by_link(:reservation_id, :text => 'Reservation', :params_scope => name)
+      %th= 'Value'
+      %th= order_by_link(:interval_start, :params_scope => name)
+      %th= order_by_link(:interval_end, :params_scope => name)
+    - f.fields_for(search.conditions) do |reservation|
+      %tr.listing_filter
+        %th= reservation.select(:type, [['All', nil]] + %w{ConfirmationInvoice ReservationInvoice CustomInvoice DepositInvoice}.map{|x| [x, x]}, {}, on_change_submit )
+        %th= reservation.select(:reservation_id, Reservation.options_for_select(:allow_nil => true), {}, on_change_submit)
+        %th
+        %th= reservation.text_field :interval_start
+        %th= reservation.text_field :interval_end
+    - invoices.each do |invoice|
+      %tr{:onclick => "window.location='#{invoice_path(invoice)}'"}
+        %td= h invoice.type
+        %td= h invoice.reservation
+        %td= h invoice.value
+        %td= h invoice.interval_start_formatted
+        %td= h invoice.interval_end_formatted
+  - if search.page_count > 1
+    = page_links(:params_scope => name)

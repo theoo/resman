@@ -1,0 +1,23 @@
+%h1
+  Listing Rules for Rate
+  %em= @rate.name
+.listing
+  - if @rules_count > 0
+    %table
+      %tr
+        %th Rate
+        %th Interval
+        %th Value
+        %th Deposit
+        %th Tax
+      - for rule in @rules
+        %tr{:onclick => "window.location='#{edit_rate_rule_path(@rate, rule)}'"}
+          %td= h @rate.name
+          %td= h rule.interval_string
+          %td= h rule.value_string
+          %td= h rule.deposit_string
+          %td= h rule.tax_string
+  - else
+    No rules were found.
+  .actions
+    = link_to 'New Rule', new_rate_rule_path(@rate), :class => :fake_button

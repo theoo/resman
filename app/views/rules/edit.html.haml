@@ -1,0 +1,9 @@
+%h1
+  Edit Rule for Rate
+  %em= @rate.name
+= form_for(@rule, :url => rate_rule_path(@rate, @rule)) do |f|
+  = render :partial => 'form', :locals => { :f => f }
+  .actions
+    = f.submit 'Update'
+    = link_to  'Delete', rate_rule_path(@rate, @rule), :confirm => 'Are you sure?', :method => :delete, :class => 'fake_button red'
+    = link_to  'Cancel', :back, :class => "fake_button"

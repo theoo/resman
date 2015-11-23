@@ -1,0 +1,127 @@
+- days = (@start..@stop).inject({}) do |hash, date|
+- desc = date.strftime('%a').downcase
+- hash[desc] ||= []
+- hash[desc] << date
+- hash
+- end
+%script{:charset => "utf-8", :src => "#{root_path}javascripts/raphael-min.js", :type => "text/javascript"}
+%script{:charset => "utf-8", :src => "#{root_path}javascripts/grid.js", :type => "text/javascript"}
+.month_browser
+  - (6).downto(1) do |i|
+    %span{:style => "opacity: 0.#{10 - i};"}
+      = link_to (@start - i.month).strftime('%b'), :action => 'planning', :start_date => (@start - i.month).to_s(:formatted)
+  %span
+    = @start.strftime("%B")
+  - (1).upto(6) do |i|
+    %span{:style => "opacity: 0.#{10 - i};"}
+      = link_to (@start + i.month).strftime('%b'), :action => 'planning', :start_date => (@start + i.month).to_s(:formatted)
+Show names: #{check_box_tag '', 1, params[:show_names], :onclick => "window.location = #{js_str(url_for(:action => 'planning', :start_date => params[:start_date], :show_names => !params[:show_names]))}"}
+%br/
+%br/
+#tableContainer.tableContainer
+  %script{:charset => "utf-8", :type => "text/javascript"}
+    :cdata
+      function element_clicked(event, element, properties)
+      {
+      if(properties.type != 'block' || !properties.reservation_id)
+      return;
+      window.location = #{js_str(reservations_path)} + '/' + properties.reservation_id;
+      }
+      
+      var currently_reserving = false;
+      var selector = null;
+      var orig_x = null;
+      function element_mousedown(event, element, properties)
+      {
+      if(properties.type != 'block' || !properties.reservable)
+      return;
+      currently_reserving = true;
+      var offsets = $('tableContainer').cumulativeOffset();
+      orig_x = Math.floor((event.pointerX() - offsets[0]) / tile_size);
+      var y = Math.floor((event.pointerY() - offsets[1]) / tile_size);
+      selector = grid.add_item({ type: 'block', rect: [orig_x, y, 0, 1], color: 'orange' });
+      }
+      
+      function element_mousemove(event, element, properties)
+      {
+      if(properties.type != 'block' || !currently_reserving)
+      return;
+      var offsets = $('tableContainer').cumulativeOffset();
+      var x = (event.pointerX() - offsets[0]);
+      x -= x % grid.tile_size;
+      x += grid.tile_size;
+      selector.animate({width: x - (orig_x * grid.tile_size)}, 0);
+      }
+      
+      var rooms = [#{@planning.map{|h| js_str(h[:room].name) }.join(',')}];
+      function element_mouseup(event, element, properties)
+      {
+      if(properties.type != 'block')
+      return;
+      var start = new Date(#{js_str(@start.to_s(:formatted))}.split('/').reverse().join('/'));
+      var offsets = $('tableContainer').cumulativeOffset();
+      var x = Math.floor((event.pointerX() - offsets[0]) / tile_size);
+      var y = Math.floor((event.pointerY() - offsets[1]) / tile_size);
+      var arr = date_add(start, orig_x - rooms_offset);
+      var dep = date_add(start, x - rooms_offset + 1);
+      if(dep < arr)
+      return;
+      var room = rooms[y-dates_offset];
+      window.location = #{js_str(reservations_path)} + "/new?arrival=" + ruby_date(arr) + "&departure=" + ruby_date(dep) + "&room=" + room;
+      }
+      
+      function date_add(date, days)
+      {
+      var d = new Date(date);
+      d.setDate(d.getDate() + days);
+      return d;
+      }
+      
+      function ruby_date(d)
+      {
+      return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+      }
+      
+      var tile_size = 12.8;
+      var rooms_offset = 4;
+      var dates_offset = 2;
+      var items = [
+      \// Rooms block
+      { type: 'block', rect: [0, dates_offset, rooms_offset, #{@planning.size}], color: '#fff' },
+      
+      \// Contents block
+      { type: 'block', rect: [rooms_offset, dates_offset, #{@duration}, #{@planning.size}], color: '#fff', reservable: true},
+      
+      \// Mondays & fridays
+      <haml_silent>                 (days[&#39;mon&#39;] + days[&#39;fri&#39;]).each do |d|
+      </haml_silent><haml_block>                  { type: 'text', x: rooms_offset + #{d - @start}, y: 1, value: #{d.day}, color: '#000' },
+      </haml_block>
+      \// Week-ends
+      <haml_silent>                 (days[&#39;sat&#39;] + days[&#39;sun&#39;]).each do |d|
+      </haml_silent><haml_block>                  { type: 'block', rect: [rooms_offset + #{d - @start}, dates_offset, 1, #{@planning.size}], color: '#eee', reservable: true},
+      </haml_block>
+      \// Vertical lines
+      <haml_silent>                 @duration.times do |i|
+      </haml_silent><haml_block>                  { type: 'line', x1: rooms_offset + #{i}, y1: dates_offset, x2: rooms_offset + #{i}, y2: dates_offset + #{@planning.size}, color: '#ccc' },
+      </haml_block>
+      <haml_silent>                 @planning.each_with_index do |hash, i|
+      </haml_silent><haml_block>                  // Room name
+      { type: 'text', x: 1, y: dates_offset + #{i}, value: #{js_str(hash[:room].name)}, color: '#000' },
+      \// Reservations blocks
+      <haml_silent>                   hash[:reservations].each do |reservation|
+      </haml_silent><haml_block>                    { type: 'block', rect: [rooms_offset + #{days_from_start(reservation, @start)}, dates_offset + #{i}, #{[reservation_length(reservation, @start), @duration].min}, 1], color: #{js_str("#\#{reservation.resident.color}")}, reservation_id: #{reservation.id}, #{'fade: true' if reservation.status == 'pending'} },
+      <haml_silent>                     if params[:show_names]
+      </haml_silent><haml_block>                      { type: 'text', x: rooms_offset + #{days_from_start(reservation, @start)}, y: dates_offset + #{i}, value: #{js_str(reservation.resident.full_name)}, color: '#000' },
+      </haml_block></haml_block></haml_block>
+      \// Months
+      <haml_silent>                 @start.step(@stop, 1.month) do |d|
+      </haml_silent><haml_block>                  { type: 'text', x: rooms_offset + #{d - @start}, y: 0, value: #{js_str(d.strftime('%B'))}, color: '#000' },
+      { type: 'line', x1: rooms_offset + #{d - @start}, y1: 0, x2: rooms_offset + #{d - @start}, y2: dates_offset + #{@planning.size}, color: '#999', width: 2 },
+      </haml_block>
+      \// Today
+      { type: 'line', x1: rooms_offset + #{Date.today - @start}, y1: 0, x2: rooms_offset + #{Date.today - @start}, y2: dates_offset + #{@planning.size}, color: '#f00', width: 1 },
+      ];
+      
+      grid = new Grid('tableContainer', rooms_offset + #{@duration}, dates_offset + #{@planning.size}, tile_size);
+      grid.set_handlers({click: element_clicked, mousedown: element_mousedown, mousemove: element_mousemove, mouseup: element_mouseup});
+      grid.add_items(items);

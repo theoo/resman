@@ -1,0 +1,19 @@
+%h1 Statistics In / Out
+.listing
+  = form_tag(inout_overview_path, :method => :get) do
+    = submit_tag 'Compute'
+    from
+    \#{select_month(@from, :field_name => 'from][month', :use_short_month => true)}
+    \#{select_year(@from, :field_name => 'from][year')}
+    to
+    \#{select_month(@to, :field_name => 'to][month', :use_short_month => true)}
+    \#{select_year(@to, :field_name => 'to][year')}
+  %br/
+  %br/
+  %table
+    %tr
+      %th Arrivals
+      %th Departures
+    %tr
+      %td= @arrivals
+      %td= @departures

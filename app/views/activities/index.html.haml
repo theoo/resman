@@ -1,0 +1,28 @@
+%h1 Listing Logs
+.listing
+  = form_for(@search) do |f|
+    .infos
+      = @activities_count
+      logs found.
+    %table#activities
+      %tr
+        %th= order_by_link(:user_id)
+        %th= order_by_link(:text)
+        %th= order_by_link(:entity_id)
+        %th= order_by_link(:created_at)
+      - if @activities_count > 0
+        - @activities.each do |activity|
+          %tr
+            %td= h activity.text
+            %td= h activity.user
+            %td= h "#{activity.entity.class} #{activity.entity}"
+            %td= h activity.created_at_formatted
+      - else
+        %tr
+          %td{:colspan => "6"}
+            %br>/
+            No logs found.
+            %br/
+            %br/
+  - if @search.page_count > 1
+    = page_links

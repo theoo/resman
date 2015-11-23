@@ -1,0 +1,11 @@
+.edit
+  = f.error_messages
+  %p
+    = f.label :name, {}, :class => :required
+    %span= f.text_field :name
+  %p
+    = f.label :value, {}, :class => :required
+    %span= f.text_field :value
+  %p
+    = f.label :billing, {}, :class => :required
+    %span= f.select :billing, RoomOption::Types

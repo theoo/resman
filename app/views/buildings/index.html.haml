@@ -1,0 +1,17 @@
+%h1 Listing buildings
+.listing
+  - if @buildings_count > 0
+    %table
+      %tr
+        %th= order_by_link :id
+        %th= order_by_link :name
+        %th Rooms
+      - @buildings.each do |building|
+        %tr{:onclick => "window.location='#{edit_building_path(building)}'"}
+          %td= building.id
+          %td= building.name
+          %td= link_to "Rooms (#{building.rooms.size})", search_url(:rooms, :building_id => building.id)
+  - else
+    No buildings were found.
+  %br/
+  = link_to 'New building', new_building_path, :class => "fake_button"

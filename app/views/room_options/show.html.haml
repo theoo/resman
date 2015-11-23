@@ -1,0 +1,16 @@
+%h1
+  Showing Room Option #{h @room_option.name}
+.edit
+  %p
+    %b Room:
+    = h @room_option.room_id
+  %p
+    %b Name:
+    = h @room_option.name
+  %p
+    %b Value:
+    = h @room_option.value
+  %p
+    %b Billing type:
+    = h @room_option.billing_type
+  = link_to 'Edit', edit_room_option_path(@room_option), :class => "fake_button"

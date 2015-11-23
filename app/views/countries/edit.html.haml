@@ -1,0 +1,9 @@
+%h1
+  Editing Country
+  %em= @country.name
+= form_for(@country) do |f|
+  = render :partial => 'form', :locals => { :f => f }
+  .actions
+    = f.submit 'Update'
+    = link_to  'Delete', @country, :confirm => "Are you sure? This will affect #{@country.residents.size} residents (doing so they have no country).", :method => :delete, :class => "fake_button red"
+    = link_to  'Cancel', :back, :class => "fake_button"

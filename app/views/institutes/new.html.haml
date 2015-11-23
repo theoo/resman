@@ -1,0 +1,6 @@
+%h1 New Institute
+= form_for(@institute) do |f|
+  = render :partial => 'layouts/form', :locals => { :f => f }
+  .actions
+    = f.submit 'Create'
+    = link_to  'Cancel', :back, :class => "fake_button"

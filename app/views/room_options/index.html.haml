@@ -1,0 +1,21 @@
+%h1
+  Listing Room Options for Room
+  %em= @room.name
+.listing
+  - if @room_options_count > 0
+    %table
+      %tr
+        %th Room
+        %th Name
+        %th Value
+        %th Billing
+      - for room_option in @room_options
+        %tr{:onclick => "window.location='#{edit_room_room_option_path(@room, room_option)}'"}
+          %td= h @room.name
+          %td= h room_option.name
+          %td= h room_option.value
+          %td= h room_option.billing.humanize
+  - else
+    No room options were found.
+  .actions
+    = link_to 'New Room Option', new_room_room_option_path(@room), :class => "fake_button"

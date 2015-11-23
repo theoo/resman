@@ -1,0 +1,59 @@
+%h1 New Invoice
+= form_for(:invoice, @invoice, :url => invoices_path) do |f|
+  %span.edit
+    = f.error_messages
+    = f.hidden_field :reservation_id
+    = f.hidden_field :parent_id
+    = f.hidden_field :type
+    - if @invoice.interval_start && @invoice.interval_end
+      = f.hidden_field :interval_start
+      = f.hidden_field :interval_end
+      %p
+        = f.label :interval_start
+        %span= @invoice.interval_start_formatted
+      %p
+        = f.label :interval_end
+        %span= @invoice.interval_end_formatted
+  %h3 Invoice Items
+  .listing
+    %table#items
+      %tr
+        %th Name
+        %th Value
+      - @invoice.items.each do |item|
+        - fields_for('invoice[items_attributes][]', item) do |item_form|
+          - if @invoice.is_a?(CustomInvoice)
+            - if @invoice.parent
+              - @invoice.parent.items.each do |parent_item|
+                %tr
+                  %td= h parent_item.name
+                  %td{:style => "text-align: right;"}= h parent_item.value
+            %tr
+              %td= text_field_tag 'invoice[items_attributes][][name]', item.name
+              %td= text_field_tag 'invoice[items_attributes][][value]', item.value, :onchange => 'update_total();'
+          - else
+            %tr
+              %td
+                = h item.name
+                = item_form.hidden_field :name
+              %td{:style => "text-align: right;"}
+                = h item.value
+                = item_form.hidden_field :value
+      %tr
+        %td= text_field_tag 'invoice[items_attributes][][name]'
+        %td= text_field_tag 'invoice[items_attributes][][value]', nil, :onchange => 'update_total();'
+    - new_row = h "<tr><td>#{text_field_tag('invoice[items_attributes][][name]', nil, :onchange => 'update_total();')}</td><td>#{text_field_tag('invoice[items_attributes][][value]', nil, :onchange => 'update_total();')}</td></tr>"
+    %a{:onclick => "$('items').insert('"}
+    = new_row
+    ');"&gt;Add item
+  %br/
+  %br/
+  %p
+    = f.label :current_total
+    = 'nbsp' * 20
+    %span#total= @invoice.value
+  %br/
+  %p
+    = f.submit Create, :style = 'width: 90px;'
+  :javascript
+    //

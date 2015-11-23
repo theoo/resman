@@ -1,0 +1,9 @@
+%h1
+  Editing School
+  %em= @school.name
+= form_for(@school) do |f|
+  = render :partial => 'form', :locals => { :f => f }
+  .actions
+    = f.submit 'Update'
+    = link_to  'Delete', @school, :confirm => "Are you sure? This will affect #{@school.residents.size} residents (doing so they have no school).", :method => :delete, :class => "fake_button red"
+    = link_to  'Cancel', :back, :class => "fake_button"

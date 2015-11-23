@@ -1,0 +1,9 @@
+%h1
+  Editing Room Option for Room #{@room.name}
+= form_for(@room_option, :url => room_room_option_path(@room, @room_option)) do |f|
+  = render :partial => 'form', :locals => { :f => f }
+  .actions
+    = f.submit 'Update'
+    - if @room_option.deletable?
+      = link_to  'Delete', room_room_option_path(@room, @room_option), :confirm => "Are you sure?", :method => :delete, :class => "fake_button red"
+    = link_to  'Cancel', :back, :class => "fake_button"

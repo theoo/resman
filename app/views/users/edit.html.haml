@@ -1,0 +1,9 @@
+%h1
+  Editing User
+  %em= @user.full_name
+= form_for(@user) do |f|
+  = render :partial => 'form', :locals => { :f => f }
+  .actions
+    = f.submit 'Update'
+    = link_to  'Delete', @user, :confirm => "Are you sure?", :method => :delete, :class => "fake_button red"
+    = link_to  'Cancel', :back, :class => "fake_button"

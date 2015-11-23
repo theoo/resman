@@ -1,0 +1,99 @@
+- options = []
+- selected = []
+- controllers.each do |controller|
+- controller.actions.each do |action|
+- if @group.has_access?("#{controller.to_s}", action)
+- selected << ["#{controller} -> #{action}", "#{controller} #{action}"]
+- else
+- options << ["#{controller} -> #{action}", "#{controller} #{action}"]
+- end
+- end
+- end
+%h1
+  Manage Rights for
+  %em= @group.name
+.listing.edit
+  = form_tag(update_rights_group_path(@group), :onsubmit => "select_all();") do
+    %table{:border => "0"}
+      %tr
+        %td= select_tag('all[]', options_for_select(options), :multiple => true, :size => 30, :style => 'width: 300px;', :id => 'all')
+        %td{:align => "center"}
+          = link_to 'Add', javascript: moveOptions(document.getElementById('all'), document.getElementById('selected'));, :class = 'fake_button'
+          %br/
+          %br/
+          = link_to 'Remove', javascript: moveOptions(document.getElementById('selected'), document.getElementById('all'));, :class = 'fake_button'
+        %td= select_tag('selected[]', options_for_select(selected), :multiple = true, :size = 30, :style = 'width: 300px;', :id = 'selected')
+    .actions
+      = submit_tag 'Update Rights'
+      = link_to 'Cancel', :back, :class = fake_button
+    - javascript_tag do
+      function select_all()
+      {
+      var element = document.getElementById('selected');
+      for(var i = 0; i   element.options.length; ++i)
+      element.options[i].selected = true;
+      }
+      
+      function compareOptionText(a,b)
+      {
+      return a.text != b.text ? a.text  b.text ? -1 : 1 : 0;
+      }
+      
+      function sortOptions(list)
+      {
+      var items = list.options.length;
+      \// Create array and make copies of options in list
+      var tmpArray = new Array(items);
+      for( i=0; i  items; i++ )
+      tmpArray[i] = new Option(list.options[i].text,list.options[i].value);
+      \// Sort options using given function
+      tmpArray.sort(compareOptionText);
+      \// make copies of sorted options back to list
+      for( i=0; i  items; i++ )
+      list.options[i] = new Option(tmpArray[i].text,tmpArray[i].value);
+      }
+      
+      function addOption(theSel, theText, theValue)
+      {
+      var newOpt = new Option(theText, theValue);
+      var selLength = theSel.length;
+      theSel.options[selLength] = newOpt;
+      }
+      
+      function deleteOption(theSel, theIndex)
+      {
+      var selLength = theSel.length;
+      if(selLength &gt; 0)
+      theSel.options[theIndex] = null;
+      }
+      
+      function moveOptions(theSelFrom, theSelTo)
+      {
+      var selLength = theSelFrom.length;
+      var selectedText = new Array();
+      var selectedValues = new Array();
+      var selectedCount = 0;
+      
+      var i;
+      
+      \// Find the selected Options in reverse order
+      \// and delete them from the 'from' Select.
+      for(i=selLength-1; i&gt;=0; i--)
+      {
+      if(theSelFrom.options[i].selected)
+      {
+      selectedText[selectedCount] = theSelFrom.options[i].text;
+      selectedValues[selectedCount] = theSelFrom.options[i].value;
+      deleteOption(theSelFrom, i);
+      selectedCount++;
+      }
+      }
+      
+      \// Add the selected text/values in reverse order.
+      \// This will add the Options to the 'to' Select
+      \// in the same order as they were in the 'from' Select.
+      for(i=selectedCount-1; i&gt;=0; i--)
+      addOption(theSelTo, selectedText[i], selectedValues[i]);
+      
+      sortOptions(theSelTo);
+      }

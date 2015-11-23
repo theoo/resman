@@ -1,0 +1,8 @@
+%h1
+  Editing Reservation for
+  %em= @reservation.resident_full_name
+= form_for(@reservation) do |f|
+  = render :partial => 'form', :locals => { :f => f }
+  .actions
+    = f.submit 'Update'
+    = link_to  'Cancel', :back, :class => "fake_button"

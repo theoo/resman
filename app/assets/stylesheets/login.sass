@@ -1,0 +1,91 @@
+/*************** general layout **************/
+
+html
+  margin: 0px
+  padding: 0px
+  border: none
+
+body
+  margin: 0px
+  padding: 0px
+  border: none
+  background-color: #86a486
+  color: #333
+  font-family: verdana, arial, helvetica, sans-serif
+  font-size: 13px
+  line-height: 18px
+
+p, ol, ul, td
+  font-family: verdana, arial, helvetica, sans-serif
+  font-size: 13px
+  line-height: 18px
+
+input[type=text], textarea
+  border: solid 1px #000
+  font-weight: normal
+  font-family: arial
+  background-color: #fff
+
+input
+  &[type=checkbox], &[type=password]
+    border: solid 1px #000
+    font-weight: normal
+    font-family: arial
+    background-color: #fff
+
+select
+  border: solid 1px #000
+  font-weight: normal
+  font-family: arial
+  background-color: #fff
+
+input[type=submit]
+  border: solid 5px #c4e1c4
+  background-color: #5b735b
+  &:hover
+    color: #fff
+    border: solid 5px #5b735b
+
+label
+  display: inline-block
+  width: 60px
+  text-align: right
+
+#login_box
+  background-color: #fff
+  margin: 10% auto
+  padding: 30px 20px
+  border: solid 10px #5b735b
+  width: 350px
+  text-align: center
+  div
+    margin-bottom: 5px
+
+/*************** elements **************/
+
+pre
+  background-color: #eee
+  padding: 10px
+
+img
+  border: 0px
+
+hr
+  color: #ccc
+  background-color: #aaa
+
+a
+  color: #ef820d
+  &:visited
+    color: #ef820d
+  &:hover
+    color: #fff
+    background-color: #ef820d
+
+/*************** form validations **************/
+
+#error
+  color: red
+
+#flash
+  color: green

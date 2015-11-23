@@ -1,0 +1,13 @@
+%h1 Listing Religions
+.listing
+  - if @religions_count > 0
+    %table
+      %tr
+        %th= order_by_link :name
+      - @religions.each do |religion|
+        %tr{:onclick => "window.location='#{edit_religion_path(religion)}'"}
+          %td= h religion.name
+  - else
+    No religions were found.
+  .actions
+    = link_to 'New religion', new_religion_path, :class => :fake_button

@@ -1,0 +1,29 @@
+- conditions = { :reservations => { :arrival_lte => to, :departure_gt => from }, :group => { :tags => { :name_is_blank => true, :or_name_ne => Option.value('tag_to_ignore') } } }
+%h3
+  by #{"#{name} (#{collection.map{|o| o.residents.all(:conditions => conditions).size }.sum})"}
+.listing
+  %table
+    %tr
+      %th  Name 
+      %th  Men 
+      %th  Women 
+      %th  Total 
+    - collection.each do |object|
+      %tr{:onclick => "window.location='#{residents_overview_path(:class => object.class, :id => object.id, :from => from.to_s(:formatted), :to => to.to_s(:formatted))}'"}
+        %td= h object.name
+        %td= h object.residents.men.all(:conditions => conditions).size
+        %td= h object.residents.women.all(:conditions => conditions).size
+        %td
+          - size = object.residents.unknown.all(:conditions => conditions).size
+          - str = object.residents.all(:conditions => conditions).size.to_s
+          - str += " (#{size} unknown)" if size > 0
+          = h str
+    %tr{:style => "font-weight: bold;"}
+      %td Total
+      %td= h collection.map{|o| o.residents.men.all(:conditions => conditions).size }.sum
+      %td= h collection.map{|o| o.residents.women.all(:conditions => conditions).size }.sum
+      %td
+        - size = collection.map{|o| o.residents.unknown.all(:conditions => conditions).size }.sum
+        - str = collection.map{|o| o.residents.all(:conditions => conditions).size }.sum.to_s
+        - str += " (#{size} unknown)" if size > 0
+        = h str

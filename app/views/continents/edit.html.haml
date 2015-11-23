@@ -1,0 +1,9 @@
+%h1
+  Editing Continent
+  %em= @continent.name
+= form_for(@continent) do |f|
+  = render :partial => 'layouts/form', :locals => { :f => f }
+  .actions
+    = f.submit "Update"
+    = link_to 'Delete', @continent, :confirm => "Are you sure? This will affect #{@continent.countries.size} countries and #{@continent.residents.size} residents (doing so they have no country).", :method => :delete, :class => "fake_button red"
+    = link_to 'Cancel', :back, :class => "fake_button"

@@ -1,0 +1,95 @@
+%h1 Reservation
+.edit
+  %p
+    %label Resident:
+    %span= link_to h(@reservation.resident.full_name), resident_path(@reservation.resident)
+  %p
+    %label Status:
+    %span= h @reservation.status.humanize
+  %p
+    %label Arrival:
+    %span= h @reservation.arrival_formatted
+  %p
+    %label Departure:
+    %span= h @reservation.departure_formatted
+  %p
+    %label Room:
+    %span= h @reservation.room.name
+  %p
+    %label Options:
+    %span= h @reservation.options.join(';')
+  .actions_left
+    - if current_user.has_access?('ReservationsController', 'edit')
+      = link_to('Edit', edit_reservation_path(@reservation), :class => "fake_button")
+    - if current_user.has_access?('ReservationsController', 'destroy')
+      = link_to(@reservation.deletable? ? 'Delete' : 'Cancel', @reservation, :confirm => "Are you sure? This will also #{@reservation.deletable? ? 'delete' : 'cancel'} #{@reservation.invoices.size} invoices and #{@reservation.incomes.size} incomes.", :method => :delete, :class => "fake_button red")
+%h3 Invoices
+.listing
+  - if @reservation.invoices.size > 0
+    %table
+      %tr
+        %th Type
+        %th Date
+        %th Period
+        %th Value
+        %th Paid
+      - @reservation.invoices.each do |invoice|
+        %tr{:onclick => "window.location='#{invoice_path(invoice)}'", :title => "invoice #{invoice.id}"}
+          %td= h invoice.class
+          %td= h invoice.created_at_formatted
+          %td= h invoice.interval_string
+          %td= h invoice.value
+          %td= h invoice.incomes_total
+  - else
+    No invoices found.
+  %br/
+  - if current_user.has_access?('InvoicesController', 'new')
+    - unless @reservation.confirmation_invoice_generated?
+      %b New confirmation invoice
+      %br/
+      = form_tag(new_invoice_path, :method => :get) do
+        = hidden_field_tag 'invoice[reservation_id]', @reservation.id
+        = hidden_field_tag 'invoice[type]', 'ConfirmationInvoice'
+        = hidden_field_tag 'invoice[interval_start]', @reservation.arrival
+        = hidden_field_tag 'invoice[interval_end]', @reservation.departure
+        = submit_tag 'New invoice'
+      %br/
+      %br/
+    %b New Invoice for a period
+    %br/
+    - if @reservation.all_reservation_invoices_generated?
+      All invoices are already generated.
+      %br/
+    - else
+      = form_tag(new_invoice_path, :method => :get) do
+        = hidden_field_tag 'invoice[reservation_id]', @reservation.id
+        = hidden_field_tag 'invoice[type]', 'ReservationInvoice'
+        from
+        \#{select_month(@reservation.arrival, :field_name => 'from][month', :use_short_month => true)}
+        \#{select_year(@reservation.arrival, :field_name => 'from][year')}
+        to
+        \#{select_month(@reservation.departure, :field_name => 'to][month', :use_short_month => true)}
+        \#{select_year(@reservation.departure, :field_name => 'to][year')}
+        
+        \#{submit_tag 'New invoice'}
+    %br/
+    %b New Custom invoice
+    %br/
+    = form_tag(new_invoice_path, :method => :get) do
+      = hidden_field_tag 'invoice[reservation_id]', @reservation.id
+      = hidden_field_tag 'invoice[type]', 'CustomInvoice'
+      = hidden_field_tag 'invoice[interval_start]', @reservation.arrival
+      = hidden_field_tag 'invoice[interval_end]', @reservation.departure
+      = submit_tag 'New invoice'
+    - if @reservation.need_deposit_invoice?
+      %br/
+      %br/
+      %b New Invoice for deposit give back
+      %br/
+      = form_tag(new_invoice_path, :method => :get) do
+        = hidden_field_tag 'invoice[reservation_id]', @reservation.id
+        = hidden_field_tag 'invoice[type]', 'DepositInvoice'
+        = hidden_field_tag 'invoice[interval_start]', @reservation.arrival
+        = hidden_field_tag 'invoice[interval_end]', @reservation.departure
+        = submit_tag 'New invoice'
+= render :partial => 'comments/message', :locals => { :entity => @reservation }

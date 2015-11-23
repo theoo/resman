@@ -1,0 +1,516 @@
+/*
+ *= require_tree .
+ *= require_self
+ */
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td
+  margin: 0
+  padding: 0
+
+table
+  border-collapse: collapse
+  border-spacing: 0
+
+img
+  border: 0
+
+address, caption, cite, code, dfn, em, strong, th, var
+  font-style: normal
+  font-weight: normal
+
+li
+  list-style: none
+
+caption, th
+  text-align: left
+
+h1, h2, h3, h4, h5, h6
+  font-size: 100%
+  font-weight: normal
+
+q
+  &:before, &:after
+    content: ''
+
+abbr, acronym
+  border: 0
+  font-variant: normal
+
+sup
+  line-height: -1px
+  vertical-align: text-top
+
+sub
+  line-height: -1px
+  vertical-align: text-top
+  vertical-align: text-bottom
+
+input, textarea, select
+  font-family: inherit
+  font-size: inherit
+  font-weight: inherit
+
+/*************** general layout **************/
+
+#search_conditions_country_id
+  width: 120px
+
+body
+  color: #333
+  font-family: verdana, arial, helvetica, sans-serif
+
+p, ol, ul, td
+  font-family: verdana, arial, helvetica, sans-serif
+
+html > body
+  background-color: #e7e8e1
+
+h1, h3
+  font-family: "Trebuchet MS"
+  padding: 10px 0
+  margin: 10px 0
+  letter-spacing: 0.2em
+  font-weight: lighter
+  font-weight: bold
+  color: #809275
+
+h1
+  font-size: 150%
+
+h3
+  font-size: 110%
+  margin-top: 30px
+
+h1 em
+  font-style: italic
+  font-weight: bold
+
+input[type=text], textarea
+  font-size: 13px
+  /* Same as content */
+  border: solid 1px #000
+  font-weight: normal
+  font-family: arial
+  background-color: #fff
+  width: 100px
+
+input
+  &[type=checkbox], &[type=password]
+    font-size: 13px
+    /* Same as content */
+    border: solid 1px #000
+    font-weight: normal
+    font-family: arial
+    background-color: #fff
+    width: 100px
+
+select
+  font-size: 13px
+  /* Same as content */
+  border: solid 1px #000
+  font-weight: normal
+  font-family: arial
+  background-color: #fff
+  width: 100px
+
+input[type=submit]
+  font-size: 13px
+  /* Same as content */
+  border-top: solid 1px #fff
+  border-left: solid 1px #fff
+  border-bottom: solid 1px #aaa
+  border-right: solid 1px #aaa
+  background-color: #ccc
+  padding: 0 5px
+  &:hover
+    color: #fff
+    border-top: solid 1px #aaa
+    border-left: solid 1px #aaa
+    border-bottom: solid 1px #fff
+    border-right: solid 1px #fff
+
+a
+  &:link, &:active, &:visited
+    color: #888
+    text-decoration: none
+  &:hover
+    color: #000
+
+#container
+
+div
+  &.auto_complete
+    width: 350px
+    background: #fff
+    ul
+      border: 1px solid #888
+      margin: 0
+      padding: 0
+      width: 100%
+      list-style-type: none
+      li
+        margin: 0
+        padding: 3px
+        &.selected
+          background-color: #ffb
+      strong.highlight
+        color: #800
+        margin: 0
+        padding: 0
+  &.summary
+    padding: 5px
+    max-height: 300px
+    overflow: auto
+  &.summary_total
+    padding: 5px 25px
+    text-align: right
+
+/*************** contents elements **************/
+
+#header
+  min-width: 850px
+
+#contents
+  font-size: 13px
+  min-height: 500px
+  padding: 30px 20px 20px 3%
+  border-top: solid 2px #5b735b
+
+#footer
+  font-size: 10px
+  color: #888
+  min-width: 850px
+  text-align: left
+  padding-left: 3%
+
+/*************** menu **************/
+/* see http://www.htmldog.com/articles/suckerfish/dropdowns */
+
+#session_infos, #logo
+  display: block
+  margin: 5px
+
+#session_infos
+  float: right
+  font-size: 10px
+  color: #653f28
+  a
+    color: #000
+
+#logo
+  float: left
+  font-size: 18px
+  padding: 5px 0 0 15px
+  color: #653f28
+
+#nav
+  background-color: #86a486
+  font-family: verdana
+  font-size: 10px
+
+ul.depth0 a
+  text-decoration: none
+  color: #333
+
+#nav
+  a:hover
+    color: #86a486
+    background-color: #86a486
+  ul
+    li
+      float: left
+    a:hover
+      color: #fff
+    li
+      &:hover > a
+        color: #fff
+      &.last_item
+        float: right
+
+  .current_action
+    background-color: #5b735b
+    &a
+      color: #fff
+
+  ul
+    &.depth0
+      div
+        text-align: center
+        padding: 3px 8px 5px 8px
+        text-transform: capitalize
+      height: 20px
+      padding: 50px 3% 0 3%
+      background-repeat: no-repeat
+      background-position: bottom left
+      font-weight: bold
+      li
+        margin-right: 20px
+    &.depth1
+      display: none
+      position: absolute
+      top: 70px
+      left: 0px
+      width: 97%
+      padding: 3px 0
+      margin: 0 0 0 3%
+      font-weight: lighter
+      color: #c4e1c4
+      li
+        margin: 0
+        padding: 2px 8px
+      a
+        color: #c4e1c4
+
+  .current_action
+    display: block !important
+    z-index: 1000
+
+/*************** common html elements **************/
+
+.center
+  text-align: center
+
+pre
+  background-color: #eee
+  padding: 10px
+  font-size: 11px
+
+img
+  border: 0px
+  margin: 0px
+  padding: 0px
+
+a, .link
+  color: #333333
+  text-decoration: underline
+  cursor: hand
+  cursor: pointer
+
+.page, .per_page
+  margin: 2px
+
+.small_input
+  width: 5em
+
+/***************  table **************/
+
+div.listing
+  width: 800px
+  border: dashed 1px #aaa
+  padding: 10px
+
+.listing table, table.listing
+  background-color: white
+
+.listing
+  th
+    font-family: "Trebuchet MS"
+    background-color: #d0d1c4
+    border: none
+  tr
+    &.listing_filter th
+      color: white
+      text-align: center
+      padding: 0 4px
+    cursor: pointer
+    &:hover td
+      background-color: #efe
+  td
+    border: 1px solid #ccc
+    height: 15px
+    padding: 0 4px
+  th
+    a
+      color: black
+      text-decoration: none
+    &.empty
+      background-color: #EEEEEE
+
+table.nolisting
+  background-color: transparent
+  td
+    border: none
+
+/*************** planning table **************/
+
+.month_browser
+  display: block
+  background-color: #e7e8e1
+  padding: 1em
+  margin: 0 -20px
+  text-align: center
+  margin-bottom: 20px
+  line-height: 2em
+  span
+    font-size: 2em
+
+/*************** overview table **************/
+
+table#overview
+  margin: 0 auto
+  td
+    vertical-align: top
+    div
+      margin: 20px
+
+/*************** edits **************/
+
+div.edit
+  font-size: 1.2em
+  width: 800px
+  background-color: #fff
+  padding: 10px
+  border: 1px dashed #aaa
+
+.edit h1, .listing h1
+  margin: 0 0 10px 0
+
+.edit p
+  display: block
+  label
+    display: inline-block
+    text-align: right
+    width: 120px
+    font-size: 0.8em
+    padding: 3px 0 0 0
+  span
+    margin-left: 20px
+    padding: 5px 25px 0 0
+    &:hover
+      background-image: url('/images/icons/little_edit.png')
+      background-position: top right
+      background-repeat: no-repeat
+
+label.required
+  font-weight: bold
+
+.edit
+  input[type=text], textarea
+  input
+    &[type=checkbox], &[type=password]
+  select
+
+.actions
+  padding: 10px 10px 10px 110px
+
+.listing .actions, div.actions_left
+  padding: 10px 0
+
+/*************** form entry **************/
+
+form p label, table.profile p label
+  width: 110px
+
+form p
+  select, input, textarea
+    margin: 0 10px 5px 0
+    width: 230px
+
+table.profile
+  span, ul
+    margin: 0 10px 5px 0
+    width: 230px
+
+ul#options
+  margin-left: 100px
+
+#create_submit, #edit_submit
+  margin: 10px 0
+  padding: 0 1em
+
+a
+  &.fake_button
+    font-size: 13px
+    display: inline-block
+    padding: 0 1em
+    border-top: solid 1px #fff
+    border-left: solid 1px #fff
+    border-bottom: solid 1px #aaa
+    border-right: solid 1px #aaa
+    background-color: #ccc
+    line-height: 1.5em
+    color: #000
+  &:hover.fake_button
+    color: #fff
+    border-top: solid 1px #aaa
+    border-left: solid 1px #aaa
+    border-bottom: solid 1px #fff
+    border-right: solid 1px #fff
+
+form fieldset, table.profile fieldset
+  border: 1px solid gray
+  margin: 10px 10px 0 0
+  padding: 10px
+  min-width: 300px
+  background-color: #fff
+  display: inline-block
+
+span.required
+  display: inline
+  color: red
+  margin-left: 3px
+
+select.day
+  width: 70px
+
+/*************** form validations **************/
+
+table.inline_menu td
+  vertical-align: middle
+  padding: 0 5px
+
+/*************** form validations **************/
+
+#error
+  color: red
+
+#notice, #flash
+  border: 1px solid #889
+  background-color: #EFE
+  padding: 5px
+  display: block
+  width: 500px
+  margin: 5px auto
+
+div.infos
+  color: #888
+
+.fieldWithErrors
+  padding: 2px
+  background-color: red
+  display: inline-block
+  label
+    width: 90px
+    font-size: 0.8em
+
+#errorExplanation
+  width: 400px
+  border: 2px solid red
+  padding: 7px
+  padding-bottom: 12px
+  margin-bottom: 20px
+  background-color: #f0f0f0
+  h2
+    text-align: left
+    font-weight: bold
+    padding: 5px 5px 5px 15px
+    font-size: 12px
+    margin: -7px
+    background-color: #c00
+    color: #fff
+  p
+    color: #333
+    margin-top: 5px
+    margin-bottom: 0
+    padding: 5px
+  ul li
+    font-size: 12px
+    list-style: square
+    margin-left: 20px
+
+/* OVERRIDE classes */
+
+a.red
+  color: #c00
+
+input[type='text'].bigger
+  width: 200px

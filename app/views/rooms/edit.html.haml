@@ -1,0 +1,10 @@
+%h1
+  Editing Room
+  %em= @room.name
+= form_for(@room) do |f|
+  = render :partial => 'form', :locals => { :f => f }
+  .actions
+    = f.submit 'Update'
+    - if @room.deletable?
+      = link_to  'Delete', @room, :confirm => "Are you sure? This will affect #{@room.reservations.size} reservations.", :method => :delete, :class => "fake_button red"
+    = link_to  'Cancel', :back, :class => "fake_button"

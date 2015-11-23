@@ -1,0 +1,26 @@
+%h1 Listing Users
+.listing
+  - if @users_count > 0
+    %table
+      %tr
+        %th= order_by_link :login
+        %th= order_by_link :group => :name
+        %th= order_by_link :last_name
+        %th= order_by_link :first_name
+        %th= order_by_link :email
+        %th= order_by_link :phone
+        %th= order_by_link :mobile
+      - @users.each do |user|
+        %tr{:onclick => "window.location='#{edit_user_path(user)}'"}
+          %td= h user.login
+          %td= h user.group.name
+          %td= h user.last_name
+          %td= h user.first_name
+          %td= h user.email
+          %td= h user.phone
+          %td= h user.mobile
+    = page_links if @search.page_count > 1
+  - else
+    No users were found.
+  .actions
+    = link_to 'Create New user', new_user_path, :class => "fake_button"

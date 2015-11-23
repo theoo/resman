@@ -1,0 +1,8 @@
+%h1
+  Editing Group
+  %em= @group.name
+= form_for(@group) do |f|
+  = render :partial => 'layouts/form', :locals => { :f => f }
+  .actions
+    = f.submit 'Update'
+    = link_to  'Cancel', :back, :class => "fake_button"

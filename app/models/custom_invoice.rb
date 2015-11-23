@@ -1,0 +1,2 @@
+class CustomInvoice < Invoice
+end

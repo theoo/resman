@@ -1,0 +1,52 @@
+%h1 Listing Reservations
+.listing
+  .infos
+    = @reservations_count
+    reservations found
+  %br/
+  = form_for(:search) do |f|
+    from
+    \#{select_month(@from, { :field_name => 'from][month', :use_short_month => true}, :onchange => 'this.form.submit();')}
+    \#{select_year(@from, { :field_name => 'from][year'}, :onchange => 'this.form.submit();')}
+    to
+    \#{select_month(@to, { :field_name => 'to][month', :use_short_month => true}, :onchange => 'this.form.submit();')}
+    \#{select_year(@to, { :field_name => 'to][year'}, :onchange => 'this.form.submit();')}
+    %br/
+    %br/
+    %table#reservations
+      %tr
+        %th= order_by_link({:resident => [:last_name, :first_name]}, :text => 'Resident')
+        %th= order_by_link({:room => :name}, :text => 'Room')
+        %th= order_by_link(:arrival)
+        %th= order_by_link(:departure)
+        %th= order_by_link(:status)
+      - f.fields_for(@reservations) do |reservation|
+        %tr.listing_filter
+          %th= reservation.select(:resident_id, Resident.options_for_select(:allow_nil => true), {}, |
+              {:onchange => "this.form.submit();"} )                                                |
+          %th= reservation.select(:room_id, Room.options_for_select(:allow_nil => true), {}, |
+              {:onchange => "this.form.submit();"} )                                        |
+          %th
+          %th
+          %th
+            = reservation.select(:status, [['All', nil]] + Reservation::Status, {}, |
+              {:onchange => "this.form.submit();"} )                                |
+            %input{:style => "display:none", :type => "submit"}/
+      - if @reservations_count > 0
+        - @reservations.each do |reservation|
+          %tr{:onclick => "window.location='#{reservation_path(reservation)}'"}
+            %td= h reservation.resident.full_name
+            %td= h reservation.room.name
+            %td= h reservation.arrival_formatted
+            %td= h reservation.departure_formatted
+            %td= h reservation.status.humanize
+      - else
+        %tr
+          %td{:colspan => "5"}
+            %br>/
+            No reservations found.
+            %br/
+            %br/
+  = will_paginate @reservations
+  .actions
+    = link_to 'New Reservation', new_reservation_path, :class => :fake_button

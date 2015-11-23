@@ -1,0 +1,17 @@
+.edit
+  = f.error_messages
+  %p
+    = f.label :name, {}, :class => :required
+    %span= f.text_field :name
+  %p
+    = f.label :building, {}, :class => :required
+    %span= f.select(:building_id, Building.options_for_select)
+  %p
+    = f.label :rate, {}, :class => :required
+    %span= f.select(:rate_id, Rate.options_for_select)
+  %p
+    = f.label :size, {}, :class => :required
+    %span= f.text_field :size
+  %p
+    = f.label :phone, {}, :class => :required
+    %span= f.text_field :phone

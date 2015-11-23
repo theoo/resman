@@ -1,0 +1,51 @@
+%h1 Incomes found using the file
+.listing
+  = form_tag(generate_incomes_path, :method => :post) do
+    %table
+      %tr
+        %th Resident
+        %th Reservation
+        %th Room
+        %th Invoice value
+        %th Income value
+        %th Date
+        %th Generate?
+      - @incomes.each do |income|
+        %tr
+          %td
+            = hidden_field_tag 'incomes[][invoice_id]', income.invoice_id
+            = income.resident
+          %td= income.reservation.interval_string
+          %td= income.reservation.room
+          %td= income.invoice.value
+          %td
+            = hidden_field_tag 'incomes[][value_in_cents]', income.value_in_cents
+            = income.value
+          %td
+            = hidden_field_tag 'incomes[][received]', income.received
+            = income.received_formatted
+          %td= check_box_tag 'incomes[][selected]', true, true
+    %br/
+    = submit_tag :generate
+  %br/
+  %h3 Already imported
+  %table
+    %tr
+      %th Resident
+      %th Reservation
+      %th Room
+      %th Invoice value
+      %th Income value
+      %th Date
+    - @already_parsed.each do |income|
+      %tr
+        %td= income.resident
+        %td= income.reservation.interval_string
+        %td= income.reservation.room
+        %td= income.invoice.value
+        %td= income.value
+        %td= income.received_formatted
+  %br/
+  %h3 Unused or misparsed lines in file
+  - @unparsed.each do |line|
+    = line

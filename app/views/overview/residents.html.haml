@@ -1,0 +1,57 @@
+- conditions = { :reservations => { :arrival_lte => @to, :departure_gt => @from }, :group => { :tags => { :name_is_blank => true, :or_name_ne => Option.value('tag_to_ignore') } } }
+%h1
+  Residents from #{@object.name} presents during the period #{"#{@from.to_s(:formatted)} - #{@to.to_s(:formatted)}"}
+%h3 Men
+.listing
+  %table
+    %tr
+      %th  Last Name 
+      %th  First Name 
+      %th  Country 
+      %th  Religion 
+      %th  Institute 
+      %th  School 
+    - @object.residents.men.all(:conditions => conditions).each do |resident|
+      %tr{:onclick => "window.location='#{resident_path(resident)}'"}
+        %td= h resident.last_name
+        %td= h resident.first_name
+        %td= h resident.country
+        %td= h resident.religion
+        %td= h resident.institute
+        %td= h resident.school
+%h3 Women
+.listing
+  %table
+    %tr
+      %th  Last Name 
+      %th  First Name 
+      %th  Country 
+      %th  Religion 
+      %th  Institute 
+      %th  School 
+    - @object.residents.women.all(:conditions => conditions).each do |resident|
+      %tr{:onclick => "window.location='#{resident_path(resident)}'"}
+        %td= h resident.last_name
+        %td= h resident.first_name
+        %td= h resident.country
+        %td= h resident.religion
+        %td= h resident.institute
+        %td= h resident.school
+%h3 Unknown
+.listing
+  %table
+    %tr
+      %th  Last Name 
+      %th  First Name 
+      %th  Country 
+      %th  Religion 
+      %th  Institute 
+      %th  School 
+    - @object.residents.unknown.all(:conditions => conditions).each do |resident|
+      %tr{:onclick => "window.location='#{resident_path(resident)}'"}
+        %td= h resident.last_name
+        %td= h resident.first_name
+        %td= h resident.country
+        %td= h resident.religion
+        %td= h resident.institute
+        %td= h resident.school

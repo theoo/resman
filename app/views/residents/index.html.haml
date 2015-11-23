@@ -1,0 +1,59 @@
+%h1 Listing Residents
+.listing
+  %h3 Export all residents
+  = form_tag(export_all_residents_path, :method => :get) do
+    = select_day(Date.today)
+    = select_month(Date.today)
+    = select_year(Date.today)
+    = submit_tag 'Export'
+  %br/
+  %br/
+  = form_for(@search) do |f|
+    Tags:
+    \#{link_to_unless @search.conditions.tags.name.nil? && @search.conditions.tags.name_is_blank.nil?, 'All', search_url(:residents, :tags => { :name => nil })}
+    - Tag.all.each do |tag|
+      = link_to_unless @search.conditions.tags.name == tag.name, tag.name, search_url(:residents, :tags => { :name => tag.name })
+    = link_to_if @search.conditions.tags.name_is_blank.nil?, 'Without any tags', search_url(:residents, :tags => { :name_is_blank => true })
+    %br/
+    .infos
+      = @residents_count
+      residents found.
+    %table#residents
+      %tr
+        %th= order_by_link(:id)
+        %th= order_by_link(:last_name)
+        %th= order_by_link(:first_name)
+        %th= order_by_link({:country => :name}, :text => 'Country')
+        %th= order_by_link({:school =>  :name}, :text => 'School' )
+        %th= order_by_link(:email)
+      - f.fields_for(@search.conditions) do |resident|
+        %tr.listing_filter
+          %th= resident.text_field :id, :style => "width: 40px;"
+          %th= resident.text_field :last_name_contains, :style => "width: 150px;"
+          %th= resident.text_field :first_name_contains, :style => "width: 120px;"
+          %th= resident.select(:country_id, Country.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
+          %th= resident.select(:school_id, School.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
+          %th
+            = resident.text_field :email_contains
+            %input{:style => "display:none", :type => "submit"}/
+      - if @residents_count > 0
+        - @residents.each do |resident|
+          %tr
+            %td{:onclick => "window.location='#{resident_path(resident)}'"}= h resident.id
+            %td{:onclick => "window.location='#{resident_path(resident)}'"}= h resident.last_name
+            %td{:onclick => "window.location='#{resident_path(resident)}'"}= h resident.first_name
+            %td{:onclick => "window.location='#{resident_path(resident)}'"}= h resident.country ? resident.country.name : ''
+            %td{:onclick => "window.location='#{resident_path(resident)}'"}= h resident.school ? resident.school.name : ''
+            %td= mail_to(resident.email)
+      - else
+        %tr
+          %td{:colspan => "6"}
+            %br>/
+            No residents found.
+            %br/
+            %br/
+  - if @search.page_count > 1
+    = page_links
+  .actions
+    - if current_user.has_access?('ResidentsController', 'new')
+      = link_to 'New Resident', new_resident_path, :class => "fake_button"

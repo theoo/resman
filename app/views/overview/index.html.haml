@@ -1,0 +1,54 @@
+%h1 Dashboard
+.listing
+  %h3 Quick Links
+  .actions
+    - if current_user.has_access?('ReservationsController', 'new')
+      = link_to "New Reservation", new_reservation_path, :class => "fake_button"
+    - if current_user.has_access?('ResidentsController', 'new')
+      = link_to "New Resident", new_resident_path, :class => "fake_button"
+    = link_to "Search Residents", residents_path, :class => "fake_button"
+  %h3 Upcoming Check In
+  - if @in_reservations.size > 0
+    %table
+      %tr
+        %th Resident
+        %th Room
+        %th Arrival
+        %th Status
+      - for reservation in @in_reservations
+        %tr{:onclick => "window.location='#{reservation_path(reservation)}'", :style => "#{(reservation.arrival == Date.today ? 'background-color: orange;' : '')}"}
+          %td= h reservation.resident.full_name
+          %td= h reservation.room.name
+          %td= h reservation.arrival_formatted
+          %td= h reservation.status
+  - else
+    %p No Check Ins next week.
+  %h3 Upcoming Check Out
+  - if @out_reservations.size > 0
+    %table
+      %tr
+        %th Resident
+        %th Room
+        %th Departure
+        %th Status
+      - for reservation in @out_reservations
+        %tr{:onclick => "window.location='#{reservation_path(reservation)}'", :style => "#{(reservation.departure == Date.today ? 'background-color: orange;' : '')}"}
+          %td= h reservation.resident.full_name
+          %td= h reservation.room.name
+          %td= h reservation.departure_formatted
+          %td= h reservation.status
+  - else
+    %p No Check Outs next week.
+  %h3 Unread comments
+  %table
+    %tr
+      %th Title
+      %th Text
+      %th User
+      %th About
+    - @unread_comments.each do |comment|
+      %tr{:onclick => "window.location='#{send("#{comment.entity.class.to_s.underscore}_path", comment.entity)}'"}
+        %td= h comment.title
+        %td= h shorten(comment.text, 5)
+        %td= h comment.user
+        %td= h shorten("#{comment.entity_type}: #{comment.entity}", 2)

@@ -1,0 +1,19 @@
+%h1 Listing Rates
+.listing
+  - if @rates_count > 0
+    %table
+      %thead
+        %tr
+          %th= order_by_link :id
+          %th= order_by_link :name
+          %th Rules
+      %tbody
+        - @rates.each do |rate|
+          %tr{:onclick => "window.location='#{edit_rate_path(rate)}'"}
+            %td= rate.id
+            %td= rate.name
+            %td= link_to "Rules (#{rate.rules.size})", rate_rules_path(rate)
+  - else
+    No rates were found.
+  .actions
+    = link_to 'New Rate', new_rate_path, :class => :fake_button

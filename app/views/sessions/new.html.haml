@@ -1,0 +1,13 @@
+= form_tag sessions_path do
+  %div
+    = label_tag :login
+    = text_field_tag :login, params[:login]
+  %div
+    = label_tag :password
+    = password_field_tag :password
+  %br/
+  %div
+    = submit_tag 'Log In'
+#error
+  = flash[:error]
+   

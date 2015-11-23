@@ -1,0 +1,15 @@
+%h1 Listing institutes
+.listing
+  - if @institutes_count > 0
+    %table
+      %tr
+        %th= order_by_link :name
+        %th Schools
+      - @institutes.each do |institute|
+        %tr{:onclick => "window.location='#{edit_institute_path(institute)}'"}
+          %td= h institute.name
+          %td= link_to "Schools (#{institute.schools.size})", search_url(:schools, :institute_id => institute.id)
+  - else
+    No institutes were found.
+  .actions
+    = link_to 'New institute', new_institute_path, :class => :fake_button

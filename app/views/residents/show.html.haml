@@ -1,0 +1,117 @@
+%h1= h @resident.full_name
+.edit
+  %table{:width => "100%"}
+    %tr
+      %td
+        %p
+          %label Last name:
+          %span
+            = h @resident.last_name
+        %p
+          %label First name:
+          %span
+            = h @resident.first_name
+        %p
+          %label Address:
+          %span
+            = h @resident.address || '-'
+        %p
+          %label Identity card:
+          %span
+            = h @resident.identity_card || '-'
+        %p
+          %label Country:
+          %span= h @resident.country ? @resident.country.name : '-'
+        %p
+          %label Gender:
+          %span= h @resident.gender ? @resident.gender.capitalize : '-'
+        %p
+          %label Religion:
+          %span= h @resident.religion ? @resident.religion.name : '-'
+        %p
+          %label School:
+          %span= h @resident.school ? @resident.school.name : '-'
+        %p
+          %label Color:
+          %span{:style => "background-color: ##{@resident.color}; font-size: 4px;"}  
+        %p
+          %label Tags:
+          - if @resident.tag_list.size > 0
+            %span= h @resident.tag_list
+          - else
+            %span No tags yet
+      %td
+        %p
+          %label Account Number:
+          %span
+            = h @resident.id
+        %p
+          %label Date of birth:
+          %span
+            = h @resident.birthdate_formatted
+            - if @resident.birthdate
+              (#{distance_of_time_in_words_to_now(@resident.birthdate)} old)
+        %p
+          %label Email:
+          %span= mail_to(@resident.email)
+        %p
+          %label Phone:
+          %span= h @resident.phone
+        %p
+          %label Mobile:
+          %span= h @resident.mobile
+        %p
+          %label Bank name:
+          %span= h @resident.bank_name
+        %p
+          %label Bank iban:
+          %span= h @resident.bank_iban
+        %p
+          %label Bank bic swift:
+          %span= h @resident.bank_bic_swift
+        %p
+          %label Bank clearing:
+          %span= h @resident.bank_clearing
+        %p
+          %label Mac address:
+          %span
+            = h @resident.mac_address
+            (#{@resident.mac_active ? 'active' : 'inactive'})
+  .actions_left
+    - if current_user.has_access?('ResidentsController', 'edit')
+      = link_to 'Edit Resident', edit_resident_path(@resident), :class => "fake_button"
+    - if current_user.has_access?('ResidentsController', 'destroy') && @resident.deletable?
+      = link_to 'Delete', @resident, :method => :delete, :confirm => "Are you sure?", :class => "fake_button red"
+    %br/
+    %br/
+    = form_tag(export_resident_path(@resident), :method => :get) do
+      = submit_tag 'Export Compta'
+      from
+      \#{select_month(@resident.reservations.empty? ? nil : @resident.reservations.first.arrival, :field_name => 'from][month', :use_short_month => true)}
+      \#{select_year(@resident.reservations.empty? ? nil : @resident.reservations.first.arrival, :field_name => 'from][year')}
+      to
+      \#{select_month(@resident.reservations.empty? ? nil : @resident.reservations.last.departure, :field_name => 'to][month', :use_short_month => true)}
+      \#{select_year(@resident.reservations.empty? ? nil : @resident.reservations.last.departure, :field_name => 'to][year')}
+%h3 Reservations:
+.listing
+  - if @resident.reservations.size > 0
+    %table
+      %tr
+        %th Period
+        %th Room
+        %th Total
+        %th Due
+        %th Paid
+      - @resident.reservations.each do |reservation|
+        %tr{:onclick => "window.location='#{reservation_path(reservation)}'"}
+          %td= h reservation.interval_string
+          %td= h reservation.room
+          %td= h reservation.total
+          %td= h reservation.due
+          %td= h reservation.paid
+  - else
+    %p No reservations found.
+  .actions
+    - if current_user.has_access?('ReservationsController', 'new')
+      = link_to 'New Reservation', {:controller => :reservations, :action => :new, :resident => @resident}, :class => "fake_button"
+= render :partial => 'comments/message', :locals => { :entity => @resident }

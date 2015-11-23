@@ -1,0 +1,33 @@
+%h1 Listing comments
+.listing
+  = form_for(@search) do |f|
+    .infos
+      = @comments_count
+      logs found.
+    %table#activities
+      %tr
+        %th= order_by_link(:created_at)
+        %th= order_by_link(:title)
+        %th= order_by_link(:read)
+        %th= order_by_link(:user_id)
+        %th= order_by_link(:entity_id)
+      - if @comments_count > 0
+        - @comments.each do |comment|
+          %tr
+            %td= h comment.created_at_formatted
+            %td= h comment.title
+            %td= h comment.read
+            %td= h comment.user
+            %td= h comment.entity
+            %td
+              = h comment.entity_type
+              \: #{link_to comment.entity , comment.entity}
+      - else
+        %tr
+          %td{:colspan => "6"}
+            %br>/
+            No comments found.
+            %br/
+            %br/
+  - if @search.page_count > 1
+    = page_links
