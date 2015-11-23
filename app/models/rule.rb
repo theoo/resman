@@ -3,6 +3,8 @@
 
 class Rule < ActiveRecord::Base
 
+  extend  MoneyComposer
+
   Types = %w{ day month }
 
   belongs_to    :rate

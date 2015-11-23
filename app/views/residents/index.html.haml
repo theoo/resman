@@ -31,8 +31,8 @@
           %th= resident.text_field :id, :style => "width: 40px;"
           %th= resident.text_field :last_name_contains, :style => "width: 150px;"
           %th= resident.text_field :first_name_contains, :style => "width: 120px;"
-          %th= resident.select(:country_id, Country.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
-          %th= resident.select(:school_id, School.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
+          %th= select(resident, :country_id, Country.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
+          %th= select(resident, :school_id, School.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
           %th
             = resident.text_field :email_contains
             %input{:style => "display:none", :type => "submit"}/

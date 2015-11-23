@@ -11,12 +11,17 @@ class Resident < ActiveRecord::Base
   belongs_to  :religion
   belongs_to  :school
 
-  has_many    :reservations, dependent: :destroy, order: 'arrival, departure'
+  has_many    :reservations, -> { order('arrival, departure') },
+    dependent: :destroy
 
-  has_many    :invoices, through: :reservations
-  has_many    :incomes, through: :invoices
+  has_many    :invoices,
+    through: :reservations
+  has_many    :incomes,
+    through: :invoices
 
-  has_many    :comments, as: :entity, dependent: :destroy
+  has_many    :comments,
+    as: :entity,
+    dependent: :destroy
 
   validates_presence_of   :first_name, :last_name
   validates_uniqueness_of :first_name, scope: :last_name
@@ -26,9 +31,9 @@ class Resident < ActiveRecord::Base
 
   before_destroy :cleanup_tags
 
-  scope :men, where(gender: 'man').order('last_name,first_name ASC')
-  scope :women, where(gender: 'woman').order('last_name,first_name ASC')
-  scope :unknown, where(gender: '').order('last_name,first_name ASC')
+  scope :men, -> { where(gender: 'man').order('last_name,first_name ASC') }
+  scope :women, -> { where(gender: 'woman').order('last_name,first_name ASC') }
+  scope :unknown, -> { where(gender: '').order('last_name,first_name ASC') }
 
   def cleanup_tags
     # reset tags relationship to cleanup join table.

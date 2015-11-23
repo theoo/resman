@@ -36,7 +36,7 @@
         %tr.listing_filter
           %th
           %th
-          %th= income.select(:payment, [['All', nil]] + Income::Types.map{|i| [i.humanize, i]}, {}, { :onchange => "this.form.submit();" })
+          %th= select(income, :payment, [['All', nil]] + Income::Types.map{|i| [i.humanize, i]}, {}, { :onchange => "this.form.submit();" })
           %th
       - if @incomes_count > 0
         - @incomes.each do |income|

@@ -8,4 +8,4 @@
     %span= f.text_field :value
   %p
     = f.label :billing, {}, :class => :required
-    %span= f.select :billing, RoomOption::Types
+    %span= select f, :billing, RoomOption::Types

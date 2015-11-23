@@ -14,8 +14,8 @@
       %th= order_by_link(:interval_end, :params_scope => name)
     - f.fields_for(search.conditions) do |reservation|
       %tr.listing_filter
-        %th= reservation.select(:type, [['All', nil]] + %w{ConfirmationInvoice ReservationInvoice CustomInvoice DepositInvoice}.map{|x| [x, x]}, {}, on_change_submit )
-        %th= reservation.select(:reservation_id, Reservation.options_for_select(:allow_nil => true), {}, on_change_submit)
+        %th= select(reservation, :type, [['All', nil]] + %w{ConfirmationInvoice ReservationInvoice CustomInvoice DepositInvoice}.map{|x| [x, x]}, {}, on_change_submit )
+        %th= select(reservation, :reservation_id, Reservation.options_for_select(:allow_nil => true), {}, on_change_submit)
         %th
         %th= reservation.text_field :interval_start
         %th= reservation.text_field :interval_end

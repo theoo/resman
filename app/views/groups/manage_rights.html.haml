@@ -33,12 +33,12 @@
       for(var i = 0; i   element.options.length; ++i)
       element.options[i].selected = true;
       }
-      
+
       function compareOptionText(a,b)
       {
       return a.text != b.text ? a.text  b.text ? -1 : 1 : 0;
       }
-      
+
       function sortOptions(list)
       {
       var items = list.options.length;
@@ -52,30 +52,30 @@
       for( i=0; i  items; i++ )
       list.options[i] = new Option(tmpArray[i].text,tmpArray[i].value);
       }
-      
+
       function addOption(theSel, theText, theValue)
       {
       var newOpt = new Option(theText, theValue);
       var selLength = theSel.length;
       theSel.options[selLength] = newOpt;
       }
-      
+
       function deleteOption(theSel, theIndex)
       {
       var selLength = theSel.length;
       if(selLength &gt; 0)
       theSel.options[theIndex] = null;
       }
-      
+
       function moveOptions(theSelFrom, theSelTo)
       {
       var selLength = theSelFrom.length;
       var selectedText = new Array();
       var selectedValues = new Array();
       var selectedCount = 0;
-      
+
       var i;
-      
+
       \// Find the selected Options in reverse order
       \// and delete them from the 'from' Select.
       for(i=selLength-1; i&gt;=0; i--)
@@ -88,12 +88,12 @@
       selectedCount++;
       }
       }
-      
+
       \// Add the selected text/values in reverse order.
       \// This will add the Options to the 'to' Select
       \// in the same order as they were in the 'from' Select.
       for(i=selectedCount-1; i&gt;=0; i--)
       addOption(theSelTo, selectedText[i], selectedValues[i]);
-      
+
       sortOptions(theSelTo);
       }

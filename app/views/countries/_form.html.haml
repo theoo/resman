@@ -5,4 +5,4 @@
     %span= f.text_field :name
   %p
     = f.label :continent_name, {}, :class => :required
-    %span= f.select(:continent_id, Continent.options_for_select)
+    %span= select(f, :continent_id, Continent.options_for_select)

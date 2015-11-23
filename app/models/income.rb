@@ -1,5 +1,7 @@
 class Income < ActiveRecord::Base
 
+  extend  MoneyComposer
+
   Types = %w{ bvr bank cash credit_note accounting_correction }
 
   belongs_to    :invoice

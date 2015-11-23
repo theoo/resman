@@ -5,38 +5,38 @@
 
   pdf = PDF::Writer.new(:paper => "A4")
   pdf.margins_pt(36, 72, 36, 36)
-  
+
   @invoices.each_with_index do |invoice, i|
-    
+
     pdf.start_new_page unless i == 0
-    
+
     pdf.select_font "Helvetica"
     pdf.text " ", :font_size => 22
     #pdf.image "public/images/cstb.jpg", :justification => :center
     #pdf.text " ", :font_size => 12
 
-    
+
 ############################################################################################
 # ALL Variables Fields in PDF
 ############################################################################################
 
     dateINFO = Hash.new
-    dateINFO[:now]        = invoice.created_at.strftime('%d.%m.%Y').to_utf8 
-        
+    dateINFO[:now]        = invoice.created_at.strftime('%d.%m.%Y').to_utf8
+
     clientINFO = Hash.new
     clientINFO[:id]       = invoice.resident.id.to_s.to_utf8
     clientINFO[:room]     = invoice.room.name
     clientINFO[:company]  = " "
     clientINFO[:titre]    = " "
-    clientINFO[:name]     = invoice.resident.full_name.to_utf8 
+    clientINFO[:name]     = invoice.resident.full_name.to_utf8
     clientINFO[:address]  = "Av. du Mail 14".to_utf8
     clientINFO[:locality] = "1205 Geneve".to_utf8
-    
+
     invoiceINFO = Hash.new
     invoiceINFO[:id]      = invoice.id.to_s.to_utf8
     invoiceINFO[:debut]   = invoice.interval_start_formatted.to_utf8
     invoiceINFO[:fin]     = invoice.interval_end_formatted.to_utf8
-    
+
     monneyINFO = Hash.new
     monneyINFO[:francs]   = invoice.pdf_value.to_s.split('.')[0].to_utf8
     monneyINFO[:cents]    = invoice.pdf_value.to_s.split('.')[1].to_utf8
@@ -50,13 +50,13 @@
     #######################################
 
     # date
-    pdf.select_font "Helvetica" 
+    pdf.select_font "Helvetica"
     pdf.text "Geneve, le " + dateINFO[:now]  , :font_size => 12, :absolute_left => 323
     pdf.text " ", :font_size => 130
-    
+
     # info (relative position, ~top left)
     infos_tab = PDF::SimpleTable.new
-    infos_tab.data = [  
+    infos_tab.data = [
                        # { "1" => "<b>Date:</b>", "2"    => dateINFO[:now] },
                         { "1" => "<b>Facture No:</b>".to_utf8, "2"    => invoiceINFO[:id] },
                         { "1" => "<b>Numéro Client:</b>".to_utf8, "2" => clientINFO[:id] },
@@ -73,7 +73,7 @@
     infos_tab.orientation = :right
     infos_tab.render_on(pdf)
     pdf.text " ", :font_size => 15
-    
+
     # client address (absolute positionning)
     client = Array.new
     client << "<b>" + clientINFO[:company] + "</b>"
@@ -87,16 +87,16 @@
     end
 
     # invoice items table (variable lenght, starting on absolute positionning)
-    pdf.select_font "Helvetica" 
+    pdf.select_font "Helvetica"
     data_for_items  = Array.new
     invoice.pdf_items.each do |item|
       data_for_items << {'1' => item.name.to_utf8, '2' => item.value.to_s.to_utf8}
     end
     data_for_items << {'1' => "<b>TOTAL (CHF)</b>", '2' => "<b>#{invoice.pdf_value.to_s.to_utf8}</b>"}
-    
+
     items = PDF::SimpleTable.new
     items.columns["1"] = PDF::SimpleTable::Column.new("1") { |col| col.heading = "Prestation" }
-    items.columns["2"] = PDF::SimpleTable::Column.new("2") { |col| col.heading = "Montant" }               
+    items.columns["2"] = PDF::SimpleTable::Column.new("2") { |col| col.heading = "Montant" }
     items.column_order = [ "1", "2"]
     items.data = data_for_items
     items.show_headings = true
@@ -107,11 +107,11 @@
     items.minimum_space = 100
     items.protect_rows = 2
     items.inner_line_style = PDF::Writer::StrokeStyle.new(0.5)
-    items.outer_line_style = PDF::Writer::StrokeStyle.new(0.5)   
+    items.outer_line_style = PDF::Writer::StrokeStyle.new(0.5)
     items.font_size = 10
     items.show_lines = :none
     items.width = pdf.page_width - pdf.right_margin - pdf.left_margin
-    items.render_on(pdf)    
+    items.render_on(pdf)
     pdf.text " ", :font_size => 24
 
     # conditions
@@ -128,18 +128,18 @@
     #######################################
     # BVR
     #######################################
-     
+
     if @bvr == true
 
       # Address
-      pdf.select_font "Helvetica" 
+      pdf.select_font "Helvetica"
       x_address1 = 7.mm2pts
       x_address2 = 63.mm2pts
       y_address = 95.mm2pts
       mw_value_address = 60.mm2pts
 
       address = Array.new
-      tmp_address = "BANQUE CANTONALE DE GENEVE \n1211 GENEVE 2 \nEn faveur de \n<b>T 3225.31.34</b> \nAssociation St-Boniface \n1205 Gèneve"     
+      tmp_address = "BANQUE CANTONALE DE GENEVE \n1211 GENEVE 2 \nEn faveur de \n<b>T 3225.31.34</b> \nAssociation St-Boniface \n1205 Gèneve"
       tmp_address.each { |a| address << a }
 
       [ x_address1, x_address2 ].each do |x|
@@ -147,7 +147,7 @@
           pdf.add_text_wrap(x, y_address - (n * 10), mw_value_address, address[n].to_utf8, 8, :justification => :left)
         end
       end
-    
+
       x_client_address1 = 7.mm2pts
       y_client_address1 = 38.mm2pts
       x_client_address2 = 128.mm2pts
@@ -160,13 +160,13 @@
       client_address << clientINFO[:name]
       client_address << clientINFO[:address]
       client_address << clientINFO[:locality]
-    
+
       client_address.size.times do |n|
         pdf.add_text_wrap(x_client_address1, y_client_address1 - (n * 10), mw_value_address, client_address[n], 10, :justification => :left)
       end
       client_address.size.times do |n|
         pdf.add_text_wrap(x_client_address2, y_client_address2 - (n * 12), mw_value_address, client_address[n], 12, :justification => :left)
-      end    
+      end
 
       pdf.select_font "ocrb10" # make sure the font is installed on your system!
       x_ccp1 = 27.mm2pts
@@ -192,7 +192,7 @@
       pdf.add_text_wrap(x_value_francs2, y_value, mw_value_francs, monneyINFO[:francs], 12, :right) # francs
       pdf.add_text_wrap(x_value_cents2, y_value, mw_value_cents, monneyINFO[:cents], 12) # centimes
 
-      # reference code and coding line   
+      # reference code and coding line
       x_checksum = 115.mm2pts
       y_checksum = 70.mm2pts
       mw_value_checksum = 97.mm2pts
@@ -206,7 +206,7 @@
       # lower line (the longest)...
       x_modulo = 70.mm2pts # 64
       y_modulo = 18.mm2pts # 18
-      mw_value_modulo = 169.mm2pts # 169    
+      mw_value_modulo = 169.mm2pts # 169
       cntr = 0
       monneyINFO[:modulo].scan(/./).each do |c|
         pdf.add_text(x_modulo + cntr * 7, y_modulo, c, 10, 0)
@@ -214,9 +214,9 @@
       end
 
       # end BVR ###################################################################################
-      
-    else # bank account      
-       pdf.select_font "Helvetica" 
+
+    else # bank account
+       pdf.select_font "Helvetica"
        pdf.text " ", :font_size => 40
        pdf.text "<b>Coordonnées pour le versement bancaire:</b>".to_utf8, :font_size => 10
        pdf.text " ".to_utf8
@@ -228,7 +228,7 @@
          pdf.text " ".to_utf8
          pdf.text "IBAN : #{invoice.resident.bank_iban}".to_utf8
          pdf.text "BIC: #{invoice.resident.bank_bic_swift}".to_utf8
-         pdf.text "CLEARING : #{invoice.resident.bank_clearing}".to_utf8        
+         pdf.text "CLEARING : #{invoice.resident.bank_clearing}".to_utf8
        else
          pdf.text "Banque Cantonale de Genève".to_utf8
          pdf.text "1211 Genève 2 - Switzerland".to_utf8
@@ -238,7 +238,7 @@
          pdf.text " ".to_utf8
          pdf.text "IBAN : CH92 0078 8000 T322 5313 4".to_utf8
          pdf.text "BIC: BCGECHGGXXX".to_utf8
-         pdf.text "CLEARING : 788".to_utf8        
+         pdf.text "CLEARING : 788".to_utf8
        end
     end # if bvr
 

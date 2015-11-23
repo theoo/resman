@@ -13,12 +13,12 @@ reservations found
       %th= order_by_link(:status)
     - f.fields_for(search.conditions) do |reservation|
       %tr.listing_filter
-        %th= reservation.select(:resident_id, Resident.options_for_select(:allow_nil => true), {}, on_change_submit )
-        %th= reservation.select(:room_id, Room.options_for_select(:allow_nil => true), {}, on_change_submit )
+        %th= select(reservation, :resident_id, Resident.options_for_select(:allow_nil => true), {}, on_change_submit )
+        %th= select(reservation, :room_id, Room.options_for_select(:allow_nil => true), {}, on_change_submit )
         %th= reservation.text_field :arrival_gte
         %th= reservation.text_field :departure_lte
         %th
-          = reservation.select(:status, [['All', nil]] + Reservation::Status, {}, on_change_submit )
+          = select(reservation, :status, [['All', nil]] + Reservation::Status, {}, on_change_submit )
           %input{:style => "display:none", :type => "submit"}/
     - if reservations_count > 0
       - reservations.each do |reservation|

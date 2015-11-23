@@ -1,5 +1,7 @@
 class RoomOption < ActiveRecord::Base
 
+  extend  MoneyComposer
+
   Types = %w{ unique mensual }
 
   belongs_to  :room

@@ -9,7 +9,7 @@
       %span= f.text_field :value
     %p
       = f.label :payment, {}, :class => :required
-      %span= f.select :payment, Income::Types.map{ |t| [ t.humanize, t] }
+      %span= select f, :payment, Income::Types.map{ |t| [ t.humanize, t] }
     %p
       = f.label :received, {}, :class => :required
       %span

@@ -22,14 +22,14 @@
         %th= order_by_link(:status)
       - f.fields_for(@reservations) do |reservation|
         %tr.listing_filter
-          %th= reservation.select(:resident_id, Resident.options_for_select(:allow_nil => true), {}, |
+          %th= select(reservation, :resident_id, Resident.options_for_select(:allow_nil => true), {}, |
               {:onchange => "this.form.submit();"} )                                                |
-          %th= reservation.select(:room_id, Room.options_for_select(:allow_nil => true), {}, |
+          %th= select(reservation, :room_id, Room.options_for_select(:allow_nil => true), {}, |
               {:onchange => "this.form.submit();"} )                                        |
           %th
           %th
           %th
-            = reservation.select(:status, [['All', nil]] + Reservation::Status, {}, |
+            = select(reservation, :status, [['All', nil]] + Reservation::Status, {}, |
               {:onchange => "this.form.submit();"} )                                |
             %input{:style => "display:none", :type => "submit"}/
       - if @reservations_count > 0

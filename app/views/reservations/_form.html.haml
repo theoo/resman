@@ -11,7 +11,7 @@
     %p
       = f.label :status, {}, :class = :required
       %span
-        = f.select :status, Reservation::Status.map{ |s| [s.humanize, s] }
+        = select f, :status, Reservation::Status.map{ |s| [s.humanize, s] }
     %p
       = f.label :arrival, {}, :class = :required
       %span
@@ -29,7 +29,7 @@
       - options = rooms.map{ |room| [room.name, room.id] }
       - options = [['None available', 0]] if options.empty?
         %span
-          = f.select(:room_id, options, {},                                             |
+          = select(f, :room_id, options, {},                                             |
             { :onchange = remote_function(                                              |
             :method = :get,                                                             |
             :url = { :action = :ajax_room_options, :reservation_id = @reservation.id }, |
@@ -48,33 +48,33 @@
           = h @reservation.room
       :javascript
         //
-        <haml_silent>       if %w{new create}.include?(action_name) 
+        <haml_silent>       if %w{new create}.include?(action_name)
         </haml_silent><haml_block>		    document.observe("dom:loaded", function(){ $('reservation_room_id').onchange(); });
         </haml_block>
         			function dates_changed()
         			{
-        <haml_silent>  		   if %w{new create}.include?(action_name) 
+        <haml_silent>  		   if %w{new create}.include?(action_name)
         </haml_silent><haml_block>  				var arrival   = $('reservation_arrival_formatted').value;
           				var departure = $('reservation_departure_formatted').value;
-          				if (arrival.length > 0 && departure.length > 0) 
+          				if (arrival.length > 0 && departure.length > 0)
           				{
           					var selected_room_id = $('reservation_room_id')[$('reservation_room_id').selectedIndex].value
           					var reservation_id = '#{@reservation.id}';
           					new Ajax.Updater('reservation_room_id', '#{url_for(:action => :ajax_room_availables)}', {
-          						asynchronous:true, 
+          						asynchronous:true,
           						evalScripts:true,
           						method: 'get',
-          						parameters: { 
+          						parameters: {
           							arrival: arrival,
-          							departure: departure, 
+          							departure: departure,
           							selected_room_id: selected_room_id,
           							reservation_id: reservation_id
-          						},	
+          						},
           						onCreate: function(response) { Element.show('spinner') },
-          						onComplete: function(response) { Element.hide('spinner') }								
+          						onComplete: function(response) { Element.hide('spinner') }
           					});
           				}
-        </haml_block>			}			
+        </haml_block>			}
         	    //
     - if %w{new create}.include?(action_name)
       %p
