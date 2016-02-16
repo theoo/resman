@@ -1,0 +1,26 @@
+# This migration comes from acts_as_taggable_on_engine (originally 2)
+class AddMissingUniqueIndices < ActiveRecord::Migration
+  def self.up
+    # Previous version of acts_as_taggable omit this
+    add_column :taggings, :context, :string, limit: 128
+    add_column :taggings, :tagger_id, :integer
+    add_column :taggings, :tagger_type, :string
+
+    # Std migration (from gem)
+    add_index :tags, :name, unique: true
+
+    remove_index :taggings, :tag_id
+    remove_index :taggings, [:taggable_id, :taggable_type]
+    add_index :taggings,
+              [:tag_id, :taggable_id, :taggable_type, :context, :tagger_id, :tagger_type],
+              unique: true, name: 'taggings_idx'
+  end
+
+  def self.down
+    remove_index :tags, :name
+
+    remove_index :taggings, name: 'taggings_idx'
+    add_index :taggings, :tag_id
+    add_index :taggings, [:taggable_id, :taggable_type, :context]
+  end
+end

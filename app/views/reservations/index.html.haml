@@ -3,20 +3,20 @@
   .infos
     = @reservations.count
     reservations found
-  %br/
+  %br
   = form_for(:search) do |f|
     from
-    \#{select_month(@from, { :field_name => 'from][month', :use_short_month => true}, :onchange => 'this.form.submit();')}
-    \#{select_year(@from, { :field_name => 'from][year'}, :onchange => 'this.form.submit();')}
+    = select_month(@from, { :field_name => 'from][month', :use_short_month => true}, :onchange => 'this.form.submit();')
+    = select_year(@from, { :field_name => 'from][year'}, :onchange => 'this.form.submit();')
     to
-    \#{select_month(@to, { :field_name => 'to][month', :use_short_month => true}, :onchange => 'this.form.submit();')}
-    \#{select_year(@to, { :field_name => 'to][year'}, :onchange => 'this.form.submit();')}
-    %br/
-    %br/
+    = select_month(@to, { :field_name => 'to][month', :use_short_month => true}, :onchange => 'this.form.submit();')
+    = select_year(@to, { :field_name => 'to][year'}, :onchange => 'this.form.submit();')
+    %br
+    %br
     %table#reservations
       %tr
-        %th= order_by_link({:resident => [:last_name, :first_name]}, :text => 'Resident')
-        %th= order_by_link({:room => :name}, :text => 'Room')
+        %th= order_by_link("resident_last_name", :text => 'Resident')
+        %th= order_by_link("room_name", :text => 'Room')
         %th= order_by_link(:arrival)
         %th= order_by_link(:departure)
         %th= order_by_link(:status)
@@ -43,10 +43,10 @@
       - else
         %tr
           %td{:colspan => "5"}
-            %br>/
+            %br
             No reservations found.
-            %br/
-            %br/
+            %br
+            %br
   = will_paginate @reservations
   .actions
     = link_to 'New Reservation', new_reservation_path, :class => :fake_button

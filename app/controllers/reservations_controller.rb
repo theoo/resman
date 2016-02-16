@@ -7,29 +7,21 @@ class ReservationsController < ApplicationController
   end
 
   def index
-    @from = Date.today
-    @to   = Date.today
 
     if params[:date]
       @from = Date.new(params[:date][:from][:year].to_i, params[:date][:from][:month].to_i, 1)
       @to   = Date.new(params[:date][:to][:year].to_i, params[:date][:to][:month].to_i, 1).end_of_month
+    else
+      @from = Date.today
+      @to   = Date.today
     end
 
     @to = @from if @to < @from
 
-    @q = Reservation.where("arrival < ? AND departure > ?", @to, @from)
-    # @q.includes([:room, :resident])
-
-    # ORDERING
-    # params[:order][:attr] format can be a string or a hash like "resident => [:first_name, :last_name]"
-    @q = @q.order_by_link_query(params[:order]) if params[:order]
-
-    @reservations_count = @q.count
-
-    # PAGINATION
-    @q = @q.paginate page: params[:page]
-
-    @reservations = @q
+    @q = Reservation.joins(:resident, :room)
+      .where("arrival < ? AND departure > ?", @to, @from)
+      .search(params[:q])
+    @reservations = @q.result.page(params[:page])
   end
 
   def planning

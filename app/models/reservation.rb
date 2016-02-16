@@ -5,6 +5,35 @@ class Reservation < ActiveRecord::Base
 
   Status = %w{ pending confirmed cancelled }
 
+  scope :find_by_in, -> (days = 7) {
+    where("arrival > ? AND arrival < ? AND status != 'cancelled'", Date.today, Date.today + days.day)
+    .order('arrival ASC')
+  }
+
+  scope :find_by_out, -> (days = 7) {
+    where("departure > ? AND departure < ? and status != 'cancelled'", Date.today, Date.today + days.day)
+    .order('departure ASC')
+  }
+
+  scope :cancelled, -> { where(status: 'cancelled') }
+  scope :actives, -> { where.not(status: 'cancelled') }
+
+  # TODO compare
+  scope :unbilled_reservations, -> (date = Date.today) {
+    tag_to_ignore = Option.value('tag_to_ignore')
+
+    ur = Reservation.joins(:resident, :tags)
+      .where.not(status: 'cancelled')
+      .where.not("tags.name" => tag_to_ignore)
+      .where("arrival <= ?", date)
+      .order("residents.last_name", "residents.first_name")
+
+    # FIXME use cached value on reservation
+    ur.to_a.reject!{ |r| r.arrival > date || r.reservation_invoices_generated?(r.arrival, date) }
+    ur
+    # FIXME return AREL object
+  }
+
   belongs_to  :resident
   belongs_to  :room
 
@@ -38,11 +67,26 @@ class Reservation < ActiveRecord::Base
     as: :entity,
     dependent: :destroy
 
+  has_many :tags,
+    through: :resident
+
   validates_presence_of   :room_id
   validates_inclusion_of  :status, in: Status
 
   formatted_date :arrival, :departure
   log_after :create, :update, :destroy
+
+  class << self
+
+    def options_for_select(hash = {})
+      arr = find(:all, include: [:resident, :room], order_by: [:room_id, :arrival]).map do |reservation|
+        [reservation.to_s, reservation.id]
+      end
+      arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
+      arr
+    end
+
+  end
 
   def validate
     errors.add :resident_full_name, 'must be set' unless self.resident && self.resident.valid?
@@ -65,13 +109,6 @@ class Reservation < ActiveRecord::Base
     end
   end
 
-  def self.options_for_select(hash = {})
-    arr = find(:all, include: [:resident, :room], order_by: [:room_id, :arrival]).map do |reservation|
-      [reservation.to_s, reservation.id]
-    end
-    arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
-    arr
-  end
 
   def resident_full_name
     self.resident ? self.resident.full_name : nil
@@ -157,6 +194,7 @@ class Reservation < ActiveRecord::Base
   end
 
   # TODO rewrite this with a named scope?
+  # @note FIXME old, slow, stupid and inapropriate. Use cached values in reservation itself and callbacks when recording  invoices
   def reservation_invoices_generated?(start_date, end_date, explain = false)
     inv = self.reservation_invoices
 
@@ -237,29 +275,8 @@ class Reservation < ActiveRecord::Base
     true
   end
 
-  def self.find_by_in(days = 7)
-    self.where("arrival > ? AND arrival < ? AND status != 'cancelled'", Date.today, Date.today + days.day).order('arrival ASC')
-    # find(:all, :conditions => { :arrival_gte => Date.today, :arrival_lte => (Date.today + days.day), :status_ne => 'cancelled' }, :order => :arrival)
-  end
-
-  def self.find_by_out(days = 7)
-    self.where("departure > ? AND departure < ? and status != 'cancelled'", Date.today, Date.today + days.day).order('departure ASC')
-    # find(:all, :conditions => { :departure_gte => Date.today, :departure_lte => (Date.today + days.day), :status_ne => 'cancelled' }, :order_by => :departure)
-  end
-
   def to_s
     "#{resident.full_name}, room #{room} (#{interval_string})"
-  end
-
-  def self.unbilled_reservations(date = Date.today)
-
-    ur = Reservation.all(conditions: { status_ne: 'cancelled',
-                                          arrival_lte: date,
-                                          resident_id_ne: Resident.find_tagged_with(Option.value('tag_to_ignore')) },
-                    order_by: { resident: [:last_name, :first_name] })
-
-    ur.reject!{ |r| r.arrival > date || r.reservation_invoices_generated?(r.arrival, date) }
-    ur
   end
 
 end

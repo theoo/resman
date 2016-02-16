@@ -5,9 +5,9 @@
     - if action_name == 'edit'
       %span
         = @reservation.resident.full_name
-      - else
-        %span= text_field_with_auto_complete :reservation, :resident_full_name, {:class = 'bigger'}, :method = :get, :skip_style = true
-        (tip: last name, first name)
+    - else
+      %span= text_field_with_auto_complete :reservation, :resident_full_name, {:class = 'bigger'}, :method = :get, :skip_style = true
+      (tip: last name, first name)
     %p
       = f.label :status, {}, :class = :required
       %span

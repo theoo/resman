@@ -1,16 +1,5 @@
 Rails.application.routes.draw do
 
-  # Autocomplete (http://codeintensity.blogspot.com/2008/02/auto-complete-text-fields-in-rails-2.html)
-  # auto_complete ':controller/:action',
-  #                   :requirements => { :action => /auto_complete_for_\S+/ },
-  #                   :conditions => { :method => :get }
-
-  # Ajax
-  # ajax          ':controller/:action',
-  #                   :requirements => { :action => /ajax_\S+/ },
-  #                   :conditions => { :method => :get }
-
-  # Resources
   resources :activities
   resources :buildings
   resources :comments do

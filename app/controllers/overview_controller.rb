@@ -3,9 +3,14 @@ class OverviewController < ApplicationController
   auto_complete_for :room, :name
 
   def index
-    @in_reservations = Reservation.find_by_in.reject{ |obj| obj.resident.tag_list.include?(Option.value('tag_to_ignore')) }
-    @out_reservations = Reservation.find_by_out.reject{ |obj| obj.resident.tag_list.include?(Option.value('tag_to_ignore')) }
-    @unread_comments = Comment.where(read: false).order('created_at DESC')
+    tag_to_ignore = Option.value('tag_to_ignore')
+
+    @in_reservations = Reservation.find_by_in
+      .reject{ |obj| obj.resident.tag_list.include?(tag_to_ignore) }
+    @out_reservations = Reservation.find_by_out
+      .reject{ |obj| obj.resident.tag_list.include?(Option.value('tag_to_ignore')) }
+    @unread_comments = Comment.where(read: false)
+      .order('created_at DESC')
   end
 
   def summary
@@ -21,8 +26,8 @@ class OverviewController < ApplicationController
 
   def statistics
     # FIXME what if there's no reservations?
-    @from = Reservation.first(order_by: :arrival).arrival
-    @to   = Reservation.last(order_by: :departure).departure
+    @from = Reservation.order(:arrival).first.arrival
+    @to   = Reservation.order(:departure).last.departure
 
     if params[:date]
       @from = Date.new(params[:date][:from][:year].to_i, params[:date][:from][:month].to_i, 1)
