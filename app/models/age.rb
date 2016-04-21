@@ -4,22 +4,29 @@ class Age
     @residents = Age.find_by_age(args)
   end
 
-  def self.find_by_age( age = nil, reservation_from = (Time.now - 1.year), reservation_to = Time.now )
+  class << self
+    def find_by_age( age = nil, reservation_from = (Time.now - 1.year), reservation_to = Time.now )
 
-    if age
-      birthdate_interval = (Time.now - age.last.years)..(Time.now - age.first.years)
-    else
-      birthdate_interval = nil
+      if age
+        birthdate_interval = (Time.now - age.last.years)..(Time.now - age.first.years)
+      else
+        birthdate_interval = nil
+      end
+
+      Resident.joins(:reservations, :tags)
+        .where("? < arrival AND departure <= ?", reservation_from, reservation_to)
+        .where.not("tags.name" => Option.value('tag_to_ignore'))
+        .where(birthdate: birthdate_interval)
+        .uniq
     end
 
-    Resident.all( conditions: { reservations: { arrival_gt: reservation_from, departure_lte: reservation_to },
-                                   group: { tags: { name_is_blank: true, or_name_ne: Option.value('tag_to_ignore') } },
-                                   birthdate: birthdate_interval
-                                 } )
-  end
+    def find(*args)
+      Resident.find(args)
+    end
 
-  def self.find(*args)
-    Resident.find(args)
+    def where(*args)
+      Resident.where(*args)
+    end
   end
 
 end

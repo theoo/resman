@@ -78,6 +78,35 @@ module ApplicationHelper
     sort_link(@q, to, text, default_order: :desc)
   end
 
+  def current_page?(*args)
+
+    args.each do |page|
+      return true if super(page)
+    end
+
+    false
+
+  end
+
+  # build the container for error messages
+  def error_messages_for(obj)
+    if obj.errors && obj.errors.any?
+      haml_tag :div, class: 'alert alert-danger' do
+        haml_tag :h2 do
+          haml_concat I18n.t('activerecord.errors.template.header', model: 'model', count: obj.errors.count)
+        end
+        haml_tag :p, I18n.t('activerecord.errors.template.body')
+        haml_tag :ul do
+          obj.errors.messages.each_pair do |key,msg|
+            haml_tag :li do
+              haml_tag :b, key.to_s.humanize + ":"
+              haml_concat msg.join(", ")
+            end
+          end
+        end
+      end
+    end
+  end
 
   #   # Hack so right works (this is very ugly)
   #   menu.reject do |m|

@@ -1,5 +1,5 @@
 %h1 Statistics
-= form_tag(statistics_overview_path, :method => :get) do
+= form_tag(statistics_overview_index_path, :method => :get) do
   = submit_tag 'Compute'
   from
   \#{select_month(@from, :field_name => 'from][month', :use_short_month => true)}
@@ -7,34 +7,41 @@
   to
   \#{select_month(@to, :field_name => 'to][month', :use_short_month => true)}
   \#{select_year(@to, :field_name => 'to][year')}
-= render :partial => 'listing', :locals => { :name => 'Countries', :collection => @countries, :from => @from, :to => @to }
-= render :partial => 'listing', :locals => { :name => 'Continents', :collection => @continents, :from => @from, :to => @to }
-= render :partial => 'listing', :locals => { :name => 'Religions', :collection => @religions, :from => @from, :to => @to }
-= render :partial => 'listing', :locals => { :name => 'Schools', :collection => @schools, :from => @from, :to => @to }
-= render :partial => 'listing', :locals => { :name => 'Institutes', :collection => @institutes, :from => @from, :to => @to }
+
+= render :partial => 'listing',
+  :locals => { :name => 'Countries', :collection => @countries, :from => @from, :to => @to }
+= render :partial => 'listing',
+  :locals => { :name => 'Continents', :collection => @continents, :from => @from, :to => @to }
+= render :partial => 'listing',
+  :locals => { :name => 'Religions', :collection => @religions, :from => @from, :to => @to }
+= render :partial => 'listing',
+  :locals => { :name => 'Schools', :collection => @schools, :from => @from, :to => @to }
+= render :partial => 'listing',
+  :locals => { :name => 'Institutes', :collection => @institutes, :from => @from, :to => @to }
+
 %h3 by Ages
 .listing
   %table
     %tr
       %th
       %th  Total 
-    %tr{:onclick => "window.location='#{residents_overview_path(:class => "Age", :id => @ages['0-20'].map().join("|"), :from => @from.to_s(:formatted), :to => @to.to_s(:formatted))}'"}
+    %tr{:onclick => "window.location='#{residents_overview_index_path(:class => "Age", :id => @ages['0-20'].map(&:id), :from => @from.to_s(:formatted), :to => @to.to_s(:formatted))}'"}
       %td 0-20
       %td
         %b= @ages['0-20'].size
-    %tr
+    %tr{:onclick => "window.location='#{residents_overview_index_path(:class => "Age", :id => @ages['20-25'].map(&:id), :from => @from.to_s(:formatted), :to => @to.to_s(:formatted))}'"}
       %td 20-25
       %td
         %b= @ages['20-25'].size
-    %tr
+    %tr{:onclick => "window.location='#{residents_overview_index_path(:class => "Age", :id => @ages['25-30'].map(&:id), :from => @from.to_s(:formatted), :to => @to.to_s(:formatted))}'"}
       %td 25-30
       %td
         %b= @ages['25-30'].size
-    %tr
+    %tr{:onclick => "window.location='#{residents_overview_index_path(:class => "Age", :id => @ages['30-180'].map(&:id), :from => @from.to_s(:formatted), :to => @to.to_s(:formatted))}'"}
       %td 30+
       %td
         %b= @ages['30-180'].size
-    %tr
+    %tr{:onclick => "window.location='#{residents_overview_index_path(:class => "Age", :id => @ages[nil].map(&:id), :from => @from.to_s(:formatted), :to => @to.to_s(:formatted))}'"}
       %td Unknown
       %td
         %b= @ages[nil].size

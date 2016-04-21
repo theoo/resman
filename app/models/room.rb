@@ -29,7 +29,7 @@ class Room < ActiveRecord::Base
   end
 
   def self.available_rooms(start_date, end_date, rooms_to_include = nil)
-    return self.find(:all) unless start_date && end_date
+    return all unless start_date && end_date
     return [] if start_date >= end_date
 
     reservations = Reservation.find(:all, conditions: { arrival_lt: end_date, departure_gt: start_date, status_ne: 'cancelled' })

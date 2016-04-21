@@ -2,8 +2,9 @@ class ReservationsController < ApplicationController
 
   def auto_complete_for_reservation_resident_full_name
     name = params[:reservation][:resident_full_name]
-    @residents = Resident.find(:all, conditions: { or_last_name_sw: name, or_first_name_sw: name }, order_by: [:last_name, :first_name])
-    render inline: "<%= content_tag(:ul, @residents.map { |r| content_tag(:li, h(r)) }) -%>"
+    @residents = Resident.where("first_name REGEXP ? OR last_name REGEXP ?", name, name)
+      .order(:last_name, :first_name)
+    render json: @residents.to_json(only: [:first_name, :last_name])
   end
 
   def index
@@ -22,9 +23,11 @@ class ReservationsController < ApplicationController
       .where("arrival < ? AND departure > ?", @to, @from)
       .search(params[:q])
     @reservations = @q.result.page(params[:page])
+
   end
 
   def planning
+
     @duration = 90
 
     @start = params[:start_date] ? params[:start_date].to_default_date : Date.today
@@ -34,6 +37,7 @@ class ReservationsController < ApplicationController
     @planning = Room.order(:name).inject([]) do |arr, room|
       arr << {room: room, reservations: room.reservations.where("status != 'cancelled' AND arrival < ? AND departure > ?", @stop, @start).order(:arrival)}
     end
+
   end
 
   def show

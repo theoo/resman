@@ -40,7 +40,11 @@ Rails.application.routes.draw do
   resources :religions
   resources :reservations do
     collection do
-      get 'planning'
+      get 'planning',
+        'ajax_room_options',
+        'ajax_room_availables',
+        'auto_complete_for_reservation_resident_full_name'
+      post 'auto_complete_for_reservation_resident_full_name'
     end
     resources :reservation_options, as: :options
   end

@@ -11,17 +11,14 @@ class Resident < ActiveRecord::Base
   belongs_to  :religion
   belongs_to  :school
 
-  has_many    :reservations, -> { order('arrival, departure') },
-    dependent: :destroy
+  has_one     :continent, through: :country
+  has_one     :institute, through: :school
+  has_many    :reservations, -> { order('arrival, departure') }, dependent: :destroy
 
-  has_many    :invoices,
-    through: :reservations
-  has_many    :incomes,
-    through: :invoices
+  has_many    :invoices, through: :reservations
+  has_many    :incomes, through: :invoices
 
-  has_many    :comments,
-    as: :entity,
-    dependent: :destroy
+  has_many    :comments, as: :entity, dependent: :destroy
 
   validates_presence_of   :first_name, :last_name
   validates_uniqueness_of :first_name, scope: :last_name
@@ -35,39 +32,40 @@ class Resident < ActiveRecord::Base
   scope :women, -> { where(gender: 'woman').order('last_name,first_name ASC') }
   scope :unknown, -> { where(gender: '').order('last_name,first_name ASC') }
 
+  scope :reserved, -> (from, to) {
+    joins(:reservations, :tags)
+      .where("? <= arrival AND departure < ?", from, to)
+      .where.not("tags.name" => Option.value('tag_to_ignore'))
+      .uniq
+  }
+
   def cleanup_tags
     # reset tags relationship to cleanup join table.
     self.tag_list = []
   end
 
-  def self.decompose_full_name(str)
-    arr = str.split
-    { last_name: arr.shift, first_name: arr.join(' ') }
-  end
+  class << self
 
-  def self.find_by_full_name(str)
-    hash = decompose_full_name(str)
-    results = self.find(:all, conditions: { last_name_like: hash[:last_name], first_name_like: hash[:first_name].split.last })
-    results.each do |r|
-      return r if r.full_name == str
+    def decompose_full_name(str)
+      arr = str.split
+      { last_name: arr.shift, first_name: arr.join(' ') }
     end
-    nil
-  end
 
-  def self.options_for_select(hash = {})
-    arr = self.order('last_name, first_name').map { |r| [r.full_name, r.id] }
-    arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
-    arr
-  end
+    def find_by_full_name(str)
+      hash = decompose_full_name(str)
+      results = find(:all, conditions: { last_name_like: hash[:last_name], first_name_like: hash[:first_name].split.last })
+      results.each do |r|
+        return r if r.full_name == str
+      end
+      nil
+    end
 
-  def continent
-    return nil unless country
-    country.continent
-  end
+    def options_for_select(hash = {})
+      arr = order('last_name, first_name').map { |r| [r.full_name, r.id] }
+      arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
+      arr
+    end
 
-  def institute
-    return nil unless school
-    school.institute
   end
 
   def full_name

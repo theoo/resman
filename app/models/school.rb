@@ -1,8 +1,9 @@
 class School < ActiveRecord::Base
 
-  has_many        :residents,
-    dependent: :nullify
-  belongs_to      :institute
+  has_many   :residents, dependent: :nullify
+  belongs_to :institute
+  has_many   :reservations, through: :residents
+  has_many   :tags, through: :residents
 
   validates_presence_of     :institute_id
   validates_presence_of     :name

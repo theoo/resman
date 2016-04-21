@@ -1,6 +1,8 @@
 class Religion < ActiveRecord::Base
 
-  has_many  :residents, dependent: :nullify
+  has_many :residents, dependent: :nullify
+  has_many :reservations, through: :residents
+  has_many :tags, through: :residents
 
   validates_presence_of     :name
   validates_uniqueness_of   :name

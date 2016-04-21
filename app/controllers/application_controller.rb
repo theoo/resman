@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery
+
+  # UI don't relay CSRF, need to upgrade all views in a first place !
+  # protect_from_forgery
 
   helper :all
 
@@ -22,7 +24,7 @@ class ApplicationController < ActionController::Base
   end
 
   def rights_required
-    return if current_user.id == params[:id].to_i && self.class.to_s == 'UsersController' && self.action_name == 'edit'
+    return if current_user.id == params[:id].try(:to_i) && self.class.to_s == 'UsersController' && self.action_name == 'edit'
     redirect_to(denied_path) unless current_user.has_access?(self.class.to_s, self.action_name)
   end
 

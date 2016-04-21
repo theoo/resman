@@ -34,13 +34,14 @@ class OverviewController < ApplicationController
       @to   = Date.new(params[:date][:to][:year].to_i, params[:date][:to][:month].to_i, 1).end_of_month
     end
 
-    conditions = { residents: { reservations: { arrival_lte: @to, departure_gt: @from }, group: { tags: { name_is_blank: true, or_name_ne: Option.value('tag_to_ignore') } } } }
-
-    @countries = Country.find(:all, conditions: conditions)
-    @continents = Continent.find(:all, conditions: conditions)
-    @religions = Religion.find(:all, conditions: conditions)
-    @schools = School.find(:all, conditions: conditions)
-    @institutes = Institute.find(:all, conditions: conditions)
+    %w(country continent religion school institute).each do |k|
+      arel = k.capitalize.constantize
+        .joins(:reservations, :tags)
+        .where(" ? <= arrival AND departure < ?", @from, @to)
+        .where.not("tags.name" => Option.value('tag_to_ignore'))
+        .uniq
+      instance_variable_set "@" + k.pluralize, arel
+    end
 
     @ages = {}
     [0..20, 20..25, 25..30, 30..180, nil].each do |i|
@@ -57,7 +58,14 @@ class OverviewController < ApplicationController
 
     @from = params[:from] ? params[:from].to_default_date : Reservation.first(order_by: :arrival).arrival
     @to = params[:to] ? params[:to].to_default_date : Reservation.last(order_by: :departure).departure
-    @object = params[:class].constantize.find(params[:id])
+    if %w(Resident Age).include? params[:class]
+      @object = params[:class].constantize
+        .where(id: params[:id])
+    else
+      @object = Resident.joins(params[:class].downcase.to_sym)
+        .where("#{params[:class].downcase.pluralize}.id" => params[:id])
+        .uniq
+    end
 
   end
 

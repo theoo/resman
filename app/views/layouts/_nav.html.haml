@@ -1,86 +1,71 @@
 
-%ul#menu{class: "depth0"}
+%ul#menu
   %li{class: ('current_action' if current_page?(overview_index_path) or current_page?("/"))}
-    %div
-      = link_to(t('dashboard'), overview_index_path)
-      - classes = ['depth1']
-      - classes << 'current_action' if current_page?(overview_index_path) or current_page?("/")
-      %ul{class: classes.join(" ")}
-        %li{class: ('current_action' if current_page?(overview_index_path) or current_page?("/"))}
-          = link_to(t('home'), overview_index_path)
-        %li{class: ('current_action' if current_page?(statistics_overview_index_path))}
-          = link_to(t('statistics'), statistics_overview_index_path)
-        %li{class: ('current_action' if current_page?(inout_overview_index_path))}
-          = link_to(t('in_out'), inout_overview_index_path)
+    = link_to(t('dashboard'), overview_index_path)
+    %ul
+      %li{class: ('current_action' if current_page?(overview_index_path) or current_page?("/"))}
+        = link_to(t('home'), overview_index_path)
+      %li{class: ('current_action' if current_page?(statistics_overview_index_path))}
+        = link_to(t('statistics'), statistics_overview_index_path)
+      %li{class: ('current_action' if current_page?(inout_overview_index_path))}
+        = link_to(t('in_out'), inout_overview_index_path)
 
-  %li{class: ('current_action' if current_page?(reservations_path))}
-    %div
-      = link_to(t('reservations'), reservations_path)
-      - classes = ['depth1']
-      - classes << 'current_action' if current_page?(reservations_path)
-      %ul{class: classes.join(" ")}
-        %li{class: ('current_action' if current_page?(planning_reservations_path))}
-          = link_to(t('planning'), planning_reservations_path)
-        %li{class: ('current_action' if current_page?(new_reservation_path))}
-          = link_to(t('new'), new_reservation_path)
-        %li{class: ('current_action' if current_page?(reservations_path))}
-          = link_to(t('list'), reservations_path)
+  %li{class: ('current_action' if current_page?(reservations_path, planning_reservations_path, new_reservation_path))}
+    = link_to(t('reservations'), reservations_path)
+    %ul
+      %li{class: ('current_action' if current_page?(planning_reservations_path))}
+        = link_to(t('planning'), planning_reservations_path)
+      %li{class: ('current_action' if current_page?(new_reservation_path))}
+        = link_to(t('new'), new_reservation_path)
+      %li{class: ('current_action' if current_page?(reservations_path))}
+        = link_to(t('list'), reservations_path)
 
   %li{class: ('current_action' if current_page?(residents_path))}
-    %div
-      = link_to(t('reservations'), residents_path)
-      - classes = ['depth1']
-      - classes << 'current_action' if current_page?(residents_path)
-      %ul{class: classes.join(" ")}
-        %li{class: ('current_action' if current_page?(new_resident_path))}
-          = link_to(t('new'), new_resident_path)
-        %li{class: ('current_action' if current_page?(residents_path))}
-          = link_to(t('list'), residents_path)
+    = link_to(t('reservations'), residents_path)
+    %ul
+      %li{class: ('current_action' if current_page?(new_resident_path))}
+        = link_to(t('new'), new_resident_path)
+      %li{class: ('current_action' if current_page?(residents_path))}
+        = link_to(t('list'), residents_path)
 
   %li{class: ('current_action' if current_page?(summary_overview_index_path))}
-    %div
-      = link_to(t('administration'), summary_overview_index_path)
-      - classes = ['depth1']
-      - classes << 'current_action' if current_page?(summary_overview_index_path)
-      %ul{class: classes.join(" ")}
-        %li{class: ('current_action' if current_page?(invoices_path))}
-          = link_to(t('invoices'), invoices_path)
-        %li{class: ('current_action' if current_page?(incomes_path))}
-          = link_to(t('incomes'), incomes_path)
+    = link_to(t('administration'), summary_overview_index_path)
+    %ul
+      %li{class: ('current_action' if current_page?(invoices_path))}
+        = link_to(t('invoices'), invoices_path)
+      %li{class: ('current_action' if current_page?(incomes_path))}
+        = link_to(t('incomes'), incomes_path)
 
   - classes = ['last_item']
   - classes << 'current_action' if current_page?(summary_overview_index_path)
   %li{class: classes.join(" ")}
-    %div
-      = link_to(t('preferences'), preferences_overview_index_path)
-      - classes = ['depth1']
-      - classes << 'current_action' if current_page?(preferences_overview_index_path)
-      %ul{class: classes.join(" ")}
-        %li{class: ('current_action' if current_page?(preferences_overview_index_path))}
-          = link_to(t('summary'), preferences_overview_index_path)
-        %li{class: ('current_action' if current_page?(activities_path))}
-          = link_to(t('activities'), activities_path)
-        %li{class: ('current_action' if current_page?(comments_path))}
-          = link_to(t('comments'), comments_path)
-        %li{class: ('current_action' if current_page?(rates_path))}
-          = link_to(t('rates'), rates_path)
-        %li{class: ('current_action' if current_page?(continents_path))}
-          = link_to(t('continents'), continents_path)
-        %li{class: ('current_action' if current_page?(countries_path))}
-          = link_to(t('countries'), countries_path)
-        %li{class: ('current_action' if current_page?(religions_path))}
-          = link_to(t('religions'), religions_path)
-        %li{class: ('current_action' if current_page?(institutes_path))}
-          = link_to(t('institutes'), institutes_path)
-        %li{class: ('current_action' if current_page?(schools_path))}
-          = link_to(t('schools'), schools_path)
-        %li{class: ('current_action' if current_page?(buildings_path))}
-          = link_to(t('buildings'), buildings_path)
-        %li{class: ('current_action' if current_page?(rooms_path))}
-          = link_to(t('rooms'), rooms_path)
-        %li{class: ('current_action' if current_page?(users_path))}
-          = link_to(t('users'), users_path)
-        %li{class: ('current_action' if current_page?(groups_path))}
-          = link_to(t('grpups'), groups_path)
-        %li{class: ('current_action' if current_page?(options_path))}
-          = link_to(t('options'), options_path)
+    = link_to(t('preferences'), preferences_overview_index_path)
+    %ul
+      %li{class: ('current_action' if current_page?(preferences_overview_index_path))}
+        = link_to(t('summary'), preferences_overview_index_path)
+      %li{class: ('current_action' if current_page?(activities_path))}
+        = link_to(t('activities'), activities_path)
+      %li{class: ('current_action' if current_page?(comments_path))}
+        = link_to(t('comments'), comments_path)
+      %li{class: ('current_action' if current_page?(rates_path))}
+        = link_to(t('rates'), rates_path)
+      %li{class: ('current_action' if current_page?(continents_path))}
+        = link_to(t('continents'), continents_path)
+      %li{class: ('current_action' if current_page?(countries_path))}
+        = link_to(t('countries'), countries_path)
+      %li{class: ('current_action' if current_page?(religions_path))}
+        = link_to(t('religions'), religions_path)
+      %li{class: ('current_action' if current_page?(institutes_path))}
+        = link_to(t('institutes'), institutes_path)
+      %li{class: ('current_action' if current_page?(schools_path))}
+        = link_to(t('schools'), schools_path)
+      %li{class: ('current_action' if current_page?(buildings_path))}
+        = link_to(t('buildings'), buildings_path)
+      %li{class: ('current_action' if current_page?(rooms_path))}
+        = link_to(t('rooms'), rooms_path)
+      %li{class: ('current_action' if current_page?(users_path))}
+        = link_to(t('users'), users_path)
+      %li{class: ('current_action' if current_page?(groups_path))}
+        = link_to(t('grpups'), groups_path)
+      %li{class: ('current_action' if current_page?(options_path))}
+        = link_to(t('options'), options_path)

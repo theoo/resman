@@ -1,7 +1,6 @@
-- conditions = { :reservations => { :arrival_lte => @to, :departure_gt => @from }, :group => { :tags => { :name_is_blank => true, :or_name_ne => Option.value('tag_to_ignore') } } }
 %h1
-  Residents from #{@object.name} presents during the period #{"#{@from.to_s(:formatted)} - #{@to.to_s(:formatted)}"}
-%h3 Men
+  Residents from #{params[:class]} presents during the period #{"#{@from.to_s(:formatted)} - #{@to.to_s(:formatted)}"}
+%h3= "#{@object.men.reserved(@from, @to).count} Men"
 .listing
   %table
     %tr
@@ -11,7 +10,7 @@
       %th  Religion 
       %th  Institute 
       %th  School 
-    - @object.residents.men.all(:conditions => conditions).each do |resident|
+    - @object.men.reserved(@from, @to).each do |resident|
       %tr{:onclick => "window.location='#{resident_path(resident)}'"}
         %td= h resident.last_name
         %td= h resident.first_name
@@ -19,7 +18,7 @@
         %td= h resident.religion
         %td= h resident.institute
         %td= h resident.school
-%h3 Women
+%h3= "#{@object.women.reserved(@from, @to).count} Women"
 .listing
   %table
     %tr
@@ -29,7 +28,7 @@
       %th  Religion 
       %th  Institute 
       %th  School 
-    - @object.residents.women.all(:conditions => conditions).each do |resident|
+    - @object.women.reserved(@from, @to).each do |resident|
       %tr{:onclick => "window.location='#{resident_path(resident)}'"}
         %td= h resident.last_name
         %td= h resident.first_name
@@ -37,7 +36,7 @@
         %td= h resident.religion
         %td= h resident.institute
         %td= h resident.school
-%h3 Unknown
+%h3= "#{@object.unknown.reserved(@from, @to).count} Unknown"
 .listing
   %table
     %tr
@@ -47,7 +46,7 @@
       %th  Religion 
       %th  Institute 
       %th  School 
-    - @object.residents.unknown.all(:conditions => conditions).each do |resident|
+    - @object.unknown.reserved(@from, @to).each do |resident|
       %tr{:onclick => "window.location='#{resident_path(resident)}'"}
         %td= h resident.last_name
         %td= h resident.first_name

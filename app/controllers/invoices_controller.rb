@@ -12,6 +12,7 @@ class InvoicesController < ApplicationController
   end
 
   def index
+
     @q = Invoice.search(params[:q])
     @q.include = [{reservation: [:room, :resident]}, :items]
     @q.order_by = [ :interval_start, :interval_end ]

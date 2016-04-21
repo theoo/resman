@@ -207,62 +207,64 @@ div
   font-family: verdana
   font-size: 10px
 
-ul.depth0 a
-  text-decoration: none
-  color: #333
+  ul#menu
 
-#nav
-  a:hover
-    color: #86a486
-    background-color: #86a486
-  ul
-    li
-      float: left
+    height: 20px
+    padding: 50px 3% 0 3%
+    background-repeat: no-repeat
+    background-position: bottom left
+    font-weight: bold
+
+    a
+      text-decoration: none
+      color: #333
+
     a:hover
       color: #fff
+      background-color: #5b735b
+
     li
-      &:hover > a
-        color: #fff
+      height: 20px
+      margin: 0
+
+    &>li
+      float: left
+      margin-right: 20px
+
       &.last_item
         float: right
 
-  .current_action
-    background-color: #5b735b
-    &a
-      color: #fff
-
-  ul
-    &.depth0
-      div
+      a
         text-align: center
         padding: 3px 8px 5px 8px
         text-transform: capitalize
-      height: 20px
-      padding: 50px 3% 0 3%
-      background-repeat: no-repeat
-      background-position: bottom left
-      font-weight: bold
-      li
-        margin-right: 20px
-    &.depth1
-      display: none
-      position: absolute
-      top: 70px
-      left: 0px
-      width: 97%
-      padding: 3px 0
-      margin: 0 0 0 3%
-      font-weight: lighter
-      color: #c4e1c4
-      li
-        margin: 0
-        padding: 2px 8px
-      a
-        color: #c4e1c4
 
-  .current_action
-    display: block !important
-    z-index: 1000
+      ul
+        display: none
+        position: absolute
+        top: 70px
+        left: 0px
+        width: 97%
+        padding: 3px 0
+        margin: 0 0 0 3%
+        font-weight: lighter
+        color: #c4e1c4
+        li
+          padding: 2px 8px
+        a
+          color: #c4e1c4
+
+    .current_action, .current_action>ul
+      background-color: #5b735b
+
+    .current_action>ul
+      display: block !important
+      z-index: 1000
+
+      li
+        display: inline
+        &.current_action>a
+          color: #000
 
 /*************** common html elements **************/
 
