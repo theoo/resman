@@ -13,33 +13,87 @@
         %th Paid
         %th Remaining
       - @open_invoices.each do |invoice|
-        %tr{:onclick => "window.location = '"}
-        = invoice_path(invoice)
-        '"
-        - unless invoice.can_be_paid_until?(@date) then
-          style="background-color: red;"
-        title="invoice #{invoice.id}"&gt;
+        - classes = 'red' unless invoice.can_be_paid_until?(@date)
+        %tr{:onclick => "window.location = '#{invoice_path(invoice)}'",
+          title: "invoice #{invoice.id}", 
+          class: classes}
+          %td= h invoice.resident
+          %td= h invoice.reservation.room
+          %td= h invoice.created_at_formatted
+          %td= h invoice.value
+          %td= h invoice.incomes_total
+          %td= h invoice.remaining
+
+  .summary_total
+    Remaining total :
+    = @open_invoices.inject(0.to_money){ |sum,i| sum + i.remaining }
+
+  %h3
+    Reservations without confirmation invoice (#{@reservations_without_confirmation_invoice.size})
+  .summary
+    %table{:width => "100%"}
+      %tr
+        %th Resident
+        %th Room
+        %th Period
+      - @reservations_without_confirmation_invoice.each do |reservation|
+        %tr{:onclick => "window.location = '#{reservation_path(reservation)}'",
+          title: "reservation #{reservation.id}"}
+        %td= h reservation.resident
+        %td= h reservation.room
+        %td= h reservation.interval_string
+
+  %h3
+    Reservations not billed before #{@date.to_s(:formatted)} (#{@unbilled_reservations.size})
+  .summary
+    %table{:width => "100%"}
+      %tr
+        %th Resident
+        %th Room
+        %th Period
+        %th Reason
+      - @unbilled_reservations.each do |reservation|
+        %tr{:onclick => "window.location = '#{reservation_path(reservation)}'",
+          title: "reservation #{reservation.id}"}
+        %td= h reservation.resident
+        %td= h reservation.room
+        %td= h reservation.interval_string
+        %td= h reservation.reservation_invoices_generated?(reservation.arrival, @date, true)
+
+
+  %h3
+    Overpaid invoices (#{@overpaid_invoices.size})
+  .summary
+    %table{:width => "100%"}
+      %tr
+        %th Resident
+        %th Room
+        %th Created
+        %th Value
+        %th Paid
+        %th Overpaid
+      - @overpaid_invoices.each do |invoice|
+        - classes = 'red' unless invoice.can_be_paid_until?(@date)
+        %tr{:onclick => "window.location = '#{invoice_path(invoice)}'",
+          title: "invoice #{invoice.id}",
+          class: classes}
         %td= h invoice.resident
         %td= h invoice.reservation.room
         %td= h invoice.created_at_formatted
         %td= h invoice.value
         %td= h invoice.incomes_total
-        %td= h invoice.remaining
-.summary_total
-  Remaining total :
-  \#{@open_invoices.inject(0.to_money){ |sum,i| sum + i.remaining }}
-%h3
-  Reservations without confirmation invoice (#{@reservations_without_confirmation_invoice.size})
-.summary
-  %table{:width => "100%"}
-    %tr
-      %th Resident
-      %th Room
-      %th Period
-    - @reservations_without_confirmation_invoice.each do |reservation|
-      %tr{:onclick => "window.location = '"}
-      = reservation_path(reservation)
-      '" title="reservation #{reservation.id}"&gt;
-      %td= h reservation.resident
-      %td= h reservation.room
-      %td= h reservation.interval_string
+        %td= h invoice.overpaid_value
+
+  %h3
+    Reservations which deposit was not given back yet(#{@reservations_without_deposit_invoice.size})
+  .summary
+    %table{:width => "100%"}
+      %tr
+        %th Resident
+        %th Room
+        %th Period
+      - @reservations_without_deposit_invoice.each do |reservation|
+        %tr{:onclick => "window.location = '#{reservation_path(reservation)}'", :title => "reservation #{reservation.id}"}
+          %td= h reservation.resident
+          %td= h reservation.room
+          %td= h reservation.interval_string

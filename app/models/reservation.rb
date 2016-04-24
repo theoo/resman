@@ -202,7 +202,8 @@ class Reservation < ActiveRecord::Base
   end
 
   # TODO rewrite this with a named scope?
-  # @note FIXME old, slow, stupid and inapropriate. Use cached values in reservation itself and callbacks when recording  invoices
+  # @note FIXME old, slow, stupid and inapropriate.
+  # Use cached values in reservation itself and callbacks when recording  invoices
   def reservation_invoices_generated?(start_date, end_date, explain = false)
     inv = self.reservation_invoices
 

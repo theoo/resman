@@ -12,6 +12,9 @@ class Invoice < ActiveRecord::Base
     as: :entity,
     dependent: :destroy
 
+  has_one :resident, through: :reservation
+  has_many :tags, through: :resident
+
   acts_as_tree
 
   validates_presence_of :reservation_id

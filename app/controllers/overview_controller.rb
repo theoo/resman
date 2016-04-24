@@ -16,12 +16,33 @@ class OverviewController < ApplicationController
   def summary
     @date = Date.today
 
-    # Fix this by switching to searchlogic 2
-    @open_invoices = Invoice.all(order_by: [{ reservation: { resident: [:last_name, :first_name] }}, :created_at]).select{ |i| i.open? && !i.is_a?(DepositInvoice) }.reject{ |obj| obj.resident.tag_list.include?(Option.value('tag_to_ignore')) } #.sort_by{ |i| i.can_be_paid_until?(@date) ? 1 : 0 }
-    @reservations_without_confirmation_invoice = Reservation.all(conditions: { status_ne: %w{cancelled confirmed} }, order_by: { resident: [:last_name, :first_name] }).reject{ |r| r.confirmation_invoice_generated? }.reject{ |obj| obj.resident.tag_list.include?(Option.value('tag_to_ignore')) }
+    tag_to_ignore = Option.value('tag_to_ignore')
+
+    common_invoices_arel = Invoice.joins(:reservation, :resident, :tags)
+      .order("residents.last_name", "residents.first_name", :created_at)
+      .where.not("tags.name" => tag_to_ignore)
+    @open_invoices = common_invoices_arel.to_a
+      .select{ |i| i.open? && !i.is_a?(DepositInvoice) }
+
+    @reservations_without_confirmation_invoice = Reservation.joins(:resident, :tags)
+      .where.not(status: %w{cancelled confirmed})
+      .where.not("tags.name" => tag_to_ignore)
+      .order("residents.last_name", "residents.first_name")
+      .to_a
+      .reject{ |r| r.confirmation_invoice_generated? }
+
     @unbilled_reservations = Reservation.unbilled_reservations(@date)
-    @overpaid_invoices = Invoice.all(order_by: [{ reservation: { resident: [:last_name, :first_name] }}, :created_at]).select{ |i| i.overpaid? && !i.is_a?(DepositInvoice) }.reject{ |obj| obj.resident.tag_list.include?(Option.value('tag_to_ignore')) }
-    @reservations_without_deposit_invoice = Reservation.all(conditions: { status_ne: 'cancelled' }, order_by: { resident: [:last_name, :first_name] }).select{ |r| r.need_deposit_invoice? }.reject{ |obj| obj.resident.tag_list.include?(Option.value('tag_to_ignore')) }
+
+    @overpaid_invoices = common_invoices_arel.to_a
+      .select{ |i| i.overpaid? && !i.is_a?(DepositInvoice) }
+
+    @reservations_without_deposit_invoice = Reservation.joins(:resident, :tags)
+      .where.not("tags.name" => tag_to_ignore)
+      .where.not(status: 'cancelled')
+      .order("residents.last_name", "residents.first_name")
+      .to_a
+      .select{ |r| r.need_deposit_invoice? }
+
   end
 
   def statistics

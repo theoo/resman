@@ -57,7 +57,7 @@ class Resident < ActiveRecord::Base
       # find_all, conditions: { last_name_like: hash[:last_name],
       # first_name_like: hash[:first_name].split.last })
       results = where("last_name LIKE ? AND first_name LIKE ?",
-        hash[:last_name, hash[:first_name].split.last)
+        hash[:last_name], hash[:first_name].split.last)
       results.each do |r|
         return r if r.full_name == str
       end
