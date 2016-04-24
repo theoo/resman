@@ -32,7 +32,12 @@ class Room < ActiveRecord::Base
     return all unless start_date && end_date
     return [] if start_date >= end_date
 
-    reservations = Reservation.find(:all, conditions: { arrival_lt: end_date, departure_gt: start_date, status_ne: 'cancelled' })
+    # TODO perfs, user Room.joins(:reservations) instead
+    # TODO remove once tested
+    # find_all, conditions: { arrival_lt: end_date, departure_gt: start_date, status_ne: 'cancelled' })
+    reservations = Reservation
+      .where("arrival < ? AND ? < departure", end_date, start_date)
+      .where.not(status: 'cancelled')
     reserved_rooms = reservations.map(&:room)
 
     if rooms_to_include
@@ -40,7 +45,7 @@ class Room < ActiveRecord::Base
       reserved_rooms -= rooms_to_include
     end
 
-    self.find(:all) - reserved_rooms
+    all - reserved_rooms
   end
 
   def deletable?

@@ -33,7 +33,7 @@ gem 'acts_as_tree'
 gem 'auto_complete'
 gem 'money'
 gem 'monetize'
-gem 'ransack'
+gem 'ransack' # metasearch replacement
 gem 'will_paginate', "~>3.0.7"
 
 # gem 'iconv', "~> 1.0.3"

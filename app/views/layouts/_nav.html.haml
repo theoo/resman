@@ -1,6 +1,9 @@
 
 %ul#menu
-  %li{class: ('current_action' if current_page?(overview_index_path) or current_page?("/"))}
+  %li{class: ('current_action' if current_page?(overview_index_path,
+    "/",
+    statistics_overview_index_path,
+    inout_overview_index_path))}
     = link_to(t('dashboard'), overview_index_path)
     %ul
       %li{class: ('current_action' if current_page?(overview_index_path) or current_page?("/"))}
@@ -10,7 +13,9 @@
       %li{class: ('current_action' if current_page?(inout_overview_index_path))}
         = link_to(t('in_out'), inout_overview_index_path)
 
-  %li{class: ('current_action' if current_page?(reservations_path, planning_reservations_path, new_reservation_path))}
+  %li{class: ('current_action' if current_page?(reservations_path,
+    planning_reservations_path,
+    new_reservation_path))}
     = link_to(t('reservations'), reservations_path)
     %ul
       %li{class: ('current_action' if current_page?(planning_reservations_path))}
@@ -20,7 +25,8 @@
       %li{class: ('current_action' if current_page?(reservations_path))}
         = link_to(t('list'), reservations_path)
 
-  %li{class: ('current_action' if current_page?(residents_path))}
+  %li{class: ('current_action' if current_page?(residents_path,
+    new_resident_path))}
     = link_to(t('reservations'), residents_path)
     %ul
       %li{class: ('current_action' if current_page?(new_resident_path))}
@@ -37,7 +43,20 @@
         = link_to(t('incomes'), incomes_path)
 
   - classes = ['last_item']
-  - classes << 'current_action' if current_page?(summary_overview_index_path)
+  - classes << 'current_action' if current_page?(preferences_overview_index_path,
+    activities_path,
+    comments_path,
+    rates_path,
+    continents_path,
+    countries_path,
+    religions_path,
+    institutes_path,
+    schools_path,
+    buildings_path,
+    rooms_path,
+    users_path,
+    groups_path,
+    options_path)
   %li{class: classes.join(" ")}
     = link_to(t('preferences'), preferences_overview_index_path)
     %ul

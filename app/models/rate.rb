@@ -17,7 +17,7 @@ class Rate < ActiveRecord::Base
   end
 
   def self.options_for_select(hash = {})
-    arr = find(:all, order_by: :name).select{ |r| r.usable? }.map{ |r| [r.name, r.id] }
+    arr = all.order(:name).select{ |r| r.usable? }.map{ |r| [r.name, r.id] }
     arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
     arr
   end

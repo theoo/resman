@@ -1,3 +1,5 @@
+require 'csv'
+
 class IncomesController < ApplicationController
   def index
     @q = Income.search(params[:q])
@@ -70,9 +72,15 @@ class IncomesController < ApplicationController
     date_start  = Date.new(params[:date][:from][:year].to_i, params[:date][:from][:month].to_i, 1).beginning_of_month
     date_end    = Date.new(params[:date][:to][:year].to_i, params[:date][:to][:month].to_i, 1).to_time.end_of_month
 
-    incomes = Income.find(:all, conditions: { received_gte: date_start, received_lte: date_end }, order_by: { invoice: { reservation: { resident: [ :last_name, :first_name] }}})
+    # TODO remove once tested
+    # find_all, conditions: { received_gte: date_start, received_lte: date_end },
+    # order_by: { invoice: { reservation: { resident: [ :last_name, :first_name] }}})
+    incomes = Income.joins(:reservation)
+      .where("? <= received AND received <= =", date_start, date_end)
+      .order("residents.last_name", "residents.first_name")
 
-    csv_string = FasterCSV.generate do |csv|
+
+    csv_string = CSV.generate do |csv|
       csv << ["Incomes from #{date_start.to_s(:formatted)} to #{date_end.to_date.to_s(:formatted)}"]
       csv << []
       csv << %w{invoice_id resident_id resident payment received value}
@@ -83,6 +91,9 @@ class IncomesController < ApplicationController
       csv << [nil, nil, nil, nil, 'Total', incomes.sum(&:value)]
     end
 
-    send_data(Iconv.conv('ISO-8859-1', 'UTF-8', csv_string), type: "text/csv", filename: "incomes.csv", disposition: 'attachment')
+    send_data(csv_string,
+      type: "text/csv",
+      filename: "incomes.csv",
+      disposition: 'attachment')
   end
 end

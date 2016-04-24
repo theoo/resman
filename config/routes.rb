@@ -48,7 +48,15 @@ Rails.application.routes.draw do
     end
     resources :reservation_options, as: :options
   end
-  resources :residents, collection: { export_all: :get }, member: { export: :get }
+  resources :residents do
+    member do
+      get :export
+    end
+    collection do
+      get :export_all
+    end
+  end
+
   resources :rooms do
     resources :reservations
     resources :comments

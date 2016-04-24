@@ -12,7 +12,7 @@ class School < ActiveRecord::Base
   log_after :create, :update, :destroy
 
   def self.options_for_select(hash = {})
-    arr = find(:all, include: :institute, order_by: [:institute_id, :name]).map { |s| ["#{s.institute.name} #{s.name}", s.id] }
+    arr = all.order([:institute_id, :name]).map { |s| ["#{s.institute.name} #{s.name}", s.id] }
     arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
     arr
   end

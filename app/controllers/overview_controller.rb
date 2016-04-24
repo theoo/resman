@@ -70,16 +70,22 @@ class OverviewController < ApplicationController
   end
 
   def inout
-    @from = Reservation.first(order_by: :arrival).arrival
-    @to   = Reservation.last(order_by: :departure).departure
+    @from = Reservation.order(:arrival).first.arrival
+    @to   = Reservation.order(:departure).last.departure
 
     if params[:date]
       @from = Date.new(params[:date][:from][:year].to_i, params[:date][:from][:month].to_i, 1)
       @to   = Date.new(params[:date][:to][:year].to_i, params[:date][:to][:month].to_i, 1).end_of_month
     end
 
-    @arrivals   = Reservation.count(conditions: { arrival_gte: @from, arrival_lte: @to, group: { resident: { tags: { name_is_blank: true, or_name_ne: Option.value('tag_to_ignore') } } } })
-    @departures = Reservation.count(conditions: { departure_gte: @from, departure_lte: @to, group: { resident: { tags: { name_is_blank: true, or_name_ne: Option.value('tag_to_ignore') } } } })
+    @arrivals   = Reservation.joins(:tags)
+      .where(" ? <= arrival AND arrival <= ?", @from, @to)
+      .where.not("tags.name" => Option.value('tag_to_ignore'))
+      .count
+    @departures = Reservation.joins(:tags)
+      .where(" ? <= departure AND departure <= ?", @from, @to)
+      .where.not("tags.name" => Option.value('tag_to_ignore'))
+      .count
   end
 
   def preferences

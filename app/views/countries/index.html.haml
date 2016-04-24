@@ -3,7 +3,7 @@
   - if Continent.count > 0
     Filter by Continent: #{link_to 'All', countries_path(continent_id:  nil)}
     - Continent.all.each do |continent|
-      - # = link_to_unless(continent.id == @q.conditions.continent_id, continent.name, countries_path(continent_id: continent.id))  { |name| name }
+      = link_to_unless(continent.id == @q.conditions.continent_id, continent.name, countries_path(continent_id: continent.id))  { |name| name }
     %br/
     = search_form_for(@q) do |f|
       Search Country: #{f.text_field :name}

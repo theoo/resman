@@ -10,10 +10,10 @@
   %br/
   = search_form_for(@q) do |f|
     Tags:
-    \#{link_to_unless @q.conditions.tags.name.nil? && @q.conditions.tags.name_is_blank.nil?, 'All', search_url(:residents, :tags => { :name => nil })}
-    - Tag.all.each do |tag|
-      = link_to_unless @q.conditions.tags.name == tag.name, tag.name, search_url(:residents, :tags => { :name => tag.name })
-    = link_to_if @q.conditions.tags.name_is_blank.nil?, 'Without any tags', search_url(:residents, :tags => { :name_is_blank => true })
+    = link_to 'All', residents_path(q: { tags_name_eq: nil })
+    - ActsAsTaggableOn::Tag.all.each do |tag|
+      = link_to tag.name, residents_path(q: { tags_name_eq: tag.name })
+    = link_to 'Without any tags', residents_path(q: { tags_name_present: false })
     %br/
     .infos
       = @residents.count
@@ -26,16 +26,17 @@
         %th= order_by_link({:country => :name}, :text => 'Country')
         %th= order_by_link({:school =>  :name}, :text => 'School' )
         %th= order_by_link(:email)
-      - f.fields_for(@q.conditions) do |resident|
-        %tr.listing_filter
-          %th= resident.text_field :id, :style => "width: 40px;"
-          %th= resident.text_field :last_name_contains, :style => "width: 150px;"
-          %th= resident.text_field :first_name_contains, :style => "width: 120px;"
-          %th= select(resident, :country_id, Country.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
-          %th= select(resident, :school_id, School.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
-          %th
-            = resident.text_field :email_contains
-            %input{:style => "display:none", :type => "submit"}/
+
+      %tr.listing_filter
+        %th= f.search_field :id, :style => "width: 40px;"
+        %th= f.search_field :last_name_cont, :style => "width: 150px;"
+        %th= f.search_field :first_name_cont, :style => "width: 120px;"
+        %th= f.select(:country_id_eq, Country.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
+        %th= f.select(:school_id_eq, School.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
+        %th
+          = f.search_field :email_cont
+          %input{:style => "display:none", :type => "submit"}
+
       - if @residents.count > 0
         - @residents.each do |resident|
           %tr

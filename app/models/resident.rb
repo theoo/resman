@@ -53,7 +53,11 @@ class Resident < ActiveRecord::Base
 
     def find_by_full_name(str)
       hash = decompose_full_name(str)
-      results = find(:all, conditions: { last_name_like: hash[:last_name], first_name_like: hash[:first_name].split.last })
+      # TODO remove once tested
+      # find_all, conditions: { last_name_like: hash[:last_name],
+      # first_name_like: hash[:first_name].split.last })
+      results = where("last_name LIKE ? AND first_name LIKE ?",
+        hash[:last_name, hash[:first_name].split.last)
       results.each do |r|
         return r if r.full_name == str
       end
@@ -78,11 +82,11 @@ class Resident < ActiveRecord::Base
   end
 
   def reservation_at(date)
-    self.reservations_at(date).first
+    reservations_at(date).first
   end
 
   def reservations_at(date)
-    self.reservations.find(:all, conditions: { arrival_lte: date, departure_gt: date })
+    reservations.where("arrival <= ? AND ? < departure", date, date)
   end
 
   def deletable?

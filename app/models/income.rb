@@ -28,8 +28,10 @@ class Income < ActiveRecord::Base
         if invoice.nil? || hash[:invoice_date] != invoice.created_at.to_date || hash[:resident_id] != invoice.resident.id
           unparsed << line
         else
-          conditions = { invoice_id: hash[:invoice_id], value_in_cents: hash[:value_in_cents], received: hash[:date_value] }
-          found = Income.find(:first, conditions: conditions)
+          conditions = { invoice_id: hash[:invoice_id],
+              value_in_cents: hash[:value_in_cents],
+              received: hash[:date_value] }
+          found = Income.where(conditions).first
           if found
             already_parsed << found
           else
@@ -71,7 +73,7 @@ class Income < ActiveRecord::Base
 
   def self.options_for_select(hash = {})
     raise NotImplementedError
-    arr = find(:all, order_by: :name).map { |i| ["#{i.interval_string}", i.id] }
+    arr = all.order(:name).map { |i| ["#{i.interval_string}", i.id] }
     arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
     arr
   end

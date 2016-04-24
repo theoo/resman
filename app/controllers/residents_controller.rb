@@ -1,9 +1,11 @@
+require 'csv'
+
 class ResidentsController < ApplicationController
   def index
-    params[:q] ||= { conditions: { tags: { name: Option.value('residents_listing_selected_tag') }}}
+    params[:q] ||= { tags_name_eq: Option.value('residents_listing_selected_tag') }
+    # raise ArgumentError, params.inspect
     @q = Resident.search(params[:q])
-    @q.include = [:country, :religion, :school]
-    @residents = @q.result.page(params[:page])
+    @residents = @q.result.includes([:country, :religion, :school]).page(params[:page])
   end
 
   def show
@@ -53,9 +55,12 @@ class ResidentsController < ApplicationController
     date_end    = Date.new(params[:date][:to][:year].to_i, params[:date][:to][:month].to_i, 1).to_time.end_of_month
 
     resident = Resident.find(params[:id])
-    invoices = resident.invoices.find(:all, conditions: { created_at_gte: date_start, created_at_lte: date_end })
+    # TODO remove once tested
+    # find_all, conditions: { created_at_gte: date_start, created_at_lte: date_end })
+    invoices = resident.invoices
+      .where("? <= created_at AND created_at <= ?", date_start, date_end)
 
-    csv_string = FasterCSV.generate do |csv|
+    csv_string = CSV.generate do |csv|
       csv << ["Invoices for #{resident.full_name} (id: #{resident.id}) from #{date_start.to_s(:formatted)} to #{date_end.to_s(:formatted)}"]
       csv << []
       csv << %w{id type created/received value}
@@ -67,15 +72,18 @@ class ResidentsController < ApplicationController
       end
     end
 
-    send_data(Iconv.conv('ISO-8859-1', 'UTF-8', csv_string), type: 'text/csv', filename: "resident_#{resident.id}.csv", disposition: 'attachment')
+    send_data(csv_string,
+      type: 'text/csv',
+      filename: "resident_#{resident.id}.csv",
+      disposition: 'attachment')
   end
 
   def export_all
     year, month, day = params[:date][:year].to_i, params[:date][:month].to_i, params[:date][:day].to_i
     date = Date.new(year, month, day)
-    residents = Resident.find(:all, order_by: [:last_name, :first_name])
+    residents = Resident.all.order([:last_name, :first_name])
 
-    csv_string = FasterCSV.generate do |csv|
+    csv_string = CSV.generate do |csv|
       csv << ["Residents occupation the #{date.to_s(:formatted)}"]
       csv << []
       csv << %w{id arrival_date room last_name first_name birth_date gender country school address identity_card departure_date email religion tags }
@@ -87,6 +95,9 @@ class ResidentsController < ApplicationController
       end
     end
 
-    send_data(Iconv.conv('ISO-8859-1', 'UTF-8', csv_string), type: 'text/csv', filename: date.strftime('residents_%d_%m_%y.csv'), disposition: 'attachment')
+    send_data(csv_string,
+      type: 'text/csv',
+      filename: date.strftime('residents_%d_%m_%y.csv'),
+      disposition: 'attachment')
   end
 end

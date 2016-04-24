@@ -1,16 +1,16 @@
-class OptionsController < ApplicationController  
+class OptionsController < ApplicationController
   def index
-    @options = Option.find(:all)
-    
+    @options = Option.all
+
   end
 
   def show
     redirect_to(action: :edit)
   end
-  
+
   def edit
     @option = Option.find(params[:id])
-    render 
+    render
   end
 
   def update

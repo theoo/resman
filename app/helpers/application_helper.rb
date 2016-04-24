@@ -1,12 +1,4 @@
 module ApplicationHelper
-  def search_url(controller, conditions)
-    hash = searchlogic_params
-    hash[:controller] = controller
-    hash[:search] ||= {}
-    hash[:search][:conditions] ||= {}
-    hash[:search][:conditions].merge!(conditions)
-    hash
-  end
 
   def calendar(name)
     image = image_tag "dhtml_calendar/calendar.gif", engine: :dhtml_calendar, id: "#{name}_calendar", style: 'cursor: pointer;', title: 'Click to Show Calendar
@@ -27,7 +19,7 @@ module ApplicationHelper
           4/26
           10-24-2005" />'
 
-    format = ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS[:formatted]
+    format = "%d/%m/%Y" # ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS[:formatted]
     javascript = javascript_tag "Calendar.setup({ popup:true,ifFormat:'#{format}',inputField:'#{name}',button:'#{name}_calendar' });"
     "#{image}#{javascript}"
   end
@@ -90,6 +82,7 @@ module ApplicationHelper
 
   # build the container for error messages
   def error_messages_for(obj)
+    return if obj.nil?
     if obj.errors && obj.errors.any?
       haml_tag :div, class: 'alert alert-danger' do
         haml_tag :h2 do

@@ -1,6 +1,7 @@
 require 'pdf/writer'
 require 'pdf/simpletable'
 require 'pdf/charts/stddev'
+require 'csv'
 
 class InvoicesController < ApplicationController
 
@@ -68,7 +69,15 @@ class InvoicesController < ApplicationController
 
     # HACK fixme
     if params[:download]
-      invoices = Invoice.find(:all, conditions: { interval_start_gte: @date_start, interval_end_lte: @date_end, type: 'ReservationInvoice', reservation: { status_ne: 'cancelled' }})
+
+      # TODO remove once tested
+      # invoices = Invoice.find_all, conditions: { interval_start_gte: @date_start, interval_end_lte: @date_end,
+      # type: 'ReservationInvoice', reservation: { status_ne: 'cancelled' }})
+      invoices = Invoice.joins(:reservation)
+        .where("? <= interval_start AND inteval_end <= ?", @date_start, @date_end)
+        .where(type: "ReservationInvoice")
+        .where.not("reservations.status": 'cancelled')
+
       if invoices.empty?
         flash[:notice] = 'Nothing to download for this period'
         return redirect_to(invoices_path)
@@ -77,7 +86,12 @@ class InvoicesController < ApplicationController
     end
 
     # Get the list of reservations to process
-    reservations = Reservation.find(:all, conditions: { arrival_lte: @date_end, departure_gt: @date_start, status_ne: 'cancelled' })
+    # TODO remove once tested
+    # .find_all, conditions: { arrival_lte: @date_end, departure_gt: @date_start,
+    # status_ne: 'cancelled' })
+    reservations = Reservation
+      .where("arrival <= ? AND ? < departure", @date_end, @date_start)
+      .where.not(status: 'cancelled')
 
     # Remove those for which we already have an invoice covering that period
     reservations = reservations.reject do |r|
@@ -119,7 +133,14 @@ class InvoicesController < ApplicationController
     date_start  = Date.new(params[:date][:from][:year].to_i, params[:date][:from][:month].to_i, params[:date][:from][:day].to_i)
     date_end    = Date.new(params[:date][:to][:year].to_i, params[:date][:to][:month].to_i, params[:date][:to][:day].to_i).to_time.end_of_day
 
-    invoices = Invoice.find(:all, conditions: { created_at_gte: date_start, created_at_lte: date_end, reservation: { status_ne: 'cancelled' }}, order_by: { reservation: { resident: [ :last_name, :first_name] }})
+    # TODO Remove comment once tested
+    # find_all, conditions: { created_at_gte: date_start, created_at_lte: date_end,
+    #   reservation: { status_ne: 'cancelled' }}, order_by: { reservation: { resident: [ :last_name, :first_name] }})
+    invoices = Invoice.joins(:reservation)
+      .where("? <= created_at AND created_at <= ?", date_start, date_end)
+      .where.not(status: 'cancelled')
+      .order("residents.last_name, residents.first_name")
+
     invoices = invoices.select{ |i| i.open? } if params[:open]
 
     if params[:git]
@@ -129,7 +150,7 @@ class InvoicesController < ApplicationController
       end
       send_data(Iconv.conv('ISO-8859-1', 'UTF-8', tab_string), type: 'application/octet-stream', filename: "invoices.txt", disposition: 'attachment')
     else
-      csv_string = FasterCSV.generate do |csv|
+      csv_string = CSV.generate do |csv|
         csv << ["Invoices from #{date_start.to_s(:formatted)} to #{date_end.to_date.to_s(:formatted)}"]
         csv << []
         csv << %w{id type resident resident_id room created from to value paid remaining}
@@ -139,7 +160,10 @@ class InvoicesController < ApplicationController
         csv << []
         csv << [nil, nil, nil, nil, nil, nil, nil, 'Total', invoices.sum(&:value), invoices.sum(&:incomes_total), invoices.sum(&:remaining)]
       end
-      send_data(Iconv.conv('ISO-8859-1', 'UTF-8', csv_string), type: "text/csv", filename: "invoices.csv", disposition: 'attachment')
+      send_data(csv_string,
+        type: "text/csv",
+        filename: "invoices.csv",
+        disposition: 'attachment')
     end
   end
 

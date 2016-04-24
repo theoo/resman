@@ -10,7 +10,7 @@ class Religion < ActiveRecord::Base
   log_after :create, :update, :destroy
 
   def self.options_for_select(hash = {})
-    arr = find(:all, order_by: :name).map { |r| [r.name, r.id] }
+    arr = all.order(:name).map { |r| [r.name, r.id] }
     arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
     arr
   end

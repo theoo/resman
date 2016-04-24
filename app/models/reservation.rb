@@ -79,7 +79,7 @@ class Reservation < ActiveRecord::Base
   class << self
 
     def options_for_select(hash = {})
-      arr = find(:all, include: [:resident, :room], order_by: [:room_id, :arrival]).map do |reservation|
+      arr = all.order([:room_id, :arrival]).map do |reservation|
         [reservation.to_s, reservation.id]
       end
       arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
@@ -97,14 +97,21 @@ class Reservation < ActiveRecord::Base
     if self.arrival && self.departure
       errors.add :departure, 'cannot be before or equal to arrival' if self.departure <= self.arrival
 
+      # TODO remove once tested
       # Check there's no overlapping reservations
-      conditions = {}
-      conditions[:id_ne]        = self.id
-      conditions[:room_id]      = self.room_id
-      conditions[:status_ne]    = 'cancelled'
-      conditions[:arrival_lt]   = self.departure
-      conditions[:departure_gt] = self.arrival
-      others = self.class.find(:all, conditions: conditions)
+      # conditions = {}
+      # conditions[:id_ne]        = self.id
+      # conditions[:room_id]      = self.room_id
+      # conditions[:status_ne]    = 'cancelled'
+      # conditions[:arrival_lt]   = self.departure
+      # conditions[:departure_gt] = self.arrival
+      # others = self.class.find_all, conditions: conditions)
+      t = self.class.arel_table
+      others = self.class
+        .where(id: id, room_id: room_id, arrival: departure)
+        .where(t[:arrival].lt(departure))
+        .where(t[:departure].gt(arrival))
+        .where.not(status: 'cancelled')
       errors.add :reservation, "overlaps with another reservation #{others.join(',')}" unless others.empty?
     end
   end
@@ -128,9 +135,10 @@ class Reservation < ActiveRecord::Base
 
   def rate_rule
     # Find the first rule that fits
-    self.room.rate.rules.each do |rule|
-      # FIXME (self.arrival + rule.interval_end) is not printable if interval_end == Infinity
-      return rule if self.arrival + rule.interval_end > self.departure
+    room.rate.rules.each do |rule|
+      if rule.interval_end == Float::INFINITY or (arrival + rule.interval_end) > departure
+        return rule
+      end
     end
     raise 'Cannot find rule'
   end
@@ -263,7 +271,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def paid
-    self.invoices.find(:all).inject(0.to_money) do |sum, invoice|
+    self.invoices.all.inject(0.to_money) do |sum, invoice|
       sum + invoice.incomes_total
     end
   end

@@ -24,14 +24,16 @@
       %span
         = text_field_tag 'reservation[arrival_formatted]', @reservation.arrival_formatted,
           { :id => 'reservation_arrival_formatted', :onchange => "dates_changed()" }
-        TODO calendar_date_select_tag "reservation_arrival_formatted"
+        .todo
+          TODO calendar_date_select_tag "reservation_arrival_formatted"
 
     %p
       = f.label :departure, {}, :class => :required
       %span
         = text_field_tag 'reservation[departure_formatted]', @reservation.departure_formatted,
         { :id => 'reservation_departure_formatted', :onchange => "dates_changed()" }
-        TODO calendar('reservation_departure_formatted')
+        .todo
+          TODO calendar('reservation_departure_formatted')
 
     %p
       = f.label :room, {}, :class => :required

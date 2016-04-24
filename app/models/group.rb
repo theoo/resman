@@ -11,7 +11,7 @@ class Group < ActiveRecord::Base
   log_after :create, :update, :destroy
 
   def self.options_for_select(hash = {})
-    arr = find(:all, order_by: :name).map { |g| [g.name, g.id] }
+    arr = all.order(:name).map { |g| [g.name, g.id] }
     arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
     arr
   end

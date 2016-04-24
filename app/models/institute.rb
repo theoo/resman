@@ -11,7 +11,7 @@ class Institute < ActiveRecord::Base
   log_after :create, :update, :destroy
 
   def self.options_for_select(hash = {})
-    arr = find(:all, order_by: :name).map { |i| [i.name, i.id] }
+    arr = all.order(:name).map { |i| [i.name, i.id] }
     arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
     arr
   end

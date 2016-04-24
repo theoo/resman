@@ -37,7 +37,7 @@ class Invoice < ActiveRecord::Base
 
   def self.options_for_select(hash = {})
     raise NotImplementedError
-    arr = find(:all, order_by: :name).map { |i| [i.name, i.id] }
+    arr = all.order(:name).map { |i| [i.name, i.id] }
     arr.unshift([hash[:text] || 'All', nil]) if hash[:allow_nil]
     arr
   end
