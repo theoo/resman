@@ -2,7 +2,7 @@
 %h1 New Income
 = form_for(@income) do |f|
   .edit
-    = f.error_messages
+    = error_messages_for(@income)
     = f.hidden_field :invoice_id
     %p
       = f.label :value, {}, :class => :required

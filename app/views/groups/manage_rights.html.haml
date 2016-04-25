@@ -1,14 +1,13 @@
 - options = []
 - selected = []
+
 - controllers.each do |controller|
-- controller.actions.each do |action|
-- if @group.has_access?("#{controller.to_s}", action)
-- selected << ["#{controller} -> #{action}", "#{controller} #{action}"]
-- else
-- options << ["#{controller} -> #{action}", "#{controller} #{action}"]
-- end
-- end
-- end
+  - controller.actions.each do |action|
+    - if @group.has_access?("#{controller.to_s}", action)
+      - selected << ["#{controller} -> #{action}", "#{controller} #{action}"]
+    - else
+      - options << ["#{controller} -> #{action}", "#{controller} #{action}"]
+
 %h1
   Manage Rights for
   %em= @group.name
@@ -18,14 +17,14 @@
       %tr
         %td= select_tag('all[]', options_for_select(options), :multiple => true, :size => 30, :style => 'width: 300px;', :id => 'all')
         %td{:align => "center"}
-          = link_to 'Add', javascript: moveOptions(document.getElementById('all'), document.getElementById('selected'));, :class = 'fake_button'
+          = link_to 'Add', javascript: "moveOptions(document.getElementById('all'), document.getElementById('selected'));", :class => 'fake_button'
           %br/
           %br/
-          = link_to 'Remove', javascript: moveOptions(document.getElementById('selected'), document.getElementById('all'));, :class = 'fake_button'
-        %td= select_tag('selected[]', options_for_select(selected), :multiple = true, :size = 30, :style = 'width: 300px;', :id = 'selected')
+          = link_to 'Remove', javascript: "moveOptions(document.getElementById('selected'), document.getElementById('all'));", :class => 'fake_button'
+        %td= select_tag('selected[]', options_for_select(selected), :multiple => true, :size => 30, :style => 'width: 300px;', :id => 'selected')
     .actions
       = submit_tag 'Update Rights'
-      = link_to 'Cancel', :back, :class = fake_button
+      = link_to 'Cancel', :back, :class => "fake_button"
     - javascript_tag do
       function select_all()
       {

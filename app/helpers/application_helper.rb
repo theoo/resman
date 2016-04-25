@@ -38,7 +38,7 @@ module ApplicationHelper
   end
 
   def controllers
-    arr  = Dir["#{RAILS_ROOT}/app/controllers/*_controller.rb"]
+    arr  = Dir["#{Rails.root}/app/controllers/*_controller.rb"]
     arr  = arr.map { |c| File.basename(c)[/(.*?)_controller.rb/, 1] }
     arr -= %w{sessions}
     arr.sort.map { |c| "#{c.camelize}Controller".constantize }

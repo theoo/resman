@@ -10,7 +10,7 @@
         %th Value
         %th Billing
       - for room_option in @room_options
-        %tr{:onclick => "window.location='#{edit_room_room_option_path(@room, room_option)}'"}
+        %tr{:onclick => "window.location='#{edit_room_option_path(@room, room_option)}'"}
           %td= h @room.name
           %td= h room_option.name
           %td= h room_option.value
@@ -18,4 +18,4 @@
   - else
     No room options were found.
   .actions
-    = link_to 'New Room Option', new_room_room_option_path(@room), :class => "fake_button"
+    = link_to 'New Room Option', new_room_option_path(@room), :class => "fake_button"

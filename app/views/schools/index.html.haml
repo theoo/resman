@@ -1,14 +1,15 @@
 %h1 Listing Schools
 .listing
   - if Institute.count > 0
-    Filter by Institute: #{link_to 'All', search_url(:schools, :institute_id => nil)}
+    Filter by Institute:
+    = link_to 'All', schools_path(q: {institute_id_eq: nil})
     - Institute.all.each do |institute|
-      = link_to_unless(institute.id == @q.conditions.institute_id, institute.name, search_url(:schools, :institute_id => institute.id)) { |name| name }
+      = link_to institute.name, schools_path(q: {institute_id_eq: institute.id}) { |name| name }
     %br/
     = search_form_for(@q) do |f|
-      - f.fields_for(@q.conditions) do |school|
-        = school.hidden_field :institute_id
-        Search School: #{school.text_field :name_contains}
+      = f.hidden_field :institute_id
+      Search School:
+      = f.text_field :name_cont
       = f.submit 'Search'
     %br/
   - if @schools.count > 0
@@ -19,7 +20,7 @@
     %table
       %tr
         %th= order_by_link :name
-        %th= order_by_link :institute => :name
+        %th= order_by_link :institute_name
       - @schools.each do |school|
         %tr{:onclick => "window.location='#{edit_school_path(school)}'"}
           %td= school.name

@@ -2,7 +2,7 @@
   Editing Rate
   %em= @rate.name
 = form_for(@rate) do |f|
-  = render :partial => 'layouts/form', :locals => { :f => f }
+  = render :partial => 'layouts/form', :locals => { f: f, object: @rate }
   .actions
     = f.submit 'Update'
     - if @rate.deletable?

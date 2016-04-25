@@ -76,7 +76,7 @@ class InvoicesController < ApplicationController
       invoices = Invoice.joins(:reservation)
         .where("? <= interval_start AND inteval_end <= ?", @date_start, @date_end)
         .where(type: "ReservationInvoice")
-        .where.not("reservations.status": 'cancelled')
+        .where.not("reservations.status" => 'cancelled')
 
       if invoices.empty?
         flash[:notice] = 'Nothing to download for this period'

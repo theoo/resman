@@ -1,5 +1,5 @@
 .edit
-  = f.error_messages
+  = error_messages_for(@user)
   %p
     = f.label :group, {}, :class => :required
     %span= has_access?('UsersController', 'edit') ? select(f, :group_id, Group.options_for_select) : @user.group.name

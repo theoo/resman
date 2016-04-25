@@ -1,5 +1,5 @@
 .edit
-  = f.error_messages
+  = error_messages_for(@room_option)
   %p
     = f.label :name, {}, :class => :required
     %span= f.text_field :name

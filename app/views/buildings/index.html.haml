@@ -10,7 +10,7 @@
         %tr{:onclick => "window.location='#{edit_building_path(building)}'"}
           %td= building.id
           %td= building.name
-          %td= link_to "Rooms (#{building.rooms.size})", search_url(:rooms, :building_id => building.id)
+          %td= link_to "Rooms (#{building.rooms.size})", rooms_path(q: {:building_id_eq => building.id})
   - else
     No buildings were found.
   %br/

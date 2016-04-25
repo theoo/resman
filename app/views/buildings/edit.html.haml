@@ -2,7 +2,7 @@
   Editing building
   %em= @building.name
 = form_for(@building) do |f|
-  = render :partial => 'layouts/form', :locals => { :f => f }
+  = render :partial => 'layouts/form', :locals => { :f => f, object: @building }
   %br/
   .actions
     = f.submit "Update"

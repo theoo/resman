@@ -9,7 +9,7 @@ class GroupsController < ApplicationController
     # TODO only searchlogic for rights atm, do it for users too
     @group = Group.find(params[:id])
     @q = @group.rights.search(params[:q])
-    @rights, @rights_count = @q.result.page(params[:page]), @q.count
+    @rights, @rights_count = @q.result.page(params[:page]), @q.result.count
 
   end
 

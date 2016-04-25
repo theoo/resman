@@ -1,30 +1,32 @@
 %h1 Listing Countries
 .listing
   - if Continent.count > 0
-    Filter by Continent: #{link_to 'All', countries_path(continent_id:  nil)}
+    Filter by Continent:
+    = link_to 'All', countries_path(continent_id:  nil)
     - Continent.all.each do |continent|
-      = link_to_unless(continent.id == @q.conditions.continent_id, continent.name, countries_path(continent_id: continent.id))  { |name| name }
+      = link_to continent.name, countries_path(q: {continent_id_eq: continent.id})  { |name| name }
     %br/
     = search_form_for(@q) do |f|
-      Search Country: #{f.text_field :name}
+      Search Country:
+      = f.text_field :name_cont
       = f.submit 'Search'
     %br/
-  - if @countries.count > 0
-    = @countries.count
-    countries found
-    %br/
-    %br/
-    %table
-      %tr
-        %th= order_by_link :name
-        %th= order_by_link :continent => :name
-      - @countries.each do |country|
-        %tr{:onclick => "window.location='#{edit_country_path(country)}'"}
-          %td= h country.name
-          %td= country.continent ? country.continent.name : '-'
+    - if @countries.count > 0
+      = @countries.count
+      countries found
+      %br/
+      %br/
+      %table
+        %tr
+          %th= order_by_link :name
+          %th= order_by_link :continent_name
+        - @countries.each do |country|
+          %tr{:onclick => "window.location='#{edit_country_path(country)}'"}
+            %td= h country.name
+            %td= country.continent ? country.continent.name : '-'
 
-    = will_paginate @countries
-  - else
-    No countries were found.
-  .actions
-    = link_to('New country', new_country_path, :class => :fake_button)
+      = will_paginate @countries
+    - else
+      No countries were found.
+    .actions
+      = link_to('New country', new_country_path, :class => :fake_button)

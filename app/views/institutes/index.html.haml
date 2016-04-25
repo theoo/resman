@@ -8,7 +8,8 @@
       - @institutes.each do |institute|
         %tr{:onclick => "window.location='#{edit_institute_path(institute)}'"}
           %td= h institute.name
-          %td= link_to "Schools (#{institute.schools.size})", search_url(:schools, :institute_id => institute.id)
+          %td= link_to "Schools (#{institute.schools.size})", schools_path(q: {institute_id_eq: institute.id})
+
   - else
     No institutes were found.
   .actions

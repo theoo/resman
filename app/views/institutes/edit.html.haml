@@ -2,7 +2,7 @@
   Editing Institute
   %em= @institute.name
 = form_for(@institute) do |f|
-  = render :partial => 'layouts/form', :locals => { :f => f }
+  = render :partial => 'layouts/form', :locals => { :f => f, object: @institute}
   .actions
     = f.submit 'Update'
     = link_to  'Delete', @institute, :confirm => "Are you sure? This will affect #{@institute.schools.size} schools and #{@institute.residents.size} residents (doing so they have no school).", :method => :delete, :class => "fake_button red"
