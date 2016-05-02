@@ -14,6 +14,8 @@ module StringExtention
 
   def to_default_date
     Date.parse(self)
+  rescue
+    'invalid date'
   end
 end
 

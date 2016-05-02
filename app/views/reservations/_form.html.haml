@@ -23,17 +23,13 @@
       = f.label :arrival, {}, :class => :required
       %span
         = text_field_tag 'reservation[arrival_formatted]', @reservation.arrival_formatted,
-          { :id => 'reservation_arrival_formatted', :onchange => "dates_changed()" }
-        .todo
-          TODO calendar_date_select_tag "reservation_arrival_formatted"
+          { :id => 'reservation_arrival_formatted', :onchange => "dates_changed()", class: 'datepicker' }
 
     %p
       = f.label :departure, {}, :class => :required
       %span
         = text_field_tag 'reservation[departure_formatted]', @reservation.departure_formatted,
-        { :id => 'reservation_departure_formatted', :onchange => "dates_changed()" }
-        .todo
-          TODO calendar('reservation_departure_formatted')
+        { :id => 'reservation_departure_formatted', :onchange => "dates_changed()", class: 'datepicker' }
 
     %p
       = f.label :room, {}, :class => :required
@@ -42,8 +38,8 @@
         - options = rooms.map{ |room| [room.name, room.id] }
         - options = [['None available', 0]] if options.empty?
         %span
-          TODO
-          / # = f.select(:room_id, options, { :onchange => remote_function(:method => :get, :url => { :action = :ajax_room_options, :reservation_id = @reservation.id }, :with => "Form.Element.serialize(this) + 'arrival=' + $('reservation_arrival_formatted').value + 'departure=' + $('reservation_departure_formatted').value", :before => "$('spinner').show();", :complete => "$('spinner').hide();") } )
+          = f.select(:room_id, options, {}, { onchange: "$('spinner').show(); new Ajax.Request('#{ajax_room_options_reservations_path}', {asynchronous:true, evalScripts:true, method:'get', onComplete:function(request){$('spinner').hide();}, parameters:Form.Element.serialize(this) + '&arrival=' + $('reservation_arrival_formatted').value+ '&departure=' + $('reservation_departure_formatted').value + '&authenticity_token=' + encodeURIComponent(rails_authenticity_token)})" } )
+
           %span#room_total{:style => "display:inline"}
           = image_tag('spin.gif', :class => 'spinner', :id => 'spinner', :style => 'display:none;')
       - else
@@ -61,17 +57,20 @@
           var departure = $('reservation_departure_formatted').value;
           if (arrival.length > 0 && departure.length > 0)
           {
-          var selected_room_id = $('reservation_room_id')[$('reservation_room_id').selectedIndex].value
+          var selected_room_id = jQuery('#reservation_room_id option:selected').val();
           var reservation_id = '#{@reservation.id}';
           new Ajax.Updater('reservation_room_id', '#{url_for(:action => :ajax_room_availables)}', {
           asynchronous:true,
           evalScripts:true,
+          insertion: "bottom",
           method: 'get',
           parameters: {
+          format: 'js',
           arrival: arrival,
           departure: departure,
           selected_room_id: selected_room_id,
-          reservation_id: reservation_id
+          reservation_id: reservation_id,
+          authenticity_token: encodeURIComponent(rails_authenticity_token)
           },
           onCreate: function(response) { Element.show('spinner') },
           onComplete: function(response) { Element.hide('spinner') }

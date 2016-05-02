@@ -65,8 +65,6 @@ class ReservationsController < ApplicationController
     reservation_room = params[:reservation_id].to_i != 0 ? Reservation.find(params[:reservation_id]).room : nil
     @selected_room_id = params[:selected_room_id]
     @available_rooms = Room.available_rooms(@arrival, @departure, reservation_room)
-    puts @available_rooms.inspect
-    puts params.inspect
     render layout: false
   end
 

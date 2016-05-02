@@ -22,16 +22,16 @@ end
   style = 'margin-left: 140px; font-size: 10pt;'
 
   if @arrival && @departure && @arrival < @departure && rule == @reservation.rate_rule
-    style += ' font-weight: bold;' 
+    style += ' font-weight: bold;'
   end
-  
+
   page.insert_html :bottom, 'rules', content_tag('li', text, :style => style)
 end
 
 @room.options.each do |option|
   checked = @reservation.options.find_by_id(option.id) ? true : false
-  checkbox = check_box_tag('reservation[options_attributes][][room_option_id]', option.id, checked) 
-  page.insert_html :bottom, 'options', content_tag('li', "#{checkbox} #{option}")
+  checkbox = check_box_tag('reservation[options_attributes][][room_option_id]', option.id, checked)
+  page.insert_html :bottom, 'options', content_tag('li', checkbox + option)
 end
 
 page.visual_effect :highlight, 'options', :duration => 2

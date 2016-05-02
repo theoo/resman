@@ -153,13 +153,13 @@ class Reservation < ActiveRecord::Base
   end
 
   def days_in_common_with(date_start, date_end)
-    range = (date_start..date_end) & self.interval_range
-    range ? range.size : 0
+    range = (date_start..date_end) and self.interval_range
+    range ? (range.last - range.first) : 0
   end
 
   def months_in_common_with(date_start, date_end)
     # TODO should rewrite this so it's not so inneficient :)
-    range = (date_start..date_end) & self.interval_range
+    range = (date_start..date_end) and self.interval_range
     arr = range.map{ |d| "#{d.month}-#{d.year}" }.uniq
     arr.size
   end
