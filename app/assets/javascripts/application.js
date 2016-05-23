@@ -11,6 +11,7 @@
 //= require slider
 //= require rest_in_place
 //= require scriptaculous
+//= require spectrum
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
@@ -37,10 +38,24 @@ function hideFlashMessages() {
 
 jQuery.datepicker.setDefaults( jQuery.datepicker.regional[ "fr-CH" ] );
 jQuery(function() {
+
   jQuery( ".datepicker" ).datepicker( {
     showOn: "button",
     buttonImage: "/assets/dhtml_calendar/calendar.gif",
     buttonImageOnly: true,
     buttonText: "Select date"
   });
+
+  jQuery(".colorPicker").spectrum({
+      allowEmpty: false,
+      showPaletteOnly: true,
+      showPalette: true,
+      palette: [
+        ['black', 'white', 'blanchedalmond'],
+        ['red', 'ffff00', 'orange'],
+        ['blue', 'violet', 'grey']
+    ]
+  });
+
 });
+

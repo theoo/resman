@@ -29,13 +29,7 @@
           %span= f.select(:school_id, School.options_for_select(:allow_nil => true, :text => 'Unknown'))
         %p
           = f.label :color
-          %span= f.text_field :color
-          .todo
-            TODO color picker
-          :javascript
-            //
-            new Control.ColorPicker('resident_color', { IMAGE_BASE : '#{request.env['SCRIPT_NAME']}/images/colorpicker/' });
-            //
+          %span= f.text_field :color, class: "colorPicker"
         %p
           = f.label :tag_list
           %span= f.text_field :tag_list, :class => 'bigger'
@@ -43,10 +37,7 @@
         %p
           = f.label :date_of_birth
           %span
-            = text_field_tag 'resident[birthdate_formatted]', @resident.birthdate_formatted, :id => 'resident_birthdate_formatted'
-          .todo
-            TODO date picker
-            / = calendar('resident_birthdate_formatted')
+            = text_field_tag 'resident[birthdate_formatted]', @resident.birthdate_formatted, { :id => 'resident_birthdate_formatted', :onchange => "dates_changed()", class: 'datepicker' }
         %p
           = f.label :email
           %span= f.text_field :email, :class => 'bigger'
