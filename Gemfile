@@ -26,7 +26,6 @@ gem 'passenger'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'pdf-writer', require: 'pdf/writer'
-gem 'calendar_date_select'
 gem 'acts-as-taggable-on'
 gem 'acts_as_tree'
 
@@ -53,6 +52,7 @@ gem 'devise-i18n'
 
 # iCalendar
 # gem 'icalendar'
+gem 'prototype-rails', github: 'rails/prototype-rails', branch: '4.2'
 
 # Misc
 # gem 'rake-progressbar'

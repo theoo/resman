@@ -15,6 +15,14 @@ GIT
       pry-stack_explorer (~> 0.4.9)
       railties (>= 3.0, < 5.0)
 
+GIT
+  remote: git://github.com/rails/prototype-rails.git
+  revision: 0fed929ff48c10c3b978edd3baa983a81f404dbf
+  branch: 4.2
+  specs:
+    prototype-rails (4.0.0)
+      rails (~> 4.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -66,8 +74,6 @@ GEM
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
     byebug (8.2.2)
-    calendar_date_select (2.1.2)
-      rails (>= 3.1)
     coderay (1.1.1)
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
@@ -329,7 +335,6 @@ DEPENDENCIES
   acts_as_tree
   auto_complete
   byebug
-  calendar_date_select
   coffee-rails (~> 4.1.0)
   coffee-script-source
   devise
@@ -351,6 +356,7 @@ DEPENDENCIES
   mysql2 (~> 0.3.18)
   passenger
   pdf-writer
+  prototype-rails!
   rack-mini-profiler
   rails (= 4.2.4)
   ransack
