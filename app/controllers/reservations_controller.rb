@@ -1,12 +1,5 @@
 class ReservationsController < ApplicationController
 
-  def auto_complete_for_reservation_resident_full_name
-    name = params[:reservation][:resident_full_name]
-    @residents = Resident.where("first_name REGEXP ? OR last_name REGEXP ?", name, name)
-      .order(:last_name, :first_name)
-    render json: @residents.to_json(only: [:first_name, :last_name])
-  end
-
   def index
 
     if params[:date]

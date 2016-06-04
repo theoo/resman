@@ -3,17 +3,15 @@
 
 class Rule < ActiveRecord::Base
 
-  extend  MoneyComposer
-
   Types = %w{ day month }
 
   belongs_to    :rate
 
-  money :value, currency: false
-  money :tax_in, currency: false
-  money :tax_out, currency: false
-  money :deposit_in, currency: false
-  money :deposit_out, currency: false
+  monetize :value_in_cents, currency_column: :value_currency
+  monetize :tax_in_in_cents, currency_column: :value_currency
+  monetize :tax_out_in_cents, currency_column: :value_currency
+  monetize :deposit_in_in_cents, currency_column: :value_currency
+  monetize :deposit_out_in_cents, currency_column: :value_currency
 
   validates_presence_of       :rate_id
   validates_numericality_of   :end_value, allow_nil: true
@@ -24,16 +22,14 @@ class Rule < ActiveRecord::Base
     errors.add :value, 'must be positive' unless self.value > 0.to_money
     # TODO add checks for tax_in, deposit_in etc?
 
-=begin
     # Check there's no overlapping rules
-    self.rate.rules.each do |rule|
-      next if rule == self
-      if self.interval_range.overlaps?(rule.interval_range)
-        errors.add :rule, "overlaps with another rule (#{rule})"
-        break
-      end
-    end
-=end
+    # self.rate.rules.each do |rule|
+    #   next if rule == self
+    #   if self.interval_range.overlaps?(rule.interval_range)
+    #     errors.add :rule, "overlaps with another rule (#{rule})"
+    #     break
+    #   end
+    # end
   end
 
   def interval_start

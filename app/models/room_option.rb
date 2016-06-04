@@ -1,7 +1,5 @@
 class RoomOption < ActiveRecord::Base
 
-  extend  MoneyComposer
-
   Types = %w{ unique mensual }
 
   belongs_to  :room
@@ -10,7 +8,7 @@ class RoomOption < ActiveRecord::Base
   has_many    :reservations,
     through: :reservation_options
 
-  money :value, currency: false
+  monetize :value_in_cents
 
   validates_presence_of       :room_id
   validates_presence_of       :name

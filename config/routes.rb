@@ -42,9 +42,7 @@ Rails.application.routes.draw do
     collection do
       get 'planning',
         'ajax_room_options',
-        'ajax_room_availables',
-        'auto_complete_for_reservation_resident_full_name'
-      post 'auto_complete_for_reservation_resident_full_name'
+        'ajax_room_availables'
     end
     resources :reservation_options, as: :options
   end
@@ -53,7 +51,7 @@ Rails.application.routes.draw do
       get :export
     end
     collection do
-      get :export_all
+      get :export_all, :autocomplete_name
     end
   end
 
@@ -62,6 +60,9 @@ Rails.application.routes.draw do
     resources :comments
     resources :activities
     resources :room_options, as: :options
+    # collection do
+    #   get :autocomplete_name
+    # end
   end
   resources :room_options
   resources :rules

@@ -29,10 +29,13 @@ class Group < ActiveRecord::Base
     Right.new(group: self, controller: controller, action: action, allowed: false)
     #right = self.rights.find(:first, :conditions => { :controller => controller, :action => action })
     #right || Right.new(:group => self, :controller => controller, :action => action, :allowed => false)
+
   end
 
   def has_access?(controller, action)
-    self.right_for(controller, action).allowed?
+    # temporarly disabled
+    # self.right_for(controller, action).allowed?
+    true
   end
 
   def deletable?

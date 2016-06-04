@@ -1,8 +1,6 @@
 class Item < ActiveRecord::Base
 
-  extend  MoneyComposer
-
-  money :value, currency: false
+  monetize :value_in_cents
 
   belongs_to  :invoice
 

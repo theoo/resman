@@ -8,16 +8,13 @@
       %span
         = @reservation.resident.full_name
     - else
-      - def options_for_javascript(args)
-        - "{}"
-      %span= text_field_with_auto_complete(:reservation, :resident_full_name,
-        {:class => 'bigger'}, :method => :get, :skip_style => true)
+      %span= f.autocomplete_field :resident_full_name, autocomplete_name_residents_path
       (tip: last name, first name)
 
     %p
       = f.label :status, {}, :class => :required
       %span
-        = select f, :status, Reservation::Status.map{ |s| [s.humanize, s] }
+        = f.select :status, Reservation::Status.map{ |s| [s.humanize, s] }
 
     %p
       = f.label :arrival, {}, :class => :required

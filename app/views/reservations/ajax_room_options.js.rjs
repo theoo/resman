@@ -8,13 +8,9 @@ page.replace_html 'rules', ''
 return unless @room
 
 if @arrival && @departure && @arrival < @departure
-  days = @departure - @arrival
-  months = 0
-  tmp = @arrival.dup
-  while (tmp += 1.month) <= @departure
-    months += 1
-  end
-  page.insert_html :bottom, 'rules', content_tag('li', "(#{months} months / #{days} days selected)", :style => 'margin-left: 140px; font-size: 10pt;')
+  page.insert_html :bottom, 'rules',
+    content_tag('i', "#{distance_of_time_in_words(@departure, @arrival)} selected",
+    :style => 'margin-left: 140px; font-size: 10pt;')
 end
 
 @room.rate.rules.each do |rule|

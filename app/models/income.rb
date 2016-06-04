@@ -1,7 +1,5 @@
 class Income < ActiveRecord::Base
 
-  extend  MoneyComposer
-
   Types = %w{ bvr bank cash credit_note accounting_correction }
 
   belongs_to    :invoice
@@ -10,7 +8,7 @@ class Income < ActiveRecord::Base
     as: :entity,
     dependent: :destroy
 
-  money :value, currency: false
+  monetize :value_in_cents
 
   formatted_date :received
   log_after :update, :destroy

@@ -1,7 +1,5 @@
 class OverviewController < ApplicationController
 
-  auto_complete_for :room, :name
-
   def index
     tag_to_ignore = Option.value('tag_to_ignore')
 

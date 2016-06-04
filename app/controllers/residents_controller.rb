@@ -1,6 +1,16 @@
 require 'csv'
 
 class ResidentsController < ApplicationController
+
+  def autocomplete_name
+    name = params[:term]
+    @residents = Resident.where("first_name REGEXP ? OR last_name REGEXP ?", name, name)
+      .order(:last_name, :first_name)
+    respond_to do |wants|
+      wants.json { }
+    end
+  end
+
   def index
     params[:q] ||= { tags_name_eq: Option.value('residents_listing_selected_tag') }
     # raise ArgumentError, params.inspect
@@ -100,4 +110,5 @@ class ResidentsController < ApplicationController
       filename: date.strftime('residents_%d_%m_%y.csv'),
       disposition: 'attachment')
   end
+
 end

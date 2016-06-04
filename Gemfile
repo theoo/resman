@@ -29,9 +29,10 @@ gem 'pdf-writer', require: 'pdf/writer'
 gem 'acts-as-taggable-on'
 gem 'acts_as_tree'
 
-gem 'auto_complete'
+gem 'rails-jquery-autocomplete'
 gem 'money'
 gem 'monetize'
+gem 'money-rails'
 gem 'ransack' # metasearch replacement
 gem 'will_paginate', "~>3.0.7"
 
@@ -79,7 +80,6 @@ group :development do
   gem 'rspec-rails'
   gem 'syntax'
   gem 'jazz_hands', github: 'nixme/jazz_hands', branch: 'bring-your-own-debugger'
-  gem 'rack-mini-profiler'
   gem 'flamegraph'
   gem 'stackprof'
 

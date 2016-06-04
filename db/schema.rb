@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160216143451) do
+ActiveRecord::Schema.define(version: 20160604153305) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "user_id",     limit: 4,   null: false
@@ -76,12 +76,13 @@ ActiveRecord::Schema.define(version: 20160216143451) do
   end
 
   create_table "incomes", force: :cascade do |t|
-    t.integer  "invoice_id",     limit: 4,               null: false
-    t.integer  "value_in_cents", limit: 4,   default: 0, null: false
-    t.string   "payment",        limit: 255,             null: false
-    t.date     "received",                               null: false
+    t.integer  "invoice_id",     limit: 4,                   null: false
+    t.integer  "value_in_cents", limit: 4,   default: 0,     null: false
+    t.string   "payment",        limit: 255,                 null: false
+    t.date     "received",                                   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "value_currency", limit: 255, default: "CHF", null: false
   end
 
   add_index "incomes", ["invoice_id"], name: "index_incomes_on_invoice_id", using: :btree
@@ -107,11 +108,12 @@ ActiveRecord::Schema.define(version: 20160216143451) do
   add_index "invoices", ["reservation_id"], name: "index_invoices_on_reservation_id", using: :btree
 
   create_table "items", force: :cascade do |t|
-    t.integer  "invoice_id",     limit: 4,   null: false
-    t.string   "name",           limit: 255, null: false
-    t.integer  "value_in_cents", limit: 4,   null: false
+    t.integer  "invoice_id",     limit: 4,                   null: false
+    t.string   "name",           limit: 255,                 null: false
+    t.integer  "value_in_cents", limit: 4,                   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "value_currency", limit: 255, default: "CHF", null: false
   end
 
   add_index "items", ["invoice_id"], name: "index_items_on_invoice_id", using: :btree
@@ -198,12 +200,13 @@ ActiveRecord::Schema.define(version: 20160216143451) do
   add_index "rights", ["group_id"], name: "index_rights_on_group_id", using: :btree
 
   create_table "room_options", force: :cascade do |t|
-    t.integer  "room_id",        limit: 4,               null: false
-    t.string   "name",           limit: 255,             null: false
-    t.integer  "value_in_cents", limit: 4,   default: 0, null: false
-    t.string   "billing",        limit: 255,             null: false
+    t.integer  "room_id",        limit: 4,                   null: false
+    t.string   "name",           limit: 255,                 null: false
+    t.integer  "value_in_cents", limit: 4,   default: 0,     null: false
+    t.string   "billing",        limit: 255,                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "value_currency", limit: 255, default: "CHF", null: false
   end
 
   add_index "room_options", ["room_id"], name: "index_room_options_on_room_id", using: :btree
@@ -224,19 +227,20 @@ ActiveRecord::Schema.define(version: 20160216143451) do
   add_index "rooms", ["rate_id"], name: "index_rooms_on_rate_id", using: :btree
 
   create_table "rules", force: :cascade do |t|
-    t.integer  "rate_id",              limit: 4,                 null: false
+    t.integer  "rate_id",              limit: 4,                   null: false
     t.integer  "start_value",          limit: 4
-    t.string   "start_type",           limit: 255, default: "0", null: false
+    t.string   "start_type",           limit: 255, default: "0",   null: false
     t.integer  "end_value",            limit: 4
-    t.string   "end_type",             limit: 255, default: "0", null: false
-    t.string   "value_type",           limit: 255,               null: false
-    t.integer  "value_in_cents",       limit: 4,   default: 0,   null: false
-    t.integer  "tax_in_in_cents",      limit: 4,   default: 0,   null: false
-    t.integer  "tax_out_in_cents",     limit: 4,   default: 0,   null: false
-    t.integer  "deposit_in_in_cents",  limit: 4,   default: 0,   null: false
-    t.integer  "deposit_out_in_cents", limit: 4,   default: 0,   null: false
+    t.string   "end_type",             limit: 255, default: "0",   null: false
+    t.string   "value_type",           limit: 255,                 null: false
+    t.integer  "value_in_cents",       limit: 4,   default: 0,     null: false
+    t.integer  "tax_in_in_cents",      limit: 4,   default: 0,     null: false
+    t.integer  "tax_out_in_cents",     limit: 4,   default: 0,     null: false
+    t.integer  "deposit_in_in_cents",  limit: 4,   default: 0,     null: false
+    t.integer  "deposit_out_in_cents", limit: 4,   default: 0,     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "value_currency",       limit: 255, default: "CHF", null: false
   end
 
   add_index "rules", ["rate_id"], name: "index_rules_on_rate_id", using: :btree
