@@ -1,10 +1,12 @@
 # TODO move this to lib and load it in models
 class ActiveRecord::Base
+
   def self.formatted_date(*names)
     names.each do |name|
+
       define_method("#{name}_formatted") do
         value = self.send(name)
-        (value.is_a?(Date) || value.is_a?(Time)) ? value.to_s(:formatted) : nil
+        (value.is_a?(Date) || value.is_a?(Time)) ? value.strftime("%d/%m/%Y") : nil
       end
 
       define_method("#{name}_formatted=") do |value|
@@ -12,6 +14,7 @@ class ActiveRecord::Base
           self.send("#{name}=", value.to_default_date) rescue nil
         end
       end
+
     end
   end
 

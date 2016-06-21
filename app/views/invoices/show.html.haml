@@ -42,8 +42,14 @@
       = "(#{@invoice.parent.value} *)" if @invoice.parent
   .actions_left
     - unless @invoice.is_a?(DepositInvoice)
-      = link_to "Download with BVR" + image_tag('pdf.gif'), {:action => :send_pdf, :params => { :ids => [@invoice.id] }}, :class => "fake_button"
-    = link_to "Download with Bank Info " + image_tag('pdf.gif'), {:action => :send_pdf, :params => { :bvr => 'false', :ids => [@invoice.id] } }, :class => "fake_button"
+      = link_to send_pdf_invoices_path(ids: [@invoice.id]), :class => "fake_button" do
+        BVR
+        = image_tag('pdf.gif')
+
+    = link_to  send_pdf_invoices_path(bvr: 'false', ids: [@invoice.id]), :class => "fake_button" do
+      Bank info
+      = image_tag('pdf.gif')
+
     - if !@invoice.is_a?(DepositInvoice) && @invoice.parent.nil? && @invoice.children.empty? && @invoice.open?
       = form_tag(new_invoice_path, :method => :get, :style => 'display: inline;') do
         = hidden_field_tag 'invoice[reservation_id]', @invoice.reservation.id

@@ -2,7 +2,7 @@
 %h1 New Income
 = form_for(@income) do |f|
   .edit
-    = error_messages_for(@income)
+    - error_messages_for(@income)
     = f.hidden_field :invoice_id
     %p
       = f.label :value, {}, :class => :required
@@ -13,8 +13,9 @@
     %p
       = f.label :received, {}, :class => :required
       %span
-        = text_field_tag 'income[received_formatted]', @income.received_formatted, :id => 'income_received_formatted'
-        = calendar('income_received_formatted')
+        = text_field_tag 'income[received_formatted]', @income.received_formatted,
+          :id => 'income_received_formatted',
+          class: 'datepicker'
   .actions
     = f.submit "Create"
     = link_to 'Cancel', :back, :class => "fake_button"

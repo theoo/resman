@@ -26,13 +26,13 @@ class ReservationInvoice < Invoice
       end
 
       # Add unique reservations options
-      self.reservation.options.find_all_by_billing('unique').each do |option|
+      self.reservation.options.where(billing: 'unique').each do |option|
         self.items.build(name: option.name, value: option.value)
       end
     end
 
     # Add mensual reservations options
-    self.reservation.options.find_all_by_billing('mensual').each do |option|
+    self.reservation.options.where(billing: 'mensual').each do |option|
       months = self.reservation.months_in_common_with(self.interval_start, self.interval_end)
       self.items.build(name: "#{option.name} (#{months} months)", value: option.value * months)
     end

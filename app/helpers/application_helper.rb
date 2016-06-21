@@ -1,29 +1,5 @@
 module ApplicationHelper
 
-  def calendar(name)
-    image = image_tag "dhtml_calendar/calendar.gif", engine: :dhtml_calendar, id: "#{name}_calendar", style: 'cursor: pointer;', title: 'Click to Show Calendar
-      or try these Shortcuts:
-          today (tod)
-          tomorrow (tom)
-          yesterday
-          6 (6th or 6th October)
-          3rd of Feb
-          10th Feb 2004
-          14th of Februrary
-          12 feb
-          mon
-          next mon
-          last mon
-          2004-04-04
-          1/24/2005 (US)
-          4/26
-          10-24-2005" />'
-
-    format = "%d/%m/%Y" # ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS[:formatted]
-    javascript = javascript_tag "Calendar.setup({ popup:true,ifFormat:'#{format}',inputField:'#{name}',button:'#{name}_calendar' });"
-    "#{image}#{javascript}"
-  end
-
   def entity_url(entity)
     send("#{entity.class.to_s.downcase}_path", entity)
   end
@@ -84,11 +60,11 @@ module ApplicationHelper
   def error_messages_for(obj)
     return if obj.nil?
     if obj.errors && obj.errors.any?
-      haml_tag :div, class: 'alert alert-danger' do
+      haml_tag :div, id: 'errorExplanation' do
         haml_tag :h2 do
-          haml_concat I18n.t('activerecord.errors.template.header', model: 'model', count: obj.errors.count)
+          haml_concat "#{obj.errors.count} errors(s) prevented from saving."
         end
-        haml_tag :p, I18n.t('activerecord.errors.template.body')
+        haml_tag :br
         haml_tag :ul do
           obj.errors.messages.each_pair do |key,msg|
             haml_tag :li do

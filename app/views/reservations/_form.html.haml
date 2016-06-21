@@ -1,8 +1,8 @@
 .edit
-  = error_messages_for(@reservation)
+  - error_messages_for(@reservation)
 
   %p
-    = f.label :resident_full_name, 'Resident' , :class => :required
+    = f.label :resident_full_name, 'Resident' , class: %(required)
 
     - if action_name == 'edit'
       %span
@@ -86,4 +86,4 @@
           - @reservation.room.options.each do |option|
             - checked = @reservation.options.find_by_id(option.id) ? true : false
             - checkbox = check_box_tag('reservation[options_attributes][][room_option_id]', option.id, checked)
-            = content_tag('li',  "#{checkbox} #{option}")
+            = content_tag('li',  raw("#{checkbox} #{option}"))

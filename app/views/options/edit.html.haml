@@ -3,7 +3,7 @@
   %em= @option.key
 = form_for(@option) do |f|
   .edit
-    = error_messages_for(@option)
+    - error_messages_for(@option)
     %p
       = f.label :key, {}, :class => :required
       %span= @option.key

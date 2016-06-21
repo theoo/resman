@@ -27,3 +27,7 @@ en:
   statistics: Statistics
   summary: Summary
   users: Users
+  time:
+    formats:
+      lala: "%d/%m/%Y"
+      formatted: "%d/%m/%Y"

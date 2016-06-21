@@ -1,5 +1,5 @@
 .edit
-  = error_messages_for(@country)
+  - error_messages_for(@country)
   %p
     = f.label :name, {}, :class => :required
     %span= f.text_field :name

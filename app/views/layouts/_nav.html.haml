@@ -27,7 +27,7 @@
 
   %li{class: ('current_action' if current_page?(residents_path,
     new_resident_path))}
-    = link_to(t('reservations'), residents_path)
+    = link_to(t('residents'), residents_path)
     %ul
       %li{class: ('current_action' if current_page?(new_resident_path))}
         = link_to(t('new'), new_resident_path)

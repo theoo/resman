@@ -70,6 +70,7 @@ class Reservation < ActiveRecord::Base
   has_many :tags,
     through: :resident
 
+  validate :validate_params
   validates_presence_of   :room_id
   validates_inclusion_of  :status, in: Status
 
@@ -87,35 +88,6 @@ class Reservation < ActiveRecord::Base
     end
 
   end
-
-  def validate
-    errors.add :resident_full_name, 'must be set' unless self.resident && self.resident.valid?
-    errors.add :arrival, 'must be set' unless self.arrival
-    errors.add :departure, 'must be set' unless self.departure
-    errors.add :room_id, 'must be set' unless self.room.is_a?(Room)
-
-    if self.arrival && self.departure
-      errors.add :departure, 'cannot be before or equal to arrival' if self.departure <= self.arrival
-
-      # TODO remove once tested
-      # Check there's no overlapping reservations
-      # conditions = {}
-      # conditions[:id_ne]        = self.id
-      # conditions[:room_id]      = self.room_id
-      # conditions[:status_ne]    = 'cancelled'
-      # conditions[:arrival_lt]   = self.departure
-      # conditions[:departure_gt] = self.arrival
-      # others = self.class.find_all, conditions: conditions)
-      t = self.class.arel_table
-      others = self.class
-        .where(id: id, room_id: room_id, arrival: departure)
-        .where(t[:arrival].lt(departure))
-        .where(t[:departure].gt(arrival))
-        .where.not(status: 'cancelled')
-      errors.add :reservation, "overlaps with another reservation #{others.join(',')}" unless others.empty?
-    end
-  end
-
 
   def resident_full_name
     self.resident ? self.resident.full_name : nil
@@ -287,5 +259,35 @@ class Reservation < ActiveRecord::Base
   def to_s
     "#{resident.full_name}, room #{room} (#{interval_string})"
   end
+
+  private
+
+    def validate_params
+      errors.add :resident_full_name, 'must be set' unless self.resident && self.resident.valid?
+      errors.add :arrival, 'must be set' unless self.arrival
+      errors.add :departure, 'must be set' unless self.departure
+      errors.add :room_id, 'must be set' unless self.room.is_a?(Room)
+
+      if self.arrival && self.departure
+        errors.add :departure, 'cannot be before or equal to arrival' if self.departure <= self.arrival
+
+        # TODO remove once tested
+        # Check there's no overlapping reservations
+        # conditions = {}
+        # conditions[:id_ne]        = self.id
+        # conditions[:room_id]      = self.room_id
+        # conditions[:status_ne]    = 'cancelled'
+        # conditions[:arrival_lt]   = self.departure
+        # conditions[:departure_gt] = self.arrival
+        # others = self.class.find_all, conditions: conditions)
+        t = self.class.arel_table
+        others = self.class
+          .where(id: id, room_id: room_id, arrival: departure)
+          .where(t[:arrival].lt(departure))
+          .where(t[:departure].gt(arrival))
+          .where.not(status: 'cancelled')
+        errors.add :reservation, "overlaps with another reservation #{others.join(',')}" unless others.empty?
+      end
+    end
 
 end

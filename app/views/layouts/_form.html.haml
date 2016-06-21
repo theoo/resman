@@ -1,5 +1,5 @@
 .edit
-  = error_messages_for(object)
+  - error_messages_for(object)
   %p
     = f.label :name, {}, :class => :required
     %span= f.text_field :name

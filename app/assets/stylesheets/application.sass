@@ -366,7 +366,7 @@ div.edit
 .edit h1, .listing h1
   margin: 0 0 10px 0
 
-.edit p
+.edit
   display: block
   label
     display: inline-block
@@ -377,6 +377,7 @@ div.edit
   span
     margin-left: 20px
     padding: 5px 25px 0 0
+    // font-size: 1.2em
     // &:hover
     //   background-image: url('/assets/icons/little_edit.png')
     //   background-position: top right
@@ -508,6 +509,12 @@ div.infos
     font-size: 12px
     list-style: square
     margin-left: 20px
+
+.field_with_errors
+  color: red
+  display: inline
+  input, textarea
+    border: dashed 2px red
 
 /* OVERRIDE classes */
 
