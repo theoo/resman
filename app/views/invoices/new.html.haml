@@ -1,6 +1,7 @@
 %h1 New Invoice
-= form_for(:invoice, @invoice, :url => invoices_path) do |f|
-  %span.edit
+= form_for(@invoice, url: invoices_path, as: 'invoice') do |f|
+
+  %div.edit
     - error_messages_for(@invoice)
     = f.hidden_field :reservation_id
     = f.hidden_field :parent_id
@@ -14,6 +15,7 @@
       %p
         = f.label :interval_end
         %span= @invoice.interval_end_formatted
+
   %h3 Invoice Items
   .listing
     %table#items
@@ -21,7 +23,7 @@
         %th Name
         %th Value
       - @invoice.items.each do |item|
-        - fields_for('invoice[items_attributes][]', item) do |item_form|
+        = fields_for('invoice[items_attributes][]', item) do |item_form|
           - if @invoice.is_a?(CustomInvoice)
             - if @invoice.parent
               - @invoice.parent.items.each do |parent_item|
@@ -42,18 +44,29 @@
       %tr
         %td= text_field_tag 'invoice[items_attributes][][name]'
         %td= text_field_tag 'invoice[items_attributes][][value]', nil, :onchange => 'update_total();'
-    - new_row = h "<tr><td>#{text_field_tag('invoice[items_attributes][][name]', nil, :onchange => 'update_total();')}</td><td>#{text_field_tag('invoice[items_attributes][][value]', nil, :onchange => 'update_total();')}</td></tr>"
-    %a{:onclick => "$('items').insert('"}
-    = new_row
-    ');"&gt;Add item
-  %br/
-  %br/
+    - new_row = "<tr><td>#{text_field_tag('invoice[items_attributes][][name]', nil, :onchange => 'update_total();')}</td><td>#{text_field_tag('invoice[items_attributes][][value]', nil, :onchange => 'update_total();')}</td></tr>"
+    %a{:onclick => "$('items').insert('#{raw new_row}')"}
+      Add item
+
+  %br
+  %br
   %p
     = f.label :current_total
-    = 'nbsp' * 20
+    = raw '&nbsp;' * 20
     %span#total= @invoice.value
-  %br/
+  %br
   %p
-    = f.submit Create, :style = 'width: 90px;'
+    = f.submit "Create", style: 'width: 90px;'
+
   :javascript
-    //
+    function update_total()
+    {
+      var elements = document.getElementsByName('invoice[items_attributes][][value]');
+      var total = 0;
+      for(var i = 0; i < elements.length; ++i)
+      {
+        if(elements[i].value)
+          total += parseFloat(elements[i].value);
+      }
+      $('total').innerHTML = total.toFixed(2);
+    }

@@ -28,6 +28,14 @@ class Resident < ActiveRecord::Base
 
   before_destroy :cleanup_tags
 
+  before_save do
+    if tag_list.include?("Archive") or tag_list.include?("Admin")
+      tag_list.delete("Active")
+    else
+      tag_list << "Active"
+    end
+  end
+
   scope :men, -> { where(gender: 'man').order('last_name,first_name ASC') }
   scope :women, -> { where(gender: 'woman').order('last_name,first_name ASC') }
   scope :unknown, -> { where(gender: '').order('last_name,first_name ASC') }

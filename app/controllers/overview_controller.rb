@@ -16,9 +16,12 @@ class OverviewController < ApplicationController
 
     tag_to_ignore = Option.value('tag_to_ignore')
 
-    common_invoices_arel = Invoice.joins(:reservation, :resident, :tags)
+    common_invoices_arel = Invoice
+      .joins(:reservation, :resident, :tags)
       .order("residents.last_name", "residents.first_name", :created_at)
       .where.not("tags.name" => tag_to_ignore)
+      .uniq
+
     @open_invoices = common_invoices_arel.to_a
       .select{ |i| i.open? && !i.is_a?(DepositInvoice) }
 
