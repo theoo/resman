@@ -114,4 +114,29 @@
   .actions
     - if current_user.has_access?('ReservationsController', 'new')
       = link_to 'New Reservation', {:controller => :reservations, :action => :new, :resident => @resident}, :class => "fake_button"
+
 = render :partial => 'comments/message', :locals => { :entity => @resident }
+
+%h3 Attachments:
+.listing
+  - if @resident.attachments.size > 0
+    %table
+      %tr
+        %th Title
+        %th Filename
+        %th Size
+        %th Content Type
+        %th Date
+      - @resident.attachments.each do |attachment|
+        %tr{:onclick => "window.location='#{edit_attachment_path(attachment)}'"}
+          %td= h attachment.title
+          %td= h attachment.file_file_name
+          %td= h attachment.file.size
+          %td= h attachment.file.content_type
+          %td= h attachment.file.updated_at
+  - else
+    %p No attachment found.
+  .actions
+    - if current_user.has_access?('AttachmentsController', 'new')
+      = link_to 'New Attachment', new_attachment_path(id: @resident, class: @resident.class), :class => "fake_button"
+

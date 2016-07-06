@@ -72,6 +72,10 @@ GEM
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
     byebug (9.0.5)
+    climate_control (0.0.3)
+      activesupport (>= 3.0)
+    cocaine (0.5.8)
+      climate_control (>= 0.0.3, < 1.0)
     coderay (1.1.1)
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
@@ -164,6 +168,7 @@ GEM
       mime-types (>= 1.16, < 4)
     method_source (0.8.2)
     mime-types (1.25.1)
+    mimemagic (0.3.1)
     mini_portile2 (2.0.0)
     minitest (5.9.0)
     monetize (1.4.0)
@@ -181,6 +186,12 @@ GEM
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     orm_adapter (0.5.0)
+    paperclip (5.0.0)
+      activemodel (>= 4.2.0)
+      activesupport (>= 4.2.0)
+      cocaine (~> 0.5.5)
+      mime-types
+      mimemagic (~> 0.3.0)
     passenger (5.0.28)
       rack
       rake (>= 0.8.1)
@@ -350,6 +361,7 @@ DEPENDENCIES
   money
   money-rails
   mysql2 (~> 0.3.18)
+  paperclip
   passenger
   pdf-writer
   prototype-rails!
@@ -369,3 +381,6 @@ DEPENDENCIES
   will_paginate (~> 3.0.7)
   yard
   yui-compressor
+
+BUNDLED WITH
+   1.12.5

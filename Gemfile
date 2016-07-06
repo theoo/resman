@@ -42,7 +42,7 @@ gem 'will_paginate', "~>3.0.7"
 # gem 'resque-scheduler', '3.0.0'
 
 # Attachment handler
-# gem 'paperclip'
+gem 'paperclip'
 
 
 # Authentication and authorization

@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   resources :activities
+  resources :attachments, except: [:index]
   resources :buildings
   resources :comments do
     collection do

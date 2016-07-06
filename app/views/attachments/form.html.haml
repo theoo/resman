@@ -1,0 +1,23 @@
+
+%h1
+  Attachment for
+  = @attachment.attachable.class
+
+= form_for(@attachment) do |f|
+  .edit
+    - error_messages_for(@attachment)
+    %table
+      %tr
+        %td
+          %p
+            = f.label :title, {}, :class => :required
+            %span= f.text_field :title
+          %p
+            = f.label :file, {}, :class => :required
+            %span= f.file_field :file
+
+  .actions
+    = f.hidden_field :attachable_id
+    = f.hidden_field :attachable_type
+    = f.submit 'Update'
+    = link_to  'Cancel', :back, :class => "fake_button"

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160604153305) do
+ActiveRecord::Schema.define(version: 20160706163345) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "user_id",     limit: 4,   null: false
@@ -32,6 +32,20 @@ ActiveRecord::Schema.define(version: 20160604153305) do
     t.string  "name",        limit: 255
     t.text    "description", limit: 65535
   end
+
+  create_table "attachments", force: :cascade do |t|
+    t.string   "title",             limit: 255
+    t.integer  "attachable_id",     limit: 4,   null: false
+    t.string   "attachable_type",   limit: 255, null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "file_file_name",    limit: 255
+    t.string   "file_content_type", limit: 255
+    t.integer  "file_file_size",    limit: 4
+    t.datetime "file_updated_at"
+  end
+
+  add_index "attachments", ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable_type_and_attachable_id", using: :btree
 
   create_table "buildings", force: :cascade do |t|
     t.string   "name",       limit: 255, null: false

@@ -19,6 +19,7 @@ class Resident < ActiveRecord::Base
   has_many    :incomes, through: :invoices
 
   has_many    :comments, as: :entity, dependent: :destroy
+  has_many    :attachments, as: :attachable, dependent: :destroy
 
   validates_presence_of   :first_name, :last_name
   validates_uniqueness_of :first_name, scope: :last_name
