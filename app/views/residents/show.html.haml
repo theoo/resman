@@ -127,13 +127,18 @@
         %th Size
         %th Content Type
         %th Date
+        %th Actions
       - @resident.attachments.each do |attachment|
-        %tr{:onclick => "window.location='#{edit_attachment_path(attachment)}'"}
+        %tr
           %td= h attachment.title
           %td= h attachment.file_file_name
-          %td= h attachment.file.size
+          %td= h number_to_human_size(attachment.file.size)
           %td= h attachment.file.content_type
-          %td= h attachment.file.updated_at
+          %td= h l attachment.file_updated_at, format: :long
+          %td
+            = link_to image_tag('icons/save', size: '25x25'), attachment_path(attachment)
+            = link_to image_tag('icons/edit', size: '25x25'), edit_attachment_path(attachment)
+            = link_to image_tag('icons/delete', size: '25x25'), attachment_path(attachment), method: :delete, data: {confirm: 'Are your sure?'}
   - else
     %p No attachment found.
   .actions

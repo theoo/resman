@@ -15,19 +15,30 @@ class AttachmentsController < ApplicationController
     @attachment = Attachment.create(attachment_params)
 
     flash[:notice] = "Attachment successfully created."
-    render 'form'
+    redirect_to @attachment.attachable
+  end
+
+  def show
+    @attachment = Attachment.find(params[:id])
+    send_file @attachment.file.path
   end
 
   def edit
-
+    @attachment = Attachment.find(params[:id])
+    render 'form'
   end
 
   def update
+    @attachment = Attachment.find(params[:id])
+    @attachment.update_attributes(attachment_params)
 
+    flash[:notice] = "Attachment successfully updated."
+    redirect_to @attachment.attachable
   end
 
   def destroy
-
+    @attachment = Attachment.find(params[:id]).destroy
+    redirect_to @attachment.attachable
   end
 
   private
