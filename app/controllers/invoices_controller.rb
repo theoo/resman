@@ -173,7 +173,7 @@ class InvoicesController < ApplicationController
     @rails_pdf_inline = true
     @paper = 'A4'
     @rails_pdf_name = "#{@invoices.first.interval_start.to_time.strftime('%Y_%m')}_invoices.pdf"
-    render layout: false
+    render layout: false, locals: { invoices: []}
   end
 
   # RailsPdf: Scott Wilson suggested adding the following two block so errors will always show in browser
