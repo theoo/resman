@@ -2,6 +2,10 @@
  *= require_tree .
  *= require_self
  */
+
+$dark-blue: #3B6F79
+$middle-blue: #93B1B6
+
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td
   margin: 0
   padding: 0
@@ -192,7 +196,7 @@ div
 #session_infos
   float: right
   font-size: 10px
-  color: #653f28
+  color: $dark-blue
   a
     color: #000
 
@@ -203,7 +207,7 @@ div
   color: #fff
 
 #nav
-  background-color: #999
+  background-color: $middle-blue
   font-family: verdana
   font-size: 10px
 
@@ -221,7 +225,7 @@ div
 
     a:hover
       color: #fff
-      background-color: #666
+      background-color: $dark-blue
 
     li
       height: 20px
@@ -255,7 +259,7 @@ div
           color: #fff
 
     .current_action, .current_action>ul
-      background-color: #666
+      background-color: $dark-blue
 
     .current_action>ul
       display: block !important

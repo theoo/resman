@@ -136,12 +136,29 @@
           %td= h attachment.file.content_type
           %td= h l attachment.file_updated_at, format: :long
           %td
-            = link_to image_tag('icons/save', size: '25x25'), attachment_path(attachment)
-            = link_to image_tag('icons/edit', size: '25x25'), edit_attachment_path(attachment)
+            = link_to image_tag('icons/download', size: '25x25'), attachment_path(attachment)
+            / = link_to image_tag('icons/edit', size: '25x25'), edit_attachment_path(attachment)
             = link_to image_tag('icons/delete', size: '25x25'), attachment_path(attachment), method: :delete, data: {confirm: 'Are your sure?'}
   - else
     %p No attachment found.
-  .actions
+
+  %p.link{:onclick => "Effect.toggle($('new_attachment'), 'slide');"} New attachment
+  #new_attachment{:style => "display:none;"}
     - if current_user.has_access?('AttachmentsController', 'new')
-      = link_to 'New Attachment', new_attachment_path(id: @resident, class: @resident.class), :class => "fake_button"
+      = form_for(@resident.attachments.new) do |f|
+        .edit
+          - error_messages_for(@attachment)
+
+          %p
+            = f.label :title, {}, :class => :required
+            %span= f.text_field :title
+
+          %p
+            = f.label :file, {}, :class => :required
+            %span= f.file_field :file
+
+        .actions
+          = f.hidden_field :attachable_id
+          = f.hidden_field :attachable_type
+          = f.submit 'Add attachment'
 

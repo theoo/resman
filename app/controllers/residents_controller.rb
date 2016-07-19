@@ -20,17 +20,14 @@ class ResidentsController < ApplicationController
 
   def show
     @resident = Resident.find(params[:id])
-
   end
 
   def new
     @resident = Resident.new
-
   end
 
   def edit
     @resident = Resident.find(params[:id])
-
   end
 
   def create

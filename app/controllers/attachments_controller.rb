@@ -38,6 +38,7 @@ class AttachmentsController < ApplicationController
 
   def destroy
     @attachment = Attachment.find(params[:id]).destroy
+    flash[:notice] = "Attachment successfully removed."
     redirect_to @attachment.attachable
   end
 

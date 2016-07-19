@@ -29,12 +29,11 @@ class ApplicationController < ActionController::Base
   end
 
   def logged_in?
-    current_user != nil
+    !current_user.nil?
   end
 
   def current_user
     @current_user ||= session[:user] ? User.find(session[:user]) : nil
-    User.first
   end
 
   def set_current_user

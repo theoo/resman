@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
 
     if logged_in?
       # Find a page the user has right to
-      right = self.current_user.right_for('OverviewController', 'summary')
+      right = self.current_user.right_for('OverviewController', 'index')
       right = self.current_user.right_for('ReservationsController', 'index') unless right.allowed?
       right = self.current_user.right_for('ResidentsController', 'index') unless right.allowed?
       right = self.current_user.right_for('InvoicesController', 'index') unless right.allowed?
