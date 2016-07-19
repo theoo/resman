@@ -138,13 +138,14 @@
           %td
             = link_to image_tag('icons/download', size: '25x25'), attachment_path(attachment)
             / = link_to image_tag('icons/edit', size: '25x25'), edit_attachment_path(attachment)
-            = link_to image_tag('icons/delete', size: '25x25'), attachment_path(attachment), method: :delete, data: {confirm: 'Are your sure?'}
+            - if current_user.has_access?('AttachmentsController', 'destroy')
+              = link_to image_tag('icons/delete', size: '25x25'), attachment_path(attachment), method: :delete, data: {confirm: 'Are your sure?'}
   - else
     %p No attachment found.
 
-  %p.link{:onclick => "Effect.toggle($('new_attachment'), 'slide');"} New attachment
-  #new_attachment{:style => "display:none;"}
-    - if current_user.has_access?('AttachmentsController', 'new')
+  - if current_user.has_access?('AttachmentsController', 'new')
+    %p.link{:onclick => "Effect.toggle($('new_attachment'), 'slide');"} New attachment
+    #new_attachment{:style => "display:none;"}
       = form_for(@resident.attachments.new) do |f|
         .edit
           - error_messages_for(@attachment)

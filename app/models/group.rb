@@ -17,7 +17,7 @@ class Group < ActiveRecord::Base
   end
 
   def right_for(controller, action)
-   # What follows is a speed hack
+    # What follows is a quick hack
     unless @rights_cache
       @rights_cache = self.rights.inject({}) do |hash, r|
         hash[r.controller] ||= {}
@@ -33,9 +33,7 @@ class Group < ActiveRecord::Base
   end
 
   def has_access?(controller, action)
-    # temporarly disabled
-    # self.right_for(controller, action).allowed?
-    true
+    self.right_for(controller, action).allowed?
   end
 
   def deletable?
