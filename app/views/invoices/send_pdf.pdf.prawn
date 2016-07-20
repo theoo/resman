@@ -8,8 +8,8 @@ prawn_document(top_margin: 36, left_margin: 72, bottom_margin: 36, right_margin:
 
     pdf.start_new_page unless i == 0
 
-    pdf.font "Helvetica"
-    pdf.move_down 22
+    # pdf.font "Helvetica"
+    # pdf.move_down 22
     #pdf.image "public/images/cstb.jpg", :justification => :center
     #pdf.text " ", :size => 12
 
@@ -47,8 +47,11 @@ prawn_document(top_margin: 36, left_margin: 72, bottom_margin: 36, right_margin:
     #######################################
 
     # date
-    pdf.font "Helvetica"
-    pdf.text "Geneve, le " + dateINFO[:now], size: 12, align: :right
+    pdf.bounding_box([ 90.mm, 240.mm], width: 70.mm, height: 12) do
+      pdf.stroke_bounds
+      pdf.font "Helvetica"
+      pdf.text "Geneve, le " + dateINFO[:now], size: 12
+    end
 
     pdf.move_down 130
 
@@ -72,7 +75,7 @@ prawn_document(top_margin: 36, left_margin: 72, bottom_margin: 36, right_margin:
 
     pdf.move_down 15
 
-    pdf.bounding_box([20.mm, 70.mm], width: 140.mm, height: 70.mm) do
+    pdf.bounding_box([ 90.mm, 230.mm], width: 70.mm, height: 35.mm) do
       pdf.stroke_bounds
       pdf.stroke_circle [0, 0], 10
     end
