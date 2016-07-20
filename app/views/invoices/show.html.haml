@@ -42,11 +42,11 @@
       = "(#{@invoice.parent.value} *)" if @invoice.parent
   .actions_left
     - unless @invoice.is_a?(DepositInvoice)
-      = link_to send_pdf_invoices_path(ids: [@invoice.id]), :class => "fake_button" do
+      = link_to send_pdf_invoices_path(ids: [@invoice.id], format: 'pdf'), :class => "fake_button" do
         BVR
         = image_tag('pdf.gif')
 
-    = link_to  send_pdf_invoices_path(bvr: 'false', ids: [@invoice.id]), :class => "fake_button" do
+    = link_to  send_pdf_invoices_path(bvr: 'false', ids: [@invoice.id], format: 'pdf'), :class => "fake_button" do
       Bank info
       = image_tag('pdf.gif')
 

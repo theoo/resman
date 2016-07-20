@@ -1,6 +1,3 @@
-require 'pdf/writer'
-require 'pdf/simpletable'
-require 'pdf/charts/stddev'
 require 'csv'
 
 class InvoicesController < ApplicationController
@@ -170,10 +167,10 @@ class InvoicesController < ApplicationController
   def send_pdf
     @invoices = Invoice.find(params[:ids])
     @bvr = params[:bvr] || true
-    @rails_pdf_inline = true
-    @paper = 'A4'
-    @rails_pdf_name = "#{@invoices.first.interval_start.to_time.strftime('%Y_%m')}_invoices.pdf"
-    render layout: false, locals: { invoices: []}
+    # @rails_pdf_inline = true
+    # @paper = 'A4'
+    # @rails_pdf_name = "#{@invoices.first.interval_start.to_time.strftime('%Y_%m')}_invoices.pdf"
+    render layout: false
   end
 
   # RailsPdf: Scott Wilson suggested adding the following two block so errors will always show in browser

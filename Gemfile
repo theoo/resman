@@ -25,7 +25,9 @@ gem 'yui-compressor'
 gem 'passenger'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
-gem 'pdf-writer', require: 'pdf/writer'
+gem 'prawn'
+gem 'prawn-table'
+gem 'prawn-rails'
 gem 'acts-as-taggable-on'
 gem 'acts_as_tree'
 

@@ -1,6 +1,8 @@
 module StringExtention
   def to_utf8
-    Iconv.iconv("iso-8859-1", "utf-8", self).to_s
+    # Iconv.iconv("iso-8859-1", "utf-8", self).to_s
+    # Ruby 2 is already UTF8
+    self
   end
 
   def cut(chars_qt)
@@ -22,3 +24,4 @@ end
 class String
   include StringExtention
 end
+

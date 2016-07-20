@@ -37,4 +37,5 @@ class ReservationInvoice < Invoice
       self.items.build(name: "#{option.name} (#{months} months)", value: option.value * months)
     end
   end
+
 end
