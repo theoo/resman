@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       get 'planning',
         'ajax_room_options',
         'ajax_room_availables'
+      post :search
     end
     resources :reservation_options, as: :options
   end

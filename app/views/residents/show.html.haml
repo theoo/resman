@@ -20,7 +20,7 @@
           %span
             = h @resident.identity_card || '-'
         %p
-          %label Country:
+          %label Nationality:
           %span= h @resident.country ? @resident.country.name : '-'
         %p
           %label Gender:
@@ -92,30 +92,6 @@
       to
       \#{select_month(@resident.reservations.empty? ? nil : @resident.reservations.last.departure, :field_name => 'to][month', :use_short_month => true)}
       \#{select_year(@resident.reservations.empty? ? nil : @resident.reservations.last.departure, :field_name => 'to][year')}
-%h3 Reservations:
-.listing
-  - if @resident.reservations.size > 0
-    %table
-      %tr
-        %th Period
-        %th Room
-        %th Total
-        %th Due
-        %th Paid
-      - @resident.reservations.each do |reservation|
-        %tr{:onclick => "window.location='#{reservation_path(reservation)}'"}
-          %td= h reservation.interval_string
-          %td= h reservation.room
-          %td= h reservation.total
-          %td= h reservation.due
-          %td= h reservation.paid
-  - else
-    %p No reservations found.
-  .actions
-    - if current_user.has_access?('ReservationsController', 'new')
-      = link_to 'New Reservation', {:controller => :reservations, :action => :new, :resident => @resident}, :class => "fake_button"
-
-= render :partial => 'comments/message', :locals => { :entity => @resident }
 
 %h3 Attachments:
 .listing
@@ -163,3 +139,27 @@
           = f.hidden_field :attachable_type
           = f.submit 'Add attachment'
 
+%h3 Reservations:
+.listing
+  - if @resident.reservations.size > 0
+    %table
+      %tr
+        %th Period
+        %th Room
+        %th Total
+        %th Due
+        %th Paid
+      - @resident.reservations.each do |reservation|
+        %tr{:onclick => "window.location='#{reservation_path(reservation)}'"}
+          %td= h reservation.interval_string
+          %td= h reservation.room
+          %td= h reservation.total
+          %td= h reservation.due
+          %td= h reservation.paid
+  - else
+    %p No reservations found.
+  .actions
+    - if current_user.has_access?('ReservationsController', 'new')
+      = link_to 'New Reservation', {:controller => :reservations, :action => :new, :resident => @resident}, :class => "fake_button"
+
+= render :partial => 'comments/message', :locals => { :entity => @resident }

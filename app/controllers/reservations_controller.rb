@@ -13,11 +13,17 @@ class ReservationsController < ApplicationController
     @to = @from if @to < @from
 
     @q = Reservation.joins(:resident, :room)
-      .where("arrival < ? AND departure > ?", @to, @from)
+      .where("arrival <= ? AND ? <= departure", @from, @to)
       .search(params[:q])
     @reservations = @q.result.page(params[:page])
 
+    respond_to do |wants|
+      wants.html { render 'index' }
+    end
+
   end
+
+  alias_method :search, :index
 
   def planning
 
@@ -30,6 +36,9 @@ class ReservationsController < ApplicationController
     @planning = Room.order(:name).inject([]) do |arr, room|
       arr << {room: room, reservations: room.reservations.where("status != 'cancelled' AND arrival < ? AND departure > ?", @stop, @start).order(:arrival)}
     end
+
+    render 'items'
+    # gon.items = items_string
 
   end
 

@@ -14,6 +14,8 @@ Show names: #{check_box_tag '', 1, params[:show_names], :onclick => "window.loca
 %br/
 %br/
 
+- raise ArgumentError, items_string.inspect
+
 #tableContainer.tableContainer
   :javascript
     function element_clicked(event, element, properties)

@@ -4,7 +4,7 @@
     = @reservations.count
     reservations found
   %br
-  = form_for(:search) do |f|
+  = form_for(:search, url: {action: :search}) do |f|
     from
     = select_month(@from, { :field_name => 'from][month', :use_short_month => true}, :onchange => 'this.form.submit();')
     = select_year(@from, { :field_name => 'from][year'}, :onchange => 'this.form.submit();')

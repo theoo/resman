@@ -16,6 +16,24 @@ class ResidentsController < ApplicationController
     # raise ArgumentError, params.inspect
     @q = Resident.search(params[:q])
     @residents = @q.result.includes([:country, :religion, :school]).page(params[:page])
+
+    respond_to do |wants|
+      wants.html {  }
+      wants.csv do
+        csv_string = CSV.generate do |csv|
+          csv << Resident.columns.map(&:name)
+          @q.result.each do |resident|
+            csv << resident.attributes.values
+          end
+        end
+
+        send_data(csv_string,
+          type: 'text/csv',
+          filename: "residents.csv",
+          disposition: 'attachment')
+
+      end
+    end
   end
 
   def show
