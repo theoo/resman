@@ -37,3 +37,4 @@ bower.json
 .powenv
 
 /*.sql
+.env

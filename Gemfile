@@ -45,6 +45,7 @@ gem 'will_paginate', "~>3.0.7"
 
 # Attachment handler
 gem 'paperclip'
+gem 'rest-client'
 
 
 # Authentication and authorization
