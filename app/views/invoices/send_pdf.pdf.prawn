@@ -48,13 +48,13 @@ prawn_document(top_margin: margins[0], left_margin: margins[1], bottom_margin: m
     #######################################
 
     # Date
-    pdf.bounding_box([ 98.mm, 237.5.mm], width: 70.mm, height: 12) do
+    pdf.bounding_box([ 100.mm, 237.5.mm], width: 70.mm, height: 12) do
       # pdf.stroke_bounds
       pdf.text "Geneve, le " + dateINFO[:now], size: 12
     end
 
     # Address
-    pdf.bounding_box([ 98.mm, 225.5.mm], width: 70.mm, height: 35.mm) do
+    pdf.bounding_box([ 100.mm, 225.5.mm], width: 70.mm, height: 35.mm) do
       # pdf.stroke_bounds
       pdf.text clientINFO[:company], font_style: :bold, size: 12 unless clientINFO[:company].empty?
       %i(titre name address locality).each do |n|
@@ -71,7 +71,7 @@ prawn_document(top_margin: margins[0], left_margin: margins[1], bottom_margin: m
       [ "Période:",       (invoiceINFO[:debut] + " au " + invoiceINFO[:fin]) ]
     ]
 
-    pdf.bounding_box([ 0, 202.5.mm], width: 98.mm, height: 30.mm) do
+    pdf.bounding_box([ 0, 205.mm], width: 98.mm, height: 30.mm) do
       # pdf.stroke_bounds
       pdf.table data,
         position: :left,
@@ -93,7 +93,7 @@ prawn_document(top_margin: margins[0], left_margin: margins[1], bottom_margin: m
     pdf.table data,
       position: :left,
       row_colors: ['eeeeee', 'ffffff'],
-      width: 165.mm,
+      width: 170.mm,
       cell_style: { borders:  [], size: 11, padding: [2, 2] } do
 
       row(0).text_color = 'ffffff'
@@ -127,7 +127,7 @@ prawn_document(top_margin: margins[0], left_margin: margins[1], bottom_margin: m
 
       bank_address = "BANQUE CANTONALE DE GENEVE
 1211 GENEVE 2
-En faveur de
+
 <b>T 3225.31.34</b>
 Association St-Boniface
 1205 Gèneve"
@@ -160,9 +160,9 @@ Association St-Boniface
       pdf.font [Rails.root, "/vendor/fonts/ocrb10.ttf"].join("/")
       x_ccp1 = 27.mm - margins[1]
       x_ccp2 = 88.mm - margins[1]
-      y_ccp = 68.mm - margins[2]
+      y_ccp = 62.mm - margins[2]
 
-      ccp = "01- 47300- 5"
+      ccp = "01-47300-5"
       [ x_ccp1, x_ccp2 ].each do |x|
         pdf.text_box ccp, at: [x, y_ccp], width: 40.mm,  size: 9
       end
@@ -172,7 +172,7 @@ Association St-Boniface
       x_value_francs2 = 63.mm - margins[1]
       x_value_cents1 = 49.mm - margins[1]
       x_value_cents2 = 110.mm - margins[1]
-      y_value = 60.mm - margins[2]
+      y_value = 55.mm - margins[2]
 
       [x_value_francs1, x_value_francs2].each do |x|
         pdf.text_box monneyINFO[:francs], at: [x, y_value], width: 40.mm, size: 12, align: :right, border: true
@@ -192,8 +192,9 @@ Association St-Boniface
 
       # lower line (the longest)...
       x_scan = 70.mm - margins[1]# 64
-      y_scan = 18.mm - margins[1]# 18
-      pdf.text_box monneyINFO[:ref], at: [x_scan, y_scan ], width: 169.mm, size: 10
+      y_scan = 18.mm - margins[2]# 18
+      pdf.text_box monneyINFO[:modulo], at: [x_scan, y_scan ], width: 169.mm, size: 10
+
 
     else # bank account
       pdf.move_down 15.mm

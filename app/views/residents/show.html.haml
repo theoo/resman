@@ -50,7 +50,7 @@
           %span
             = h @resident.birthdate_formatted
             - if @resident.birthdate
-              (#{distance_of_time_in_words_to_now(@resident.birthdate)} old)
+              (#{distance_of_time_in_words_to_now(@resident.birthdate, only: :years)} old)
         %p
           %label Email:
           %span= mail_to(@resident.email)
