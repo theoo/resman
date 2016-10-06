@@ -34,6 +34,7 @@ class ResidentsController < ApplicationController
 
       end
     end
+
   end
 
   def show

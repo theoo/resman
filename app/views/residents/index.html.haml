@@ -59,4 +59,4 @@
     - if current_user.has_access?('ResidentsController', 'new')
       = link_to 'New Resident', new_resident_path, :class => "fake_button"
 
-    = link_to 'CSV', residents_path(format: :csv), :class => "fake_button"
+    = link_to 'CSV', residents_path(format: 'csv'), class: 'fake_button'
