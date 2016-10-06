@@ -14,8 +14,6 @@ Show names: #{check_box_tag '', 1, params[:show_names], :onclick => "window.loca
 %br/
 %br/
 
-- raise ArgumentError, items_string.inspect
-
 #tableContainer.tableContainer
   :javascript
     function element_clicked(event, element, properties)
@@ -79,12 +77,12 @@ Show names: #{check_box_tag '', 1, params[:show_names], :onclick => "window.loca
     return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
     }
 
+    // TODO see items.json.builder, declared twice
     var tile_size = 12.8;
     var rooms_offset = 4;
     var dates_offset = 2;
-    var items = [
-      #{items_string}
-    ];
+
+    var items = [ gon.items ];
 
     grid = new Grid('tableContainer', rooms_offset + #{@duration}, dates_offset + #{@planning.size}, tile_size);
     grid.set_handlers({click: element_clicked, mousedown: element_mousedown, mousemove: element_mousemove, mouseup: element_mouseup});

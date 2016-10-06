@@ -37,8 +37,10 @@ class ReservationsController < ApplicationController
       arr << {room: room, reservations: room.reservations.where("status != 'cancelled' AND arrival < ? AND departure > ?", @stop, @start).order(:arrival)}
     end
 
-    render 'items'
-    # gon.items = items_string
+    @items_string = render_to_string(template: 'reservations/items.json.jbuilder')
+    gon.items = JSON.parse(@items_string)
+
+    response.headers['Content-Type'] = 'text/html'
 
   end
 
