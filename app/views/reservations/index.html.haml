@@ -4,7 +4,7 @@
     = @reservations.count
     reservations found
   %br
-  = form_for(:search, url: {action: :search}) do |f|
+  = search_form_for(@q) do |f|
     from
     = select_month(@from, { :field_name => 'from][month', :use_short_month => true}, :onchange => 'this.form.submit();')
     = select_year(@from, { :field_name => 'from][year'}, :onchange => 'this.form.submit();')
@@ -20,18 +20,14 @@
         %th= order_by_link(:arrival)
         %th= order_by_link(:departure)
         %th= order_by_link(:status)
-      - f.fields_for(@reservations) do |reservation|
-        %tr.listing_filter
-          %th= select(reservation, :resident_id, Resident.options_for_select(:allow_nil => true), {}, |
-              {:onchange => "this.form.submit();"} )                                                |
-          %th= select(reservation, :room_id, Room.options_for_select(:allow_nil => true), {}, |
-              {:onchange => "this.form.submit();"} )                                        |
-          %th
-          %th
-          %th
-            = select(reservation, :status, [['All', nil]] + Reservation::Status, {}, |
-              {:onchange => "this.form.submit();"} )                                |
-            %input{:style => "display:none", :type => "submit"}/
+
+      %tr.listing_filter
+        %th= f.select(:resident_id_eq, Resident.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
+        %th= f.select(:room_id_eq, Room.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
+        %th
+        %th
+        %th= f.select(:status_eq, [['All', nil]] + Reservation::Status, {}, { :onchange => "this.form.submit();" })
+
       - if @reservations.count > 0
         - @reservations.each do |reservation|
           %tr{:onclick => "window.location='#{reservation_path(reservation)}'"}
