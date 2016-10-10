@@ -60,13 +60,15 @@ module ReservationsHelper
     end
 
     # Months
-    (@start..@stop).step(1.month) do |d|
-      is << "{ type: 'text', x: rooms_offset + #{d - @start}, y: 0, value: #{js_str(d.strftime('%B'))}, color: '#000' },"
-      is << "{ type: 'line', x1: rooms_offset + #{d - @start}, y1: 0, x2: rooms_offset + #{d - @start}, y2: dates_offset + #{@planning.size}, color: '#999', width: 2 },"
+    month = @start
+    while month < @stop do
+      is << "{ type: 'text', x: rooms_offset + #{(month - @start).to_i}, y: 0, value: #{js_str(month.strftime('%B'))}, color: '#000' },"
+      is << "{ type: 'line', x1: rooms_offset + #{(month - @start).to_i}, y1: 0, x2: rooms_offset + #{(month - @start).to_i}, y2: dates_offset + #{@planning.size}, color: '#999', width: 2 },"
+      month = month.next_month
     end
 
     # Today
-    is << "{ type: 'line', x1: rooms_offset + #{Date.today - @start}, y1: 0, x2: rooms_offset + #{Date.today - @start}, y2: dates_offset + #{@planning.size}, color: '#f00', width: 1 },"
+    is << "{ type: 'line', x1: rooms_offset + #{(Date.today - @start).to_i}, y1: 0, x2: rooms_offset + #{(Date.today - @start).to_s}, y2: dates_offset + #{@planning.size}, color: '#f00', width: 1 }"
 
     is
   end

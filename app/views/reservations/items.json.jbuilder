@@ -12,46 +12,111 @@ end
 
 is = json.array!
 # Rooms block
-is << { type: 'block', rect: [0, dates_offset, rooms_offset, @planning.size], color: '#fff' }
+is << { type: 'block',
+  rect: [0, dates_offset, rooms_offset, @planning.size],
+  color: '#fff' }
+
 # Contents block
-is << { type: 'block', rect: [rooms_offset, dates_offset, @duration, @planning.size], color: '#fff', reservable: true }
+is << { type: 'block',
+  rect: [rooms_offset, dates_offset, @duration, @planning.size],
+  color: '#fff',
+  reservable: true }
+
 # Mondays & fridays
-is += (days['mon'] + days['fri']).map do |d|
-  { type: 'text', x: rooms_offset + d - @start, y: 1, value: d.day, color: '#000' }
+(days['mon'] + days['fri']).map do |d|
+
+  is << { type: 'text',
+    x: (rooms_offset + (d - @start)).to_i,
+    y: 1,
+    value: d.day,
+    color: '#000' }
+
 end
 
-# # Week-ends
-# (days['sat'] + days['sun']).each do |d|
-#   is << "{ type: 'block', rect: [rooms_offset + #{d - @start}, dates_offset, 1, #{@planning.size}], color: '#eee', reservable: true},"
-# end
+# Week-ends
+(days['sat'] + days['sun']).each do |d|
 
-# # Vertical lines
-# @duration.times do |i|
-#   is << "{ type: 'line', x1: rooms_offset + #{i}, y1: dates_offset, x2: rooms_offset + #{i}, y2: dates_offset + #{@planning.size}, color: '#ccc' },"
-# end
+  is << { type: 'block',
+    rect: [(rooms_offset + (d - @start)).to_i, dates_offset, 1, @planning.size],
+    color: '#eee',
+    reservable: true}
 
-# @planning.each_with_index do |hash, i|
-#   # Room name
-#   is << "{ type: 'text', x: 1, y: dates_offset + #{i}, value: #{js_str(hash[:room].name)}, color: '#000' },"
-#   # Reservations blocks
-#   hash[:reservations].each do |reservation|
-#     is << "{ type: 'block', rect: [rooms_offset + #{days_from_start(reservation, @start)}, dates_offset + #{i}, #{[reservation_length(reservation, @start), @duration].min}, 1], color: #{js_str("##{reservation.resident.color}")}, reservation_id: #{reservation.id}, #{'fade: true' if reservation.status == 'pending'} },"
-#     if params[:show_names]
-#       is << "{ type: 'text', x: rooms_offset + #{days_from_start(reservation, @start)}, y: dates_offset + #{i}, value: #{js_str(reservation.resident.full_name)}, color: '#000' },"
-#     end
-#   end
-# end
+end
 
-# # Months
-# (@start..@stop).step(1.month) do |d|
-#   is << "{ type: 'text', x: rooms_offset + #{d - @start}, y: 0, value: #{js_str(d.strftime('%B'))}, color: '#000' },"
-#   is << "{ type: 'line', x1: rooms_offset + #{d - @start}, y1: 0, x2: rooms_offset + #{d - @start}, y2: dates_offset + #{@planning.size}, color: '#999', width: 2 },"
-# end
+# Vertical lines
+@duration.times do |i|
 
-# # Today
-# is << "{ type: 'line', x1: rooms_offset + #{Date.today - @start}, y1: 0, x2: rooms_offset + #{Date.today - @start}, y2: dates_offset + #{@planning.size}, color: '#f00', width: 1 },"
+  is << { type: 'line',
+    x1: rooms_offset + i,
+    y1: dates_offset,
+    x2: rooms_offset + i,
+    y2: dates_offset + @planning.size,
+    color: '#ccc' }
 
-# is
+end
 
+@planning.each_with_index do |hash, i|
 
+  # Room name
+  is << { type: 'text',
+    x: 1,
+    y: dates_offset + i,
+    value: hash[:room].name,
+    color: '#000' }
 
+  # Reservations blocks
+  hash[:reservations].each do |reservation|
+
+    h = { type: 'block',
+      rect: [rooms_offset + days_from_start(reservation, @start),
+        dates_offset + i,
+        [reservation_length(reservation, @start), @duration].min, 1],
+      color: reservation.resident.color,
+      reservation_id: reservation.id }
+
+    h[:fade] = true if reservation.status == 'pending'
+    is << h
+
+    if params[:show_names]
+
+      is << { type: 'text',
+        x: rooms_offset + days_from_start(reservation, @start),
+        y: dates_offset + i,
+        value: reservation.resident.full_name,
+        color: '#000' }
+
+    end
+  end
+end
+
+# Months
+
+month = @start
+while month < @stop do
+
+  is << { type: 'text',
+    x: (rooms_offset + (month - @start)).to_i,
+    y: 0,
+    value: month.strftime('%B'),
+    color: '#000' }
+
+  is << { type: 'line',
+    x1: (rooms_offset + (month - @start)).to_i,
+    y1: 0,
+    x2: (rooms_offset + (month - @start)).to_i,
+    y2: (dates_offset + @planning.size).to_i,
+    color: '#999',
+    width: 2 }
+
+  month = month.next_month
+end
+
+# Today
+is << { type: 'line',
+  x1: (rooms_offset + (Date.today - @start)).to_i,
+  y1: 0,
+  x2: (rooms_offset + (Date.today - @start)).to_i,
+  y2: (dates_offset + @planning.size).to_i,
+  color: '#f00', width: 1 }
+
+is

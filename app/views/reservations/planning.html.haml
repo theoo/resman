@@ -82,7 +82,8 @@ Show names: #{check_box_tag '', 1, params[:show_names], :onclick => "window.loca
     var rooms_offset = 4;
     var dates_offset = 2;
 
-    var items = [ gon.items ];
+    // var items = [ gon.items ];
+    var items = [ #{items_string} ];
 
     grid = new Grid('tableContainer', rooms_offset + #{@duration}, dates_offset + #{@planning.size}, tile_size);
     grid.set_handlers({click: element_clicked, mousedown: element_mousedown, mousemove: element_mousemove, mouseup: element_mouseup});
