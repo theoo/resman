@@ -61,6 +61,7 @@ class OverviewController < ApplicationController
         .joins(:reservations, :tags)
         .where(" ? <= arrival AND departure < ?", @from, @to)
         .where.not("tags.name" => Option.value('tag_to_ignore'))
+        .order(:name)
         .uniq
       instance_variable_set "@" + k.pluralize, arel
     end
