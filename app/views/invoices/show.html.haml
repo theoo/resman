@@ -1,5 +1,9 @@
 %h1
-  Invoice #{@invoice.id} #{"(Frais de rappel pour ##{link_to @invoice.parent.id, invoice_path(@invoice.parent)})" if @invoice.parent}
+  Invoice #{@invoice.id}
+  - if @invoice.parent
+    Frais de rappel pour
+    = link_to(@invoice.parent.id, invoice_path(@invoice.parent))
+
 .edit
   %p
     %label Type
