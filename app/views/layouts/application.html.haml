@@ -11,6 +11,7 @@
     = stylesheet_link_tag 'application'
   %body
     = include_gon
+    %input{type: 'hidden', id: 'calendar_image', value: asset_path("calendar.gif")}
     #container
       #header
         #logo CSTB reservation manager

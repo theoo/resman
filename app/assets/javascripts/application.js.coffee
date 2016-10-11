@@ -33,11 +33,12 @@ hideFlashMessages = ->
     if e
       Effect.Fade e, duration: 5.0
 
+
 jQuery.datepicker.setDefaults jQuery.datepicker.regional['fr-CH']
 jQuery ->
   jQuery('.datepicker').datepicker
     showOn: 'button'
-    buttonImage: '/assets/dhtml_calendar/calendar.gif'
+    buttonImage: jQuery("#calendar_path").val()
     buttonImageOnly: true
     buttonText: 'Select date'
   jQuery('.colorPicker').spectrum
