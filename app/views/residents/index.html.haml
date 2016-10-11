@@ -28,7 +28,7 @@
         %th= order_by_link(:email)
 
       %tr.listing_filter
-        %th= f.search_field :id, :style => "width: 40px;"
+        %th= f.search_field :id_eq, :style => "width: 40px;"
         %th= f.search_field :last_name_cont, :style => "width: 150px;"
         %th= f.search_field :first_name_cont, :style => "width: 120px;"
         %th= f.select(:country_id_eq, Country.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
