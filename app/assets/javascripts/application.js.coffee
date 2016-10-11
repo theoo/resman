@@ -34,6 +34,7 @@ hideFlashMessages = ->
     if e
       Effect.Fade e, duration: 5.0
 
+jQuery.noConflict()
 jQuery.datepicker.setDefaults jQuery.datepicker.regional['fr-CH']
 jQuery ->
   jQuery('.datepicker').datepicker
