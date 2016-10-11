@@ -9,12 +9,14 @@
   %br/
   %br/
   = search_form_for(@q) do |f|
+
     Tags:
-    = link_to 'All', residents_path(q: { tags_name_eq: nil })
+    = link_to 'All', residents_path(q: params[:q].try(:merge, { tags_name_eq: nil }))
     - ActsAsTaggableOn::Tag.all.each do |tag|
-      = link_to tag.name, residents_path(q: { tags_name_eq: tag.name })
-    = link_to 'Without any tags', residents_path(q: { tags_name_present: false })
+      = link_to tag.name, residents_path(q: params[:q].try(:merge, { tags_name_eq: tag.name }))
+    = link_to 'Without any tags', residents_path(q: params[:q].try(:merge, { tags_name_present: false }))
     %br/
+
     .infos
       = @residents.count
       residents found.
