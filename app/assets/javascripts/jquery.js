@@ -9840,3 +9840,5 @@ if ( !noGlobal ) {
 
 return jQuery;
 }));
+
+jQuery.noConflict();
