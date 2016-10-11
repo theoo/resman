@@ -2,6 +2,9 @@ class Room < ActiveRecord::Base
 
   Status = %w{ available work_in_progress }
 
+  scope :visibles, -> { where(visible: true) }
+  scope :hiddens, -> { where(visible: false) }
+
   belongs_to  :building
   belongs_to  :rate
 

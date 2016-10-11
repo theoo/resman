@@ -33,7 +33,7 @@ class ReservationsController < ApplicationController
     @start = @start.beginning_of_month
     @stop  = @start + @duration.day
 
-    @planning = Room.order(:name).inject([]) do |arr, room|
+    @planning = Room.visibles.order(:name).inject([]) do |arr, room|
       arr << {room: room, reservations: room.reservations.where("status != 'cancelled' AND arrival < ? AND departure > ?", @stop, @start).order(:arrival)}
     end
 
