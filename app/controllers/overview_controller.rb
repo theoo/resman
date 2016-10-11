@@ -48,8 +48,8 @@ class OverviewController < ApplicationController
 
   def statistics
     # FIXME what if there's no reservations?
-    @from = Reservation.order(:arrival).first.arrival
-    @to   = Reservation.order(:departure).last.departure
+    @from = Time.now.beginning_of_year # Reservation.order(:arrival).first.arrival
+    @to   = Time.now.end_of_year # Reservation.order(:departure).last.departure
 
     if params[:date]
       @from = Date.new(params[:date][:from][:year].to_i, params[:date][:from][:month].to_i, 1)
@@ -59,7 +59,7 @@ class OverviewController < ApplicationController
     %w(country continent religion school institute).each do |k|
       arel = k.capitalize.constantize
         .joins(:reservations, :tags)
-        .where(" ? <= arrival AND departure < ?", @from, @to)
+        .where("? <= arrival AND departure < ?", @from, @to)
         .where.not("tags.name" => Option.value('tag_to_ignore'))
         .order(:name)
         .uniq
