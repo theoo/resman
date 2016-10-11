@@ -37,6 +37,8 @@ class ReservationsController < ApplicationController
       arr << {room: room, reservations: room.reservations.where("status != 'cancelled' AND arrival < ? AND departure > ?", @stop, @start).order(:arrival)}
     end
 
+    params[:show_names] = true
+
     # TODO, a better replacement
     # @items_string = render_to_string(template: 'reservations/items.json.jbuilder')
     # gon.items = JSON.parse(@items_string)
