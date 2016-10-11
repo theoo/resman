@@ -110,7 +110,7 @@
           %td= h attachment.file_file_name
           %td= h number_to_human_size(attachment.file.size)
           %td= h attachment.file.content_type
-          %td= h l attachment.file_updated_at, format: :long
+          %td= h l attachment.file_updated_at, format: :long if attachment.file_updated_at
           %td
             = link_to image_tag('icons/download', size: '25x25'), attachment_path(attachment)
             / = link_to image_tag('icons/edit', size: '25x25'), edit_attachment_path(attachment)
