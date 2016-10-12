@@ -48,7 +48,7 @@ jQuery ->
     palette: [
       [
         'black'
-        'white'
+        '#0FF'
         'blanchedalmond'
       ]
       [
