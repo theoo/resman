@@ -32,7 +32,7 @@
           %span= f.text_field :color, class: "colorPicker"
         %p
           = f.label :tag_list
-          %span= f.text_field :tag_list, :class => 'bigger'
+          %span= f.text_field :tag_list, value: @resident.tag_list.join(", "), :class => 'bigger'
       %td
         %p
           = f.label :date_of_birth

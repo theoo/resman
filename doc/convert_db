@@ -1,0 +1,16 @@
+UPDATE comments SET title = CONVERT(CAST(CONVERT(title USING latin1) AS BINARY) USING utf8);
+UPDATE comments SET text = CONVERT(CAST(CONVERT(text USING latin1) AS BINARY) USING utf8);
+UPDATE continents SET name = CONVERT(CAST(CONVERT(name USING latin1) AS BINARY) USING utf8);
+UPDATE countries SET name = CONVERT(CAST(CONVERT(name USING latin1) AS BINARY) USING utf8);
+UPDATE institutes SET name = CONVERT(CAST(CONVERT(name USING latin1) AS BINARY) USING utf8);
+UPDATE items SET name = CONVERT(CAST(CONVERT(name USING latin1) AS BINARY) USING utf8);
+UPDATE rates SET name = CONVERT(CAST(CONVERT(name USING latin1) AS BINARY) USING utf8);
+UPDATE religions SET name = CONVERT(CAST(CONVERT(name USING latin1) AS BINARY) USING utf8);
+UPDATE residents SET first_name = CONVERT(CAST(CONVERT(first_name USING latin1) AS BINARY) USING utf8);
+UPDATE residents SET last_name = CONVERT(CAST(CONVERT(last_name USING latin1) AS BINARY) USING utf8);
+UPDATE residents SET bank_name = CONVERT(CAST(CONVERT(bank_name USING latin1) AS BINARY) USING utf8);
+UPDATE residents SET address = CONVERT(CAST(CONVERT(address USING latin1) AS BINARY) USING utf8);
+UPDATE room_options SET name = CONVERT(CAST(CONVERT(name USING latin1) AS BINARY) USING utf8);
+UPDATE schools SET name = CONVERT(CAST(CONVERT(name USING latin1) AS BINARY) USING utf8);
+UPDATE users SET first_name = CONVERT(CAST(CONVERT(first_name USING latin1) AS BINARY) USING utf8);
+UPDATE users SET last_name = CONVERT(CAST(CONVERT(last_name USING latin1) AS BINARY) USING utf8);
