@@ -41,6 +41,7 @@ class OverviewController < ApplicationController
       .where.not("tags.name" => tag_to_ignore)
       .where.not(status: 'cancelled')
       .order("residents.last_name", "residents.first_name")
+      .uniq
       .to_a
       .select{ |r| r.need_deposit_invoice? }
 
