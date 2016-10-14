@@ -1,7 +1,5 @@
-- @q = search
 - name = :search unless name
-- on_change_submit = { :onchange => 'this.form.submit();' }
-= form_for(name, search, :url => url) do |f|
+= search_form_for(@q, :url => url) do |f|
   .infos
     = invoices.count
     invoices found.
@@ -12,13 +10,14 @@
       %th= 'Value'
       %th= order_by_link(:interval_start, :params_scope => name)
       %th= order_by_link(:interval_end, :params_scope => name)
-    - f.fields_for(search.conditions) do |reservation|
-      %tr.listing_filter
-        %th= select(reservation, :type, [['All', nil]] + %w{ConfirmationInvoice ReservationInvoice CustomInvoice DepositInvoice}.map{|x| [x, x]}, {}, on_change_submit )
-        %th= select(reservation, :reservation_id, Reservation.options_for_select(:allow_nil => true), {}, on_change_submit)
-        %th
-        %th= reservation.text_field :interval_start
-        %th= reservation.text_field :interval_end
+
+    %tr.listing_filter
+      %th= f.select(:type_eq, [['All', nil]] + %w{ConfirmationInvoice ReservationInvoice CustomInvoice DepositInvoice}.map{|x| [x, x]}, {}, { :onchange => "this.form.submit();" } )
+      %th= f.select(:reservation_id_eq, Reservation.options_for_select(:allow_nil => true), {}, { :onchange => "this.form.submit();" })
+      %th
+      %th= f.text_field :interval_start_eq, { :onchange => "this.form.submit();" }
+      %th= f.text_field :interval_end_eq, { :onchange => "this.form.submit();" }
+
     - invoices.each do |invoice|
       %tr{:onclick => "window.location='#{invoice_path(invoice)}'"}
         %td= h invoice.type
@@ -26,4 +25,5 @@
         %td= h invoice.value
         %td= h invoice.interval_start_formatted
         %td= h invoice.interval_end_formatted
-  = will_paginate invoices(:params_scope => name)
+
+  = will_paginate invoices #(:params_scope => name)

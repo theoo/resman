@@ -12,10 +12,9 @@ class InvoicesController < ApplicationController
   def index
 
     @q = Invoice.search(params[:q])
-    @q.include = [{reservation: [:room, :resident]}, :items]
-    @q.order_by = [ :interval_start, :interval_end ]
-    @q.order_as = 'desc'
-    @invoices = @q.result.page(params[:page])
+    @invoices = @q.result
+      .includes( {reservation: [:room, :resident]}, :items )
+      .page(params[:page])
 
   end
 
@@ -130,12 +129,16 @@ class InvoicesController < ApplicationController
     date_start  = Date.new(params[:date][:from][:year].to_i, params[:date][:from][:month].to_i, params[:date][:from][:day].to_i)
     date_end    = Date.new(params[:date][:to][:year].to_i, params[:date][:to][:month].to_i, params[:date][:to][:day].to_i).to_time.end_of_day
 
+
+
+
+
     # TODO Remove comment once tested
     # find_all, conditions: { created_at_gte: date_start, created_at_lte: date_end,
     #   reservation: { status_ne: 'cancelled' }}, order_by: { reservation: { resident: [ :last_name, :first_name] }})
-    invoices = Invoice.joins(:reservation)
-      .where("? <= created_at AND created_at <= ?", date_start, date_end)
-      .where.not(status: 'cancelled')
+    invoices = Invoice.joins(:reservation, :resident)
+      .where("? <= invoices.created_at AND invoices.created_at <= ?", date_start, date_end)
+      .where.not("reservations.status" => 'cancelled')
       .order("residents.last_name, residents.first_name")
 
     invoices = invoices.select{ |i| i.open? } if params[:open]
@@ -145,7 +148,7 @@ class InvoicesController < ApplicationController
       tab_string = invoices.inject(git_header) do |str, invoice|
         str << invoice.git_lines
       end
-      send_data(Iconv.conv('ISO-8859-1', 'UTF-8', tab_string), type: 'application/octet-stream', filename: "invoices.txt", disposition: 'attachment')
+      send_data( tab_string, type: 'application/octet-stream', filename: "invoices.txt", disposition: 'attachment')
     else
       csv_string = CSV.generate do |csv|
         csv << ["Invoices from #{date_start.to_s(:formatted)} to #{date_end.to_date.to_s(:formatted)}"]
@@ -155,7 +158,11 @@ class InvoicesController < ApplicationController
           csv << [invoice.id, invoice.type, invoice.resident.full_name, invoice.resident.id, invoice.reservation.room.name, invoice.created_at.to_date.to_s(:formatted), invoice.interval_start.to_date.to_s(:formatted), invoice.interval_end.to_date.to_s(:formatted), invoice.value, invoice.incomes_total, invoice.remaining]
         end
         csv << []
-        csv << [nil, nil, nil, nil, nil, nil, nil, 'Total', invoices.sum(&:value), invoices.sum(&:incomes_total), invoices.sum(&:remaining)]
+        csv << [nil, nil, nil, nil, nil, nil, nil,
+          'Total',
+          invoices.map(&:value).sum,
+          invoices.map(&:incomes_total).sum,
+          invoices.map(&:remaining).sum]
       end
       send_data(csv_string,
         type: "text/csv",
@@ -183,5 +190,11 @@ class InvoicesController < ApplicationController
     headers.delete("Content-Disposition")
     super
   end
+
+  private
+
+    def git_header
+      "Date\tVoucher\tG/L Account\tG/L Account Ccy\tClient Account\tClient Ccy\tInvoice\tAnalysis Account\tAnalysis Ccy\tText1\tOriginal Amount\tBook Keeping Amount\tText 2\tInvoice type\tCode tva\tCode Jnl\tSTOP PMT 0 OU 1\tRAISON STOP\tTEXTE1 INV\tTEXTE2 INV\r\n"
+    end
 
 end

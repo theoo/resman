@@ -3,8 +3,9 @@ require 'csv'
 class IncomesController < ApplicationController
   def index
     @q = Income.search(params[:q])
-    @q.include = [{invoice: [:items, {reservation: [:room, :resident]}]}]
-    @incomes = @q.result.page(params[:page])
+    @incomes = @q.result
+      .includes([{invoice: [:items, {reservation: [:room, :resident]}]}])
+      .page(params[:page])
 
   end
 
@@ -13,7 +14,6 @@ class IncomesController < ApplicationController
     value = @invoice.value - @invoice.incomes_total
     value += @invoice.parent.value - @invoice.parent.incomes_total if @invoice.parent
     @income = Income.new(invoice: @invoice, value: value, received: Date.today)
-
   end
 
   def create
@@ -75,10 +75,9 @@ class IncomesController < ApplicationController
     # TODO remove once tested
     # find_all, conditions: { received_gte: date_start, received_lte: date_end },
     # order_by: { invoice: { reservation: { resident: [ :last_name, :first_name] }}})
-    incomes = Income.joins(:reservation)
-      .where("? <= received AND received <= =", date_start, date_end)
+    incomes = Income.joins(:reservation, :resident)
+      .where("? <= received AND received <= ?", date_start, date_end)
       .order("residents.last_name", "residents.first_name")
-
 
     csv_string = CSV.generate do |csv|
       csv << ["Incomes from #{date_start.to_s(:formatted)} to #{date_end.to_date.to_s(:formatted)}"]
@@ -88,7 +87,7 @@ class IncomesController < ApplicationController
         csv << [income.invoice.id, income.resident.id, income.resident.full_name, income.payment, income.received.to_s(:formatted), income.value]
       end
       csv << []
-      csv << [nil, nil, nil, nil, 'Total', incomes.sum(&:value)]
+      csv << [nil, nil, nil, nil, 'Total', incomes.map(&:value).sum]
     end
 
     send_data(csv_string,

@@ -1,5 +1,7 @@
 class Item < ActiveRecord::Base
 
+  include GitConcern
+
   monetize :value_in_cents
 
   belongs_to  :invoice

@@ -1,5 +1,7 @@
 class Invoice < ActiveRecord::Base
 
+  include GitConcern
+
   belongs_to    :reservation
 
   has_many      :items,

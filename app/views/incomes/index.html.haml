@@ -28,16 +28,17 @@
   = search_form_for(@q) do |f|
     %table#incomes
       %tr
-        %th= order_by_link({:invoice => :id}, :text => 'Invoice')
+        %th= order_by_link(:invoice_id, :text => 'Invoice')
         %th= order_by_link(:value_in_cents, :text => 'Value')
         %th= order_by_link(:payment)
         %th= order_by_link(:received)
-      - f.fields_for(@q.conditions) do |income|
-        %tr.listing_filter
-          %th
-          %th
-          %th= select(income, :payment, [['All', nil]] + Income::Types.map{|i| [i.humanize, i]}, {}, { :onchange => "this.form.submit();" })
-          %th
+
+      %tr.listing_filter
+        %th
+        %th
+        %th= f.select(:payment_eq, [['All', nil]] + Income::Types.map{|i| [i.humanize, i]}, {}, { :onchange => "this.form.submit();" })
+        %th
+
       - if @incomes.count > 0
         - @incomes.each do |income|
           %tr{:onclick => "window.location='#{invoice_path(income.invoice)}'"}

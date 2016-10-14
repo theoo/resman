@@ -2,7 +2,9 @@ class Income < ActiveRecord::Base
 
   Types = %w{ bvr bank cash credit_note accounting_correction }
 
-  belongs_to    :invoice
+  belongs_to :invoice
+  has_one    :reservation, through: :invoice
+  has_one    :resident, through: :reservation
 
   has_many :comments,
     as: :entity,
