@@ -70,7 +70,7 @@ class InvoicesController < ApplicationController
       # invoices = Invoice.find_all, conditions: { interval_start_gte: @date_start, interval_end_lte: @date_end,
       # type: 'ReservationInvoice', reservation: { status_ne: 'cancelled' }})
       invoices = Invoice.joins(:reservation)
-        .where("? <= interval_start AND inteval_end <= ?", @date_start, @date_end)
+        .where("? <= invoices.interval_start AND invoices.interval_end <= ?", @date_start, @date_end)
         .where(type: "ReservationInvoice")
         .where.not("reservations.status" => 'cancelled')
 
@@ -78,7 +78,7 @@ class InvoicesController < ApplicationController
         flash[:notice] = 'Nothing to download for this period'
         return redirect_to(invoices_path)
       end
-      return redirect_to(action: :send_pdf, ids: invoices.map{ |r| r.id })
+      return redirect_to(action: :send_pdf, format: :pdf, ids: invoices.map{ |r| r.id })
     end
 
     # Get the list of reservations to process
@@ -128,10 +128,6 @@ class InvoicesController < ApplicationController
   def export_all
     date_start  = Date.new(params[:date][:from][:year].to_i, params[:date][:from][:month].to_i, params[:date][:from][:day].to_i)
     date_end    = Date.new(params[:date][:to][:year].to_i, params[:date][:to][:month].to_i, params[:date][:to][:day].to_i).to_time.end_of_day
-
-
-
-
 
     # TODO Remove comment once tested
     # find_all, conditions: { created_at_gte: date_start, created_at_lte: date_end,
