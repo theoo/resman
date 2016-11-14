@@ -3,9 +3,9 @@ class OverviewController < ApplicationController
   def index
     tag_to_ignore = Option.value('tag_to_ignore')
 
-    @in_reservations = Reservation.find_by_in
+    @in_reservations = Reservation.upcoming_checkin
       .reject{ |obj| obj.resident.tag_list.include?(tag_to_ignore) }
-    @out_reservations = Reservation.find_by_out
+    @out_reservations = Reservation.upcoming_checkout
       .reject{ |obj| obj.resident.tag_list.include?(Option.value('tag_to_ignore')) }
     @unread_comments = Comment.where(read: false)
       .order('created_at DESC')
@@ -60,7 +60,7 @@ class OverviewController < ApplicationController
     %w(country continent religion school institute).each do |k|
       arel = k.capitalize.constantize
         .joins(:reservations, :tags)
-        .where("? <= arrival AND departure < ?", @from, @to)
+        .where("? <= arrival AND departure <= ?", @from, @to)
         .where.not("tags.name" => Option.value('tag_to_ignore'))
         .order(:name)
         .uniq

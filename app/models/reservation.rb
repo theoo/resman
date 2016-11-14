@@ -5,13 +5,13 @@ class Reservation < ActiveRecord::Base
 
   Status = %w{ pending confirmed cancelled }
 
-  scope :find_by_in, -> (days = 7) {
-    where("arrival > ? AND arrival < ? AND status != 'cancelled'", Date.today, Date.today + days.day)
+  scope :upcoming_checkin, -> (days = 7) {
+    where("arrival BETWEEN ? AND ? AND status != 'cancelled'", Date.today, Date.today + days.day)
     .order('arrival ASC')
   }
 
-  scope :find_by_out, -> (days = 7) {
-    where("departure > ? AND departure < ? and status != 'cancelled'", Date.today, Date.today + days.day)
+  scope :upcoming_checkout, -> (days = 7) {
+    where("departure BETWEEN ? AND ? AND status != 'cancelled'", Date.today, Date.today + days.day)
     .order('departure ASC')
   }
 

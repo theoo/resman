@@ -3,20 +3,27 @@
   - if entity.comments.size > 0
     %table
       %tr
-        %th Title
-        %th Text
+        %th Comment
         %th Read
-        %th Posted by
       - for comment in entity.comments
         %tr
-          %td= h comment.title
-          %td= h comment.text
+
+          %td
+            %i
+              On
+              = l comment.updated_at, format: :short
+              by
+              = comment.user
+            %br
+            %b= comment.title
+            %br
+            %br
+            = comment.text
           %td
             = check_box_tag '', 1, comment.read?, :id => "checkbox_comment_#{comment.id}", :onchange => remote_function( |
               :method => :post,                                                                                          |
               :url => { :controller => :comments, :action => :ajax_comment_read, :comment_id => comment.id },            |
               :with => "'read=' + $('checkbox_comment_#{comment.id}').checked.toString()")                               |
-          %td= h comment.user
   - else
     %p No comments.
   - if current_user.has_access?('CommentsController', 'new')

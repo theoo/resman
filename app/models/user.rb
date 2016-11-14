@@ -50,7 +50,9 @@ class User < ActiveRecord::Base
     end
 
     def to_s
-      "#{login} (#{full_name})"
+      str = "#{login}"
+      str << "(#{full_name})" unless full_name.blank?
+      str
     end
 
   private
