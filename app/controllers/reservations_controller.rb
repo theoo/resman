@@ -13,7 +13,7 @@ class ReservationsController < ApplicationController
     @to = @from if @to < @from
 
     @q = Reservation.joins(:resident, :room)
-      .where("? <= arrival AND departure <= ?", @from, @to)
+      .where("(arrival BETWEEN ? AND ?) OR (departure BETWEEN ? AND ?)", @from, @to, @from, @to)
       .search(params[:q])
     @reservations = @q.result.page(params[:page])
 

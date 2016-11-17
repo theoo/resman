@@ -60,7 +60,7 @@ class OverviewController < ApplicationController
     %w(country continent religion school institute).each do |k|
       arel = k.capitalize.constantize
         .joins(:reservations, :tags)
-        .where("? <= arrival AND departure <= ?", @from, @to)
+        .where("(arrival BETWEEN ? AND ?) OR (departure BETWEEN ? AND ?)", @from, @to, @from, @to)
         .where.not("tags.name" => Option.value('tag_to_ignore'))
         .order(:name)
         .uniq

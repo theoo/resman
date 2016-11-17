@@ -43,7 +43,7 @@ class Resident < ActiveRecord::Base
 
   scope :reserved, -> (from, to) {
     joins(:reservations, :tags)
-      .where("? <= arrival AND departure < ?", from, to)
+      .where("(arrival BETWEEN ? AND ?) OR (departure BETWEEN ? AND ?)", from, to, from, to)
       .where.not("tags.name" => Option.value('tag_to_ignore'))
       .uniq
   }

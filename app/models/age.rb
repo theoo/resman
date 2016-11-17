@@ -5,7 +5,7 @@ class Age
   end
 
   class << self
-    def find_by_age( age = nil, reservation_from = (Time.now - 1.year), reservation_to = Time.now )
+    def find_by_age( age = nil, from = (Time.now - 1.year), to = Time.now )
 
       if age
         birthdate_interval = (Time.now - age.last.years)..(Time.now - age.first.years)
@@ -14,7 +14,7 @@ class Age
       end
 
       Resident.joins(:reservations, :tags)
-        .where("? < arrival AND departure <= ?", reservation_from, reservation_to)
+        .where("(arrival BETWEEN ? AND ?) OR (departure BETWEEN ? AND ?)", from, to, from, to)
         .where.not("tags.name" => Option.value('tag_to_ignore'))
         .where(birthdate: birthdate_interval)
         .uniq
