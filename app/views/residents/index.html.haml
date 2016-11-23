@@ -42,7 +42,8 @@
       - if @residents.count > 0
         - @residents.each do |resident|
           %tr
-            %td{:onclick => "window.location='#{resident_path(resident)}'"}= h resident.id
+            %td{:onclick => "window.location='#{resident_path(resident)}'", style: "background-color: ##{resident.color};"}
+              = h resident.id
             %td{:onclick => "window.location='#{resident_path(resident)}'"}= h resident.last_name
             %td{:onclick => "window.location='#{resident_path(resident)}'"}= h resident.first_name
             %td{:onclick => "window.location='#{resident_path(resident)}'"}= h resident.country ? resident.country.name : ''

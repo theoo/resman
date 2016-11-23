@@ -1,5 +1,13 @@
 require 'csv'
 
+def colorize(text, color_code)
+  "#{color_code}#{text}\e[0m"
+end
+
+def red(text); colorize(text, "\e[31m"); end
+def green(text); colorize(text, "\e[32m"); end
+def yellow(text); colorize(text, "\e[33m"); end
+
 namespace :app do
   desc 'Automatically drops unconfirmed reservations'
   task(delete_unconfirmed_reservations: :environment) do
@@ -23,10 +31,15 @@ namespace :app do
   desc 'Sync pending applications (from cstb.ch)'
   task(sync_pending_applications: :environment) do
 
-    SYNC_URI = "http://www.cstb.ch/csv-download/"
+    SYNC_URI = "https://www.cstb.ch/csv-download/"
 
     params = {
-      key: ENV["CSTB_CH_API_KEY"]
+      key: ENV["CSTB_CH_API_KEY"],
+      max_item: 10, # -1 = all
+      offset: 0,
+      mark_sync: false,
+      get_sync_only: false,
+      delete_sync_mark: false
     }
 
     response = RestClient.get SYNC_URI, params: params
@@ -36,10 +49,81 @@ namespace :app do
       motivations formslug filetype profile_image_uri application_pdf_uri)
     csvStruct = Struct.send(:new, *columns_list)
 
-    CSV.parse(response.body, encoding: 'UTF-8', quote_char: '"', row_sep: "\r\n", col_sep: ",").each_with_index do |row, row_index|
-      applic = csvStruct.new(*row)
-      next if applic.id.nil? or applic.id == "ID"
-      puts applic.inspect
+    # blob = File.open(Rails.root.to_s + "/export.csv").read.encode(universal_newline: true)
+
+    blob = response.body.encode(universal_newline: true)
+
+    CSV.parse(blob, encoding: 'UTF8', quote_char: '"', col_sep: ",").each_with_index do |row, row_index|
+      line = csvStruct.new(*row)
+      next if line.id.nil? or line.id == "ID"
+      begin
+        Integer(line.id)
+      rescue
+        next
+      end
+
+      begin
+        birth_date = Date.new(*line.birth_date.split("/").reverse.map(&:to_i)) if line.birth_date
+        raise ArgumentError, "Invalid date" if birth_date.year < 1900 or birth_date.year > Time.now.year
+      rescue
+        birth_date = nil
+        puts red("Invalid date #{line.birth_date} for next entry.")
+      end
+
+      if resident = Resident.where(first_name: line.first_name, last_name: line.last_name).first
+
+        puts red("Resident #{resident.full_name} already in database.")
+
+      else
+
+        resident = Resident.create(
+          country: Country.where(name: line.national).first,
+          school: School.where(name: line.establisment).first,
+          color: "FF0000",
+          first_name: line.first_name,
+          last_name: line.last_name,
+          address: line.address,
+          email: line.email,
+          phone: line.phone,
+          identity_card: line.passport_number
+        )
+
+        resident.gender = (line.gender.match(/M\.|Mr\./) ? "man" : "woman") if line.gender
+        resident.birthdate = birth_date if birth_date
+        resident.tag_list << "Import"
+
+        resident.save!
+
+        { profile_image: line.profile_image_uri,
+          application_pdf: line.application_pdf_uri }.each do |title, uri|
+
+          if uri
+
+            begin
+              response = RestClient.get uri
+            rescue => e
+              puts red("#{e.inspect}")
+            end
+
+            if response and response.code == 200
+              file = Tempfile.new(title.to_s)
+              file.binmode
+              file.write response.body
+              profile = resident.attachments.create(title: title, file: file)
+              file.unlink
+              puts green("#{title} imported in attachments.")
+            else
+              puts red("Unable to import #{title}.")
+            end
+          end
+
+        end # each
+
+        puts green("Resident #{resident.full_name} created.")
+
+      end
+
+
     end
 
   end
