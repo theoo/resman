@@ -31,7 +31,7 @@
     %p
       = f.label :room, {}, :class => :required
       - if %w{new create}.include?(action_name)
-        - rooms   = Room.available_rooms(@reservation.arrival, @reservation.departure, @reservation.room)
+        - rooms   = Room.visibles.available_rooms(@reservation.arrival, @reservation.departure, @reservation.room)
         - options = rooms.map{ |room| [room.name, room.id] }
         - options = [['None available', 0]] if options.empty?
         %span

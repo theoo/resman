@@ -71,7 +71,7 @@ class ReservationsController < ApplicationController
     @arrival, @departure = params[:arrival].to_default_date, params[:departure].to_default_date
     reservation_room = params[:reservation_id].to_i != 0 ? Reservation.find(params[:reservation_id]).room : nil
     @selected_room_id = params[:selected_room_id]
-    @available_rooms = Room.available_rooms(@arrival, @departure, reservation_room)
+    @available_rooms = Room.visibles.available_rooms(@arrival, @departure, reservation_room)
     render layout: false
   end
 
