@@ -37,9 +37,10 @@ namespace :app do
       key: ENV["CSTB_CH_API_KEY"],
       max_item: 10, # -1 = all
       offset: 0,
-      mark_sync: false,
+      mark_sync: true,
       get_sync_only: false,
-      delete_sync_mark: false
+      delete_sync_mark: false,
+      only_accepted: true
     }
 
     response = RestClient.get SYNC_URI, params: params
@@ -53,7 +54,7 @@ namespace :app do
 
     blob = response.body.encode(universal_newline: true)
 
-    CSV.parse(blob, encoding: 'UTF8', quote_char: '"', col_sep: ",").each_with_index do |row, row_index|
+    CSV.parse(blob, encoding: 'UTF-8', quote_char: '"', col_sep: ",").each_with_index do |row, row_index|
       line = csvStruct.new(*row)
       next if line.id.nil? or line.id == "ID"
       begin
