@@ -8,8 +8,9 @@
       %span
         = @reservation.resident.full_name
     - else
-      %span= f.autocomplete_field :resident_full_name, autocomplete_name_residents_path
+      %span= f.autocomplete_field :resident_full_name, autocomplete_name_residents_path, id_element: "#reservation_resident_id"
       (tip: last name, first name)
+      = f.hidden_field :resident_id
 
     %p
       = f.label :status, {}, :class => :required
