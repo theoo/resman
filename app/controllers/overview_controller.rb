@@ -29,6 +29,7 @@ class OverviewController < ApplicationController
       .where.not(status: %w{cancelled confirmed})
       .where.not("tags.name" => tag_to_ignore)
       .order("residents.last_name", "residents.first_name")
+      .uniq
       .to_a
       .reject{ |r| r.confirmation_invoice_generated? }
 
