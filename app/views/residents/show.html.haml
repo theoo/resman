@@ -4,9 +4,12 @@
     %tr
       %td
         %p.profile_picture
-          %label &nbsp;
-          %span
-            = link_to image_tag(@resident.profile_picture.url(:large)), @resident.profile_picture.url
+          - if @resident.profile_picture.exists?
+            %label &nbsp;
+            %span
+              = link_to image_tag(@resident.profile_picture.url(:large)), @resident.profile_picture.url
+          - else
+            no profile picture
     %tr
       %td
         %p
