@@ -1,7 +1,7 @@
 %h1
   Editing Resident
   %em= @resident.full_name
-= form_for(@resident) do |f|
+= form_for(@resident, html: { multipart: true }) do |f|
   = render :partial => 'form', :locals => { :f => f }
   .actions
     = f.submit 'Update'

@@ -21,6 +21,9 @@ class Resident < ActiveRecord::Base
   has_many    :comments, as: :entity, dependent: :destroy
   has_many    :attachments, as: :attachable, dependent: :destroy
 
+  has_attached_file :profile_picture, styles: { small: "64x64", med: "100x100", large: "200x200" }
+  validates_attachment_content_type :profile_picture, :size => { :in => 0..5.megabytes }, :content_type => /\A.*\Z/
+
   validates_presence_of   :first_name, :last_name
   validates_uniqueness_of :first_name, scope: :last_name
 

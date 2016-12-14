@@ -3,6 +3,12 @@
   %table{:width => "100%"}
     %tr
       %td
+        %p.profile_picture
+          %label &nbsp;
+          %span
+            = link_to image_tag(@resident.profile_picture.url(:large)), @resident.profile_picture.url
+    %tr
+      %td
         %p
           %label Last name:
           %span

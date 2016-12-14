@@ -35,9 +35,9 @@ namespace :app do
 
     params = {
       key: ENV["CSTB_CH_API_KEY"],
-      max_item: 10, # -1 = all
+      max_item: -1, # -1 = all
       offset: 0,
-      mark_sync: true,
+      mark_sync: false,
       get_sync_only: false,
       delete_sync_mark: false,
       only_accepted: true
@@ -95,30 +95,45 @@ namespace :app do
 
         resident.save!
 
-        { profile_image: line.profile_image_uri,
-          application_pdf: line.application_pdf_uri }.each do |title, uri|
+        if line.profile_image_uri
 
-          if uri
-
-            begin
-              response = RestClient.get uri
-            rescue => e
-              puts red("#{e.inspect}")
-            end
-
-            if response and response.code == 200
-              file = Tempfile.new(title.to_s)
-              file.binmode
-              file.write response.body
-              profile = resident.attachments.create(title: title, file: file)
-              file.unlink
-              puts green("#{title} imported in attachments.")
-            else
-              puts red("Unable to import #{title}.")
-            end
+          begin
+            response = RestClient.get line.profile_image_uri
+          rescue => e
+            puts red("#{e.inspect}")
           end
 
-        end # each
+          if response and response.code == 200
+            file = Tempfile.new("profile_image")
+            file.binmode
+            file.write response.body
+            resident.update_attributes profile_picture: file
+            file.unlink
+            puts green("Profile picture imported.")
+          else
+            puts red("Unable to import Profile picture.")
+          end
+        end
+
+        if line.application_pdf_uri
+
+          begin
+            response = RestClient.get line.application_pdf_uri
+          rescue => e
+            puts red("#{e.inspect}")
+          end
+
+          if response and response.code == 200
+            file = Tempfile.new("application_pdf")
+            file.binmode
+            file.write response.body
+            profile = resident.attachments.create(title: "application_pdf", file: file)
+            file.unlink
+            puts green("Application PDF imported in attachments.")
+          else
+            puts red("Unable to import Application PDF.")
+          end
+        end
 
         puts green("Resident #{resident.full_name} created.")
 

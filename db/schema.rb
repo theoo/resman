@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160706163345) do
+ActiveRecord::Schema.define(version: 20161214175348) do
 
   create_table "activities", force: :cascade do |t|
     t.integer  "user_id",     limit: 4,   null: false
@@ -175,27 +175,31 @@ ActiveRecord::Schema.define(version: 20160706163345) do
   add_index "reservations", ["room_id"], name: "index_reservations_on_room_id", using: :btree
 
   create_table "residents", force: :cascade do |t|
-    t.integer  "country_id",     limit: 4
-    t.integer  "religion_id",    limit: 4
-    t.integer  "school_id",      limit: 4
-    t.string   "color",          limit: 255, default: "ffff00"
-    t.string   "first_name",     limit: 255,                    null: false
-    t.string   "last_name",      limit: 255,                    null: false
-    t.string   "gender",         limit: 255
+    t.integer  "country_id",                   limit: 4
+    t.integer  "religion_id",                  limit: 4
+    t.integer  "school_id",                    limit: 4
+    t.string   "color",                        limit: 255, default: "ffff00"
+    t.string   "first_name",                   limit: 255,                    null: false
+    t.string   "last_name",                    limit: 255,                    null: false
+    t.string   "gender",                       limit: 255
     t.date     "birthdate"
-    t.string   "address",        limit: 255
-    t.string   "email",          limit: 255
-    t.string   "phone",          limit: 255
-    t.string   "mobile",         limit: 255
-    t.string   "mac_address",    limit: 255
+    t.string   "address",                      limit: 255
+    t.string   "email",                        limit: 255
+    t.string   "phone",                        limit: 255
+    t.string   "mobile",                       limit: 255
+    t.string   "mac_address",                  limit: 255
     t.boolean  "mac_active"
-    t.string   "identity_card",  limit: 255
-    t.string   "bank_name",      limit: 255
-    t.string   "bank_iban",      limit: 255
-    t.string   "bank_bic_swift", limit: 255
-    t.string   "bank_clearing",  limit: 255
+    t.string   "identity_card",                limit: 255
+    t.string   "bank_name",                    limit: 255
+    t.string   "bank_iban",                    limit: 255
+    t.string   "bank_bic_swift",               limit: 255
+    t.string   "bank_clearing",                limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "profile_picture_file_name",    limit: 255
+    t.string   "profile_picture_content_type", limit: 255
+    t.integer  "profile_picture_file_size",    limit: 4
+    t.datetime "profile_picture_updated_at"
   end
 
   add_index "residents", ["country_id"], name: "index_residents_on_country_id", using: :btree

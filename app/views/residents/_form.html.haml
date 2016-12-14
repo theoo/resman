@@ -4,6 +4,9 @@
     %tr
       %td
         %p
+          = f.label :profile_picture, {}
+          %span= f.file_field :profile_picture
+        %p
           = f.label :last_name, {}, :class => :required
           %span= f.text_field :last_name
         %p
