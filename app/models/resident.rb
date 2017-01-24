@@ -33,6 +33,8 @@ class Resident < ActiveRecord::Base
   before_destroy :cleanup_tags
 
   before_save do
+    self.color = color[1..-1] if color.first == "#"
+
     if tag_list.include?("Archive") or tag_list.include?("Admin")
       tag_list.delete("Active")
     else

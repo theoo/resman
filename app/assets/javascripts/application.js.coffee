@@ -45,6 +45,7 @@ jQuery ->
     allowEmpty: false
     showPaletteOnly: true
     showPalette: true
+    preferredFormat: 'hex'
     palette: [
       [
         'black'
