@@ -4,19 +4,22 @@
     %label Intervall From
     %span
       = f.text_field :start_value, :class => :small_input
-      per #{select(f, :start_type, Rule::Types,{},{ :class => "day"})}
+      per
+      = f.select(:start_type, Rule::Types,{},{ :class => "day"})
       (tip: inclusive)
   %p
     %label To
     %span
       = f.text_field :end_value, :class => :small_input
-      per #{select(f, :end_type, Rule::Types,{},{ :class => "day"})}
+      per
+      = f.select(:end_type, Rule::Types,{},{ :class => "day"})
       (tip: exclusive)
   %p
     = f.label :value
     %span
       = f.text_field :value, :class => :small_input
-      per #{select(f, :value_type, Rule::Types, {},{ :class => "day"})}
+      per
+      = f.select(:value_type, Rule::Types, {},{ :class => "day"})
   %p
     %label Deposit In
     %span

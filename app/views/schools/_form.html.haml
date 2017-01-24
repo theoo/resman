@@ -5,4 +5,4 @@
     %span= f.text_field :name
   %p
     = f.label :institute, {}, :class => :required
-    %span= select(f, :institute_id, Institute.options_for_select)
+    %span= f.select(:institute_id, Institute.options_for_select)
