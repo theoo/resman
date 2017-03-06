@@ -32,6 +32,7 @@ class Reservation < ActiveRecord::Base
     # FIXME use cached value on reservation
     ur.to_a.reject!{ |r| r.arrival > date || r.reservation_invoices_generated?(r.arrival, date) }
     # FIXME return AREL object
+    ur
   }
 
   belongs_to  :resident
