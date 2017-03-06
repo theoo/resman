@@ -27,10 +27,10 @@ class Reservation < ActiveRecord::Base
       .where.not("tags.name" => tag_to_ignore)
       .where("arrival <= ?", date)
       .order("residents.last_name", "residents.first_name")
+      .distinct
 
     # FIXME use cached value on reservation
     ur.to_a.reject!{ |r| r.arrival > date || r.reservation_invoices_generated?(r.arrival, date) }
-    ur
     # FIXME return AREL object
   }
 
