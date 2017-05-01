@@ -104,7 +104,7 @@ namespace :app do
           end
 
           if response and response.code == 200
-            file = Tempfile.new("profile_image")
+            file = Tempfile.new("profile_image.png")
             file.binmode
             file.write response.body
             resident.update_attributes profile_picture: file
@@ -124,7 +124,7 @@ namespace :app do
           end
 
           if response and response.code == 200
-            file = Tempfile.new("application_pdf")
+            file = Tempfile.new("application.pdf")
             file.binmode
             file.write response.body
             profile = resident.attachments.create(title: "application_pdf", file: file)
