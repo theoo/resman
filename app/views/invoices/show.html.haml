@@ -62,7 +62,7 @@
         = hidden_field_tag 'invoice[interval_start]', @invoice.reservation.arrival
         = hidden_field_tag 'invoice[interval_end]', @invoice.reservation.departure
         = hidden_field_tag 'invoice[items_attributes][][name]', 'Frais de rappel'
-        = hidden_field_tag 'invoice[items_attributes][][value]', '10'
+        = hidden_field_tag 'invoice[items_attributes][][value]', Option.value("invoice_late_value")
         = submit_tag 'Generate reminder bill'
     - elsif @invoice.children.size > 0
       = link_to 'See reminder bill', invoice_path(@invoice.children.first), :class => 'fake_button'
