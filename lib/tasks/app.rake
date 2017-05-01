@@ -37,8 +37,8 @@ namespace :app do
       key: ENV["CSTB_CH_API_KEY"],
       max_item: -1, # -1 = all
       offset: 0,
-      mark_sync: false,
-      get_sync_only: false,
+      mark_sync: true,
+      get_sync_only: true,
       delete_sync_mark: false,
       only_accepted: true
     }
