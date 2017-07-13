@@ -309,6 +309,10 @@ div.listing
   background-color: white
 
 .listing
+  &:not(.not_clickable)
+    tr
+      cursor: pointer
+
   th
     font-family: "Trebuchet MS"
     background-color: $middle-blue
@@ -318,7 +322,6 @@ div.listing
       color: white
       text-align: center
       padding: 0 4px
-    cursor: pointer
     &:hover td
       background-color: #eee
   td

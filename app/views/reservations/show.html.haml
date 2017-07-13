@@ -23,6 +23,10 @@
       = link_to('Edit', edit_reservation_path(@reservation), :class => "fake_button")
     - if current_user.has_access?('ReservationsController', 'destroy')
       = link_to(@reservation.deletable? ? 'Delete' : 'Cancel', @reservation, :confirm => "Are you sure? This will also #{@reservation.deletable? ? 'delete' : 'cancel'} #{@reservation.invoices.size} invoices and #{@reservation.incomes.size} incomes.", :method => :delete, :class => "fake_button red")
+    - if current_user.has_access?('ReservationsController', 'show')
+      = link_to('PDF', reservation_path(@reservation, format: 'pdf'), :class => "fake_button")
+
+
 %h3 Invoices
 .listing
   - if @reservation.invoices.size > 0

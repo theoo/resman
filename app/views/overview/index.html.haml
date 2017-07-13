@@ -1,5 +1,5 @@
 %h1 Dashboard
-.listing
+.listing.not_clickable
   %h3 Quick Links
   .actions
     - if current_user.has_access?('ReservationsController', 'new')
@@ -15,12 +15,17 @@
         %th Room
         %th Arrival
         %th Status
+        %th Actions
       - for reservation in @in_reservations
-        %tr{:onclick => "window.location='#{reservation_path(reservation)}'", :style => "#{(reservation.arrival == Date.today ? 'background-color: orange;' : '')}"}
+        %tr{:style => "#{(reservation.arrival == Date.today ? 'background-color: orange;' : '')}"}
           %td= h reservation.resident.full_name
           %td= h reservation.room.name
           %td= h reservation.arrival_formatted
           %td= h reservation.status
+          %td
+            = link_to image_tag('icons/edit', size: '25x25'), reservation_path(reservation)
+            = link_to image_tag('icons/download', size: '25x25'), reservation_path(reservation, format: 'pdf')
+
   - else
     %p No Check Ins next week.
   %h3 Upcoming Check Out
@@ -31,12 +36,17 @@
         %th Room
         %th Departure
         %th Status
+        %th Actions
       - for reservation in @out_reservations
-        %tr{:onclick => "window.location='#{reservation_path(reservation)}'", :style => "#{(reservation.departure == Date.today ? 'background-color: orange;' : '')}"}
+        %tr{:style => "#{(reservation.departure == Date.today ? 'background-color: orange;' : '')}"}
           %td= h reservation.resident.full_name
           %td= h reservation.room.name
           %td= h reservation.departure_formatted
           %td= h reservation.status
+          %td
+            = link_to image_tag('icons/edit', size: '25x25'), reservation_path(reservation)
+            = link_to image_tag('icons/download', size: '25x25'), reservation_path(reservation, format: 'pdf')
+
   - else
     %p No Check Outs next week.
   %h3 Unread comments
@@ -46,9 +56,12 @@
       %th Text
       %th User
       %th About
+      %th Actions
     - @unread_comments.each do |comment|
-      %tr{:onclick => "window.location='#{send("#{comment.entity.class.to_s.underscore}_path", comment.entity)}'"}
+      %tr
         %td= h comment.title
         %td= h shorten(comment.text, 5)
         %td= h comment.user
         %td= h shorten("#{comment.entity_type}: #{comment.entity}", 2)
+        %td
+          = link_to image_tag('icons/edit', size: '25x25'), resident_path(comment.entity)

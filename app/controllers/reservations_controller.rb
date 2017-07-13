@@ -49,6 +49,18 @@ class ReservationsController < ApplicationController
 
   def show
     @reservation = Reservation.find(params[:id])
+
+    respond_to do |wants|
+      wants.html {}
+      wants.pdf do
+        # @rails_pdf_inline = true
+        # @paper = 'A4'
+        # @rails_pdf_name = "#{@invoices.first.interval_start.to_time.strftime('%Y_%m')}_invoices.pdf"
+        @resident = @reservation.resident
+        render :send_pdf, layout: false
+      end
+    end
+
   end
 
   def new

@@ -107,6 +107,14 @@ class Resident < ActiveRecord::Base
     self.reservations.empty?
   end
 
+  def translated_gender
+    if gender == 'woman'
+      "Femme"
+    else
+      "Homme"
+    end
+  end
+
   def to_s
     self.full_name
   end
