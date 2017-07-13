@@ -18,15 +18,15 @@ prawn_document(top_margin: margins[0], left_margin: margins[1], bottom_margin: m
 
   data = [
     [ "Nom", @resident.last_name ],
-    [ "Prenom", @resident.first_name ],
+    [ "Prénom", @resident.first_name ],
     [ "Adresse", @resident.address ],
-    [ "Nationalite", @resident.country.try(:name) ],
+    [ "Nationalité", @resident.country.try(:name) ],
     [ "Sexe", @resident.translated_gender ],
     [ "Date de naissance", @resident.birthdate.strftime("%d.%m.%Y") ],
-    [ "Pièce d'identite", @resident.identity_card ],
-    [ "Date d'arrivee", @reservation.arrival.strftime("%d.%m.%Y") ],
-    [ "Date de départ annoncee", @reservation.departure.strftime("%d.%m.%Y") ],
-    [ "Numero de chambre", @reservation.room.try(:name) ]
+    [ "Pièce d'identité", @resident.identity_card ],
+    [ "Date d'arrivée", @reservation.arrival.strftime("%d.%m.%Y") ],
+    [ "Date de départ annoncée", @reservation.departure.strftime("%d.%m.%Y") ],
+    [ "Numéro de chambre", @reservation.room.try(:name) ]
   ]
 
   pdf.table data,
