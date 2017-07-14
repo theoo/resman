@@ -71,6 +71,7 @@ class ReservationsController < ApplicationController
 
     respond_to do |wants|
       wants.pdf do
+        response.headers['Content-Disposition'] = "attachment; filename=\"checkin-#{Date.today.strftime("%d-%m-%Y")}.pdf\""
         render layout: false
       end
     end
