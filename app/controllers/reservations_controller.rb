@@ -63,6 +63,20 @@ class ReservationsController < ApplicationController
 
   end
 
+  def checkins
+    tag_to_ignore = Option.value('tag_to_ignore')
+
+    @reservations = Reservation.upcoming_checkin(1)
+      .reject{ |obj| obj.resident.tag_list.include?(tag_to_ignore) }
+
+    respond_to do |wants|
+      wants.pdf do
+        render layout: false
+      end
+    end
+
+  end
+
   def new
     room = Room.find_by_name(params[:room])
     @reservation = Reservation.new(arrival_formatted: params[:arrival], departure_formatted: params[:departure], room: room, resident_id: params[:resident])

@@ -9,6 +9,13 @@
     = link_to "Search Residents", residents_path, :class => "fake_button"
   %h3 Upcoming Check In
   - if @in_reservations.size > 0
+
+    = link_to checkins_reservations_path(format: 'pdf') do
+      Download all check-in PDFs
+
+    %br
+    %br
+
     %table
       %tr
         %th Resident

@@ -10,7 +10,7 @@ prawn_document(top_margin: margins[0], left_margin: margins[1], bottom_margin: m
 
   pdf.move_down 10.mm
 
-  pdf.text "Reservation #{@reservation.id}"
+  pdf.text "Réservation #{@reservation.id}"
 
   pdf.move_down 10.mm
 

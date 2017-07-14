@@ -43,7 +43,8 @@ Rails.application.routes.draw do
     collection do
       get 'planning',
         'ajax_room_options',
-        'ajax_room_availables'
+        'ajax_room_availables',
+        'checkins'
       post :search
     end
     resources :reservation_options, as: :options
