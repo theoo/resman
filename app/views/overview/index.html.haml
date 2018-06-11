@@ -71,4 +71,7 @@
         %td= h comment.user
         %td= h shorten("#{comment.entity_type}: #{comment.entity}", 2)
         %td
-          = link_to image_tag('icons/edit', size: '25x25'), resident_path(comment.entity)
+          - if comment.entity.is_a? Resident
+            = link_to image_tag('icons/edit', size: '25x25'), resident_path(comment.entity)
+          - elsif comment.entity.is_a? Reservation
+            = link_to image_tag('icons/edit', size: '25x25'), reservation_path(comment.entity)

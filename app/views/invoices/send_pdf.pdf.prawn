@@ -128,7 +128,7 @@ prawn_document(top_margin: margins[0], left_margin: margins[1], bottom_margin: m
       bank_address = "BANQUE CANTONALE DE GENEVE
 1211 GENEVE 2
 
-<b>T 3225.31.34</b>
+<b>CH92 0078 8000 T322 53 13 4</b>
 Association St-Boniface
 1205 Gèneve"
 
